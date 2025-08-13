@@ -1,7 +1,7 @@
 import express, {Application} from 'express'
 import cors from 'cors'
 import UsersSafs from '../models/saf/users';
-
+import rpreguntas from "../routes/preguntas";
 class Server {
 
     private app: Application
@@ -25,6 +25,7 @@ class Server {
     }
 
     router(){
+        this.app.use(rpreguntas);
 
     }
 
