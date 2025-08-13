@@ -6,7 +6,12 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { provideHighlightOptions } from 'ngx-highlightjs';
-
+import { FeatherModule } from 'angular-feather';
+import { Home, User } from 'angular-feather/icons';
+const icons = {
+  Home,
+  User,
+};
 const highlightOptions = {
   coreLibraryLoader: () => import('highlight.js/lib/core'),
   languages: {
@@ -18,6 +23,7 @@ const highlightOptions = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(FeatherModule.pick(icons)),
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })), 
     provideAnimationsAsync(),

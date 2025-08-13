@@ -45,6 +45,10 @@ export const routes: Routes = [
       {
         path: 'general',
         loadChildren: () => import('./views/pages/general/general.routes')
+      },
+      {
+        path: 'cuestionario',
+        loadChildren: () => import('./views/pages/cuestionario/cuestionario.route')
       }
     ]
   },
