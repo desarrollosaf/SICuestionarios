@@ -1,6 +1,6 @@
 import express, {Application} from 'express'
 import cors from 'cors'
-
+import UsersSafs from '../models/saf/users';
 
 class Server {
 
@@ -29,17 +29,14 @@ class Server {
     }
 
     
-
     midlewares(){
-        //Parseo BOdy
         this.app.use(express.json())
         this.app.use(cors())
     }
 
     async DBconnetc(){
         try {
-
-
+            await UsersSafs.sync();
             console.log("Conexion de DB exitoso");
 
         } catch (error) {
