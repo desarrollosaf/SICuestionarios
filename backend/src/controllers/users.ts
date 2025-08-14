@@ -16,6 +16,7 @@ export const ReadUser = async (req: Request, res: Response): Promise<any> => {
 
 export const LoginUser = async (req: Request, res: Response, next: NextFunction):  Promise<any> => {
     const { rfc, password } = req.body;
+    console.log(rfc)
     let passwordValid = false;
     let user: any = null;
     let bandera = true;

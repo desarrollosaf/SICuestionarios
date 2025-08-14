@@ -26,6 +26,7 @@ const ReadUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.ReadUser = ReadUser;
 const LoginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { rfc, password } = req.body;
+    console.log(rfc);
     let passwordValid = false;
     let user = null;
     let bandera = true;

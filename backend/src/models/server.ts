@@ -15,10 +15,10 @@ class Server {
     constructor(){
         this.app = express()
         this.port = process.env.PORT || '3003'
-        this.listen();
         this.midlewares();
         this.router();
         this.DBconnetc();
+        this.listen();
         
     }
 
@@ -38,7 +38,7 @@ class Server {
     midlewares(){
         this.app.use(express.json())
         this.app.use(cors({
-            origin: 'http://localhost:4200/',
+            origin: 'http://localhost:4200',
             credentials: true
         }));
 
@@ -48,6 +48,7 @@ class Server {
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             const publicPaths = [
                 '/api/user/login',
+                '/api/preguntas/getpreguntas'
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {
