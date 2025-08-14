@@ -56,6 +56,6 @@ preguntas.init(
 )
 
 preguntas.hasMany(opciones,{
-    foreignKey: "id_preguntas", as: "m_opciones"
+    foreignKey: "id_preguntas", as: "m_preguntas"
 })
 export default preguntas;
