@@ -16,6 +16,10 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../models/saf/users"));
 const preguntas_1 = __importDefault(require("../routes/preguntas"));
+const user_1 = __importDefault(require("../routes/user"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const path_1 = __importDefault(require("path"));
+const auth_1 = require("../middlewares/auth");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -32,10 +36,26 @@ class Server {
     }
     router() {
         this.app.use(preguntas_1.default);
+        this.app.use(user_1.default);
     }
     midlewares() {
         this.app.use(express_1.default.json());
-        this.app.use((0, cors_1.default)());
+        this.app.use((0, cors_1.default)({
+            origin: 'http://localhost:4200/',
+            credentials: true
+        }));
+        this.app.use((0, cookie_parser_1.default)());
+        this.app.use('/storage', express_1.default.static(path_1.default.join(process.cwd(), 'storage')));
+        this.app.use((req, res, next) => {
+            const publicPaths = [
+                '/api/user/login',
+            ];
+            const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
+            if (isPublic) {
+                return next();
+            }
+            return (0, auth_1.verifyToken)(req, res, next);
+        });
     }
     DBconnetc() {
         return __awaiter(this, void 0, void 0, function* () {

@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "root",
-    "password": "",
+    "username": "homestead",
+    "password": "secret",
     "database": "cuestionarios",
-    "host": "localhost",
+    "host": "192.168.10.10",
     "dialect": "mysql"
   },
   "production": {
