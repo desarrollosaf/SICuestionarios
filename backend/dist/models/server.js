@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../models/saf/users"));
+const preguntas_1 = __importDefault(require("../routes/preguntas"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
@@ -30,6 +31,7 @@ class Server {
         });
     }
     router() {
+        this.app.use(preguntas_1.default);
     }
     midlewares() {
         this.app.use(express_1.default.json());
