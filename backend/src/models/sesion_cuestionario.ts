@@ -9,6 +9,7 @@ import {
 
 import sequelize from '../database/connection';
 import preguntas from './preguntas';
+import opciones from './opciones';
 
 class sesion extends Model<
   InferAttributes<sesion>,
@@ -47,6 +48,12 @@ sesion.init(
 
 sesion.hasMany(preguntas,{
     foreignKey: "id_seccion", as: "m_preguntas"
+});
+
+preguntas.hasMany(opciones,{
+    foreignKey: "id_preguntas", as: "m_opciones"
 })
+
+
 
 export default sesion;

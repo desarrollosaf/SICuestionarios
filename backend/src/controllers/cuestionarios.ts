@@ -8,8 +8,14 @@ export const getpreguntas = async(req: Request, res: Response) =>{
         include:[
             {
                 model: preguntas,
-                as:"m_preguntas"
-            }
+                as:"m_preguntas",
+                include: [
+                    {
+                    model: opciones,
+                    as: 'm_opciones'
+                    }
+                ]
+            },
         ]
     })
     return res.json(pregunta);

@@ -15,13 +15,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const sesion_cuestionario_1 = __importDefault(require("../models/sesion_cuestionario"));
+const opciones_1 = __importDefault(require("../models/opciones"));
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const pregunta = yield sesion_cuestionario_1.default.findAll({
         include: [
             {
                 model: preguntas_1.default,
-                as: "m_preguntas"
-            }
+                as: "m_preguntas",
+                include: [
+                    {
+                        model: opciones_1.default,
+                        as: 'm_opciones'
+                    }
+                ]
+            },
         ]
     });
     return res.json(pregunta);
