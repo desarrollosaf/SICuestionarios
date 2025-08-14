@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const connection_1 = __importDefault(require("../database/connection"));
+const opciones_1 = __importDefault(require("./opciones"));
 class preguntas extends sequelize_1.Model {
 }
 preguntas.init({
@@ -33,5 +34,8 @@ preguntas.init({
     sequelize: connection_1.default,
     tableName: 'preguntas',
     timestamps: false,
+});
+preguntas.hasMany(opciones_1.default, {
+    foreignKey: "id_preguntas", as: "m_opciones"
 });
 exports.default = preguntas;
