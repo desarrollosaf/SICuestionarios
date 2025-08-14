@@ -6,6 +6,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { ArchwizardModule } from '@rg-software/angular-archwizard';
 import { WizardComponent as BaseWizardComponent } from '@rg-software/angular-archwizard';
+import { CuestionarioService } from '../../../service/cuestionario.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -17,7 +19,8 @@ import { WizardComponent as BaseWizardComponent } from '@rg-software/angular-arc
 
 
 export class CuestionarioComponent {
-    validationForm1: UntypedFormGroup;
+    public _cuestionarioService = inject(CuestionarioService);
+  validationForm1: UntypedFormGroup;
   validationForm2: UntypedFormGroup;
   validationForm3: UntypedFormGroup;
   validationForm4: UntypedFormGroup;
@@ -34,7 +37,20 @@ export class CuestionarioComponent {
 @ViewChild('wizardForm') wizardForm: BaseWizardComponent;
   constructor() {
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+           this._cuestionarioService.getPreguntas().subscribe({
+            next: (response: any) => {
+              console.log(response)
+            },
+            error: (e: HttpErrorResponse) => {
+              if (e.error && e.error.msg) {
+                console.error('Error del servidor:', e.error.msg);
+              } else {
+                console.error('Error desconocido:', e);
+              }
+            },
+          });
+  }
 
 
 
