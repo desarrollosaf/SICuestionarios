@@ -18,7 +18,7 @@ const users_1 = __importDefault(require("../models/saf/users"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
-        this.port = process.env.PORT || '3001';
+        this.port = process.env.PORT || '3003';
         this.listen();
         this.midlewares();
         this.router();
