@@ -1,11 +1,11 @@
 {
-  "development": {
-    "username": "homestead",
-    "password": "secret",
-    "database": "cuestionarios",
-    "host": "192.168.10.10",
-    "dialect": "mysql"
-  },
+    "development": {
+     "username": "root",
+     "password": "",
+     "database": "cuestionarios",
+     "host": "localhost",
+     "dialect": "mysql"
+    },
   "production": {
     "username": "root",
     "password": null,
