@@ -1,16 +1,20 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { map, catchError, of } from 'rxjs';
 
-export const authGuard: CanActivateFn = (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
+  const userService = inject(UserService);
 
-  if (localStorage.getItem('isLoggedin') === 'true') {
-    // If the user is logged in, then return true
-    return true;
-  }
-
-  // If the user is not logged in, redirect to the login page with the return URL
-  router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url.split('?')[0] } });
-  return false;
-  
+  return userService.getCurrentUser().pipe(
+    map(user => {
+      userService.setCurrentUser(user); 
+      return true;
+    }),
+    catchError(() => {
+      router.navigate(['/auth/login'], { queryParams: { returnUrl: state.url } });
+      return of(false);
+    })
+  );
 };

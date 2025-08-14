@@ -7,6 +7,7 @@ import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { FeatherIconDirective } from '../../../core/feather-icon/feather-icon.directive';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
     selector: 'app-navbar',
@@ -31,7 +32,8 @@ export class NavbarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private themeModeService: ThemeModeService
+    private themeModeService: ThemeModeService,
+    private _userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -92,10 +94,21 @@ export class NavbarComponent implements OnInit {
   onLogout(e: Event) {
     e.preventDefault();
 
-    localStorage.setItem('isLoggedin', 'false');
-    if (localStorage.getItem('isLoggedin') === 'false') {
-      this.router.navigate(['/auth/login']);
-    }
+    this._userService.logout().subscribe({
+      next: () => {
+        // Limpia cualquier dato local
+        localStorage.removeItem('currentUser');
+        localStorage.setItem('isLoggedin', 'false');
+        this._userService.setCurrentUser(null);
+
+        // Redirige al login
+        this.router.navigate(['/auth/login']);
+      },
+      error: (err) => {
+        console.error('Error al cerrar sesión', err);
+      }
+    });
+
   }
 
   /**

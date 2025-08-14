@@ -41,7 +41,7 @@ class Server {
     midlewares() {
         this.app.use(express_1.default.json());
         this.app.use((0, cors_1.default)({
-            origin: 'http://localhost:4200',
+            origin: 'https://administracionyfinanzasplem.gob.mx/genero/cuestionario',
             credentials: true
         }));
         this.app.use((0, cookie_parser_1.default)());
@@ -49,7 +49,6 @@ class Server {
         this.app.use((req, res, next) => {
             const publicPaths = [
                 '/api/user/login',
-                '/api/preguntas/getpreguntas'
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {

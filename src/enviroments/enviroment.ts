@@ -1,4 +1,4 @@
 export const enviroment = {
     production: false,
-    endpoint: 'http://localhost:3003/'
+    endpoint: 'https://administracionyfinanzasplem.gob.mx/genero/backend/'
   };
