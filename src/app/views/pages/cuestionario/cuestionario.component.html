@@ -13,13 +13,11 @@
                             </h2>
                             <div ngbAccordionCollapse>
                                 <div ngbAccordionBody>
-                                    <ng-template>
-                                        Este instrumento tiene como finalidad identificar situaciones de desigualdad,
-                                        discriminación o trato inequitativo por razón de género al interior del Poder
-                                        Legislativo, con el objetivo de implementar acciones afirmativas, políticas de
-                                        inclusión y buenas prácticas laborales que promuevan una cultura de igualdad
-                                        sustantiva entre mujeres y hombres.
-                                    </ng-template>
+                                    Este instrumento tiene como finalidad identificar situaciones de desigualdad,
+                                    discriminación o trato inequitativo por razón de género al interior del Poder
+                                    Legislativo, con el objetivo de implementar acciones afirmativas, políticas de
+                                    inclusión y buenas prácticas laborales que promuevan una cultura de igualdad
+                                    sustantiva entre mujeres y hombres.
                                 </div>
                             </div>
                         </div>
@@ -31,78 +29,90 @@
                             </h2>
                             <div ngbAccordionCollapse>
                                 <div ngbAccordionBody>
-                                    <ng-template>
-                                        <div class="contenido-centrado">
-                                            <p>Este diagnóstico consta de 6 secciones.</p>
-                                            <p>Marque con una ✔ la opción que más se aproxime a su experiencia o
-                                                percepción.</p>
-                                            <p>Su participación es anónima y confidencial.</p>
-                                            <br>
-                                            <p><strong>Escala de frecuencia (si aplica)</strong></p>
-                                            <p>☐ Nunca</p>
-                                            <p>☐ Algunas veces</p>
-                                            <p>☐ Frecuentemente</p>
-                                            <p>☐ Siempre</p>
-                                            <p>En preguntas específicas, marque la opción que mejor refleje su
-                                                experiencia.</p>
-                                        </div>
-                                    </ng-template>
+                                    <div class="contenido-centrado">
+                                        <p>Este diagnóstico consta de 6 secciones.</p>
+                                        <p>Marque con una ✔ la opción que más se aproxime a su experiencia o
+                                            percepción.</p>
+                                        <p>Su participación es anónima y confidencial.</p>
+                                        <br />
+                                        <p><strong>Escala de frecuencia (si aplica)</strong></p>
+                                        <p>☐ Nunca</p>
+                                        <p>☐ Algunas veces</p>
+                                        <p>☐ Frecuentemente</p>
+                                        <p>☐ Siempre</p>
+                                        <p>En preguntas específicas, marque la opción que mejor refleje su
+                                            experiencia.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <br>
-                <br>
+                <br /><br />
 
                 <div class="row">
                     <div class="col-md-12 grid-margin">
                         <div class="card">
                             <div class="card-body">
-                                <h6 class="card-title">Titulo de cada sección aqui mero</h6>
+                                <form [formGroup]="formCuestionario" class="wizard-container">
 
-                                <aw-wizard #wizardForm>
-                                    <aw-wizard-step stepTitle="Sección 1">
-                                      
-                                       
-                                    </aw-wizard-step>
+                                    <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
 
-                                    <aw-wizard-step stepTitle="Sección 2">
+                                    <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
+                                        [defaultStepIndex]="0">
+                                        <div formArrayName="secciones">
+                                            <aw-wizard-step
+                                                *ngFor="let seccion of seccionesArray.controls; let i = index"
+                                                [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i"
+                                                [canExit]="canExitSection.bind(this, i)"
+                                                (stepEnter)="onStepEnter($event, i)">
+                                                <div formArrayName="preguntas" class="questions-group">
+                                                    <div *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
+                                                        [formGroupName]="j" class="question-item">
+                                                        <p class="question-text">
+                                                            {{ pregunta.get('texto_pregunta')?.value }}
+                                                        </p>
+                                                        <div class="options-list">
+                                                            <div *ngFor="let opcion of pregunta.get('m_opciones')?.value"
+                                                                class="form-check">
+                                                                <label class="form-check-label d-block">
+                                                                    <input type="radio" formControlName="respuesta"
+                                                                        [value]="opcion.id"
+                                                                        class="form-check-input me-2" />
+                                                                    {{ opcion.texto_opcion }}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div *ngIf="pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
+                                                            class="text-danger">
+                                                            Esta pregunta es obligatoria
+                                                        </div>
+                                                        <hr class="question-separator" />
+                                                    </div>
+                                                </div>
 
-                                    </aw-wizard-step>
-                                    <aw-wizard-step stepTitle="Sección 3">
-
-                                    </aw-wizard-step>
-                                    <aw-wizard-step stepTitle="Sección 4">
-
-                                    </aw-wizard-step>
-                                    <aw-wizard-step stepTitle="Sección 5">
-
-                                    </aw-wizard-step>
-
-                                    <aw-wizard-step stepTitle="Sección 6">
-                                        <div class="text-center">
-                                            <i data-feather="check-circle" appFeatherIcon
-                                                class="text-success mt-4 mb-2 icon-xxl"></i>
-                                            <h3 class="text-secondary mb-3">Thank you !</h3>
-                                            <p class="w-75 mx-auto mb-4 text-secondary">Lorem ipsum dolor sit amet,
-                                                consectetur adipiscing elit. Integer ut nulla nunc. Maecenas arcu sem,
-                                                hendrerit a tempor quis, sagittis accumsan tellus. In hac habitasse
-                                                platea dictumst</p>
+                                                <div class="navigation-buttons">
+                                                    <button type="button" awPreviousStep class="btn btn-secondary">
+                                                        Anterior
+                                                    </button>
+                                                    <button type="button" awNextStep class="btn btn-primary">
+                                                        Siguiente
+                                                    </button>
+                                                </div>
+                                            </aw-wizard-step>
                                         </div>
-                                        <div class="d-flex justify-content-center mt-2">
-                                            <button class="btn btn-secondary me-2" type="button"
-                                                awPreviousStep>Back</button>
-                                            <button class="btn btn-success" type="button">Finish</button>
-                                        </div>
-                                    </aw-wizard-step>
 
-                                </aw-wizard>
+                                        <aw-wizard-completion-step stepTitle="Finalización">
+                                            <p>¡Cuestionario completado con éxito!</p>
+                                        </aw-wizard-completion-step>
+                                    </aw-wizard>
+                                </form>
 
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
