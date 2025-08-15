@@ -22,6 +22,9 @@ module.exports = {
       titulo: {
         type: Sequelize.STRING
       },
+      orden: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
