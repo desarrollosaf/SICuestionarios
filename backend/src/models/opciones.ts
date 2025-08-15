@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from 'sequelize';
 
-import sequelize from '../database/connection';
+import sequelize from '../database/cuestionariosConnection';
 
 class opciones extends Model<
   InferAttributes<opciones>,
@@ -16,6 +16,7 @@ class opciones extends Model<
     declare id: string;
     declare id_preguntas: string;
     declare texto_opcion?: string;
+    declare orden: number;
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
@@ -34,6 +35,10 @@ opciones.init(
         },
         texto_opcion: {
             type: DataTypes.STRING(255),
+            allowNull: false
+        },
+        orden: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
     },

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getpreguntas = void 0;
+exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const sesion_cuestionario_1 = __importDefault(require("../models/sesion_cuestionario"));
 const opciones_1 = __importDefault(require("../models/opciones"));
@@ -26,11 +26,20 @@ const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     {
                         model: opciones_1.default,
                         as: 'm_opciones'
-                    }
-                ]
+                    },
+                ],
             },
+        ],
+        order: [
+            ['orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" },
+                { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
         ]
     });
     return res.json(pregunta);
 });
 exports.getpreguntas = getpreguntas;
+const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.savecuestionario = savecuestionario;

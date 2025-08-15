@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from 'sequelize';
 
-import sequelize from '../database/connection';
+import sequelize from '../database/cuestionariosConnection';
 
 class respuestas extends Model<
   InferAttributes<respuestas>,
