@@ -3,7 +3,8 @@ import preguntas  from "../models/preguntas"
 import sesiones  from "../models/sesion_cuestionario"
 import opciones from "../models/opciones"
 
-export const getpreguntas = async(req: Request, res: Response) =>{
+
+export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
     const pregunta = await sesiones.findAll({
         include:[
             {
@@ -24,7 +25,10 @@ export const getpreguntas = async(req: Request, res: Response) =>{
              {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
         ]
     })
-    return res.json(pregunta);
+    
+     return res.json({
+      data: pregunta
+    });
 }
 
 export const savecuestionario = async(req: Request, res:Request) => {

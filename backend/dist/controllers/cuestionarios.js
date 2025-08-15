@@ -37,7 +37,9 @@ const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                 { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
         ]
     });
-    return res.json(pregunta);
+    return res.json({
+        data: pregunta
+    });
 });
 exports.getpreguntas = getpreguntas;
 const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
