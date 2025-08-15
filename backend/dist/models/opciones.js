@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const connection_1 = __importDefault(require("../database/connection"));
+const cuestionariosConnection_1 = __importDefault(require("../database/cuestionariosConnection"));
 class opciones extends sequelize_1.Model {
 }
 opciones.init({
@@ -21,8 +21,12 @@ opciones.init({
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false
     },
+    orden: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: false
+    },
 }, {
-    sequelize: connection_1.default,
+    sequelize: cuestionariosConnection_1.default,
     tableName: 'opciones',
     timestamps: false,
 });

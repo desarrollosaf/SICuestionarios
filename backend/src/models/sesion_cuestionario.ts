@@ -7,7 +7,7 @@ import {
   ForeignKey,
 } from 'sequelize';
 
-import sequelize from '../database/connection';
+import sequelize from '../database/cuestionariosConnection';
 import preguntas from './preguntas';
 import opciones from './opciones';
 
@@ -18,6 +18,7 @@ class sesion extends Model<
     declare id: string;
     declare id_cuestionario: string;
     declare titulo: string;
+    declare orden: number;
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
@@ -36,6 +37,10 @@ sesion.init(
         },
          titulo: {
             type: DataTypes.STRING(255),
+            allowNull: false
+        }, 
+        orden: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }, 
     },

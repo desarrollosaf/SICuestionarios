@@ -13,11 +13,20 @@ export const getpreguntas = async(req: Request, res: Response) =>{
                     {
                     model: opciones,
                     as: 'm_opciones'
-                    }
-                ]
+                    }, 
+                ],
             },
+        ], 
+        order:[
+            ['orden', 'asc'], 
+            [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+            [{model:preguntas, as: "m_preguntas"},
+             {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
         ]
     })
     return res.json(pregunta);
 }
 
+export const savecuestionario = async(req: Request, res:Request) => {
+    
+}
