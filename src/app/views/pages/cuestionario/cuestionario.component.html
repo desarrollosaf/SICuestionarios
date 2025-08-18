@@ -1,141 +1,142 @@
 <div class="row">
-    <div class="col-md-12 stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <h6 class="card-title text-center">
-                    DIAGNÓSTICO PARA CONTRIBUIR A LA IGUALDAD DE GÉNERO EN EL PODER LEGISLATIVO DEL ESTADO DE MÉXICO
-                </h6>
-                <div class="row">
-                    <div ngbAccordion [closeOthers]="true">
-                        <div ngbAccordionItem [collapsed]="false">
-                            <h2 ngbAccordionHeader>
-                                <button ngbAccordionButton><b>Objetivo del diagnóstico</b></button>
-                            </h2>
-                            <div ngbAccordionCollapse>
-                                <div ngbAccordionBody>
-                                    Este instrumento tiene como finalidad identificar situaciones de desigualdad,
-                                    discriminación o trato inequitativo por razón de género al interior del Poder
-                                    Legislativo, con el objetivo de implementar acciones afirmativas, políticas de
-                                    inclusión y buenas prácticas laborales que promuevan una cultura de igualdad
-                                    sustantiva entre mujeres y hombres.
-                                </div>
-                            </div>
-                        </div>
-                        <div ngbAccordionItem>
-                            <h2 ngbAccordionHeader>
-                                <button ngbAccordionButton>
-                                    <b>Instrucciones de llenado</b>
-                                </button>
-                            </h2>
-                            <div ngbAccordionCollapse>
-                                <div ngbAccordionBody>
-                                    <div class="contenido-centrado">
-                                        <p>Este diagnóstico consta de 6 secciones.</p>
-                                        <p>Marque con una ✔ la opción que más se aproxime a su experiencia o
-                                            percepción.</p>
-                                        <p>Su participación es anónima y confidencial.</p>
-                                        <br />
-                                        <p><strong>Escala de frecuencia (si aplica)</strong></p>
-                                        <p>☐ Nunca</p>
-                                        <p>☐ Algunas veces</p>
-                                        <p>☐ Frecuentemente</p>
-                                        <p>☐ Siempre</p>
-                                        <p>En preguntas específicas, marque la opción que mejor refleje su
-                                            experiencia.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+  <div class="col-md-12 stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h6 class="card-title text-center">
+          DIAGNÓSTICO PARA CONTRIBUIR A LA IGUALDAD DE GÉNERO EN EL PODER LEGISLATIVO DEL ESTADO DE MÉXICO
+        </h6>
+        <div class="row">
+          <div ngbAccordion [closeOthers]="true">
+            <div ngbAccordionItem [collapsed]="false">
+              <h2 ngbAccordionHeader>
+                <button ngbAccordionButton><b>Objetivo del diagnóstico</b></button>
+              </h2>
+              <div ngbAccordionCollapse>
+                <div ngbAccordionBody>
+                  Este instrumento tiene como finalidad identificar situaciones de desigualdad,
+                  discriminación o trato inequitativo por razón de género al interior del Poder
+                  Legislativo, con el objetivo de implementar acciones afirmativas, políticas de
+                  inclusión y buenas prácticas laborales que promuevan una cultura de igualdad
+                  sustantiva entre mujeres y hombres.
                 </div>
-                <br /><br />
-
-                <div class="row">
-                    <div class="col-md-12 grid-margin">
-                        <div class="card">
-                            <div class="card-body">
-                                <form [formGroup]="formCuestionario" class="wizard-container">
-                                    <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
-
-                                    <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
-                                        [defaultStepIndex]="0">
-                                        <div formArrayName="secciones">
-                                            <aw-wizard-step
-                                                *ngFor="let seccion of seccionesArray.controls; let i = index"
-                                                [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i"
-                                                [canExit]="canExitSection.bind(this, i)"
-                                                (stepEnter)="onStepEnter($event, i)">
-                                                <div formArrayName="preguntas" class="questions-group">
-                                                    <div *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
-                                                        [formGroupName]="j" class="question-item">
-                                                        <p class="question-text">
-                                                            {{ pregunta.get('texto_pregunta')?.value }}
-                                                        </p>
-
-                                                        <div class="options-list">
-                                                            <div *ngFor="let opcion of pregunta.get('m_opciones')?.value"
-                                                                class="form-check">
-
-                                                                <ng-container
-                                                                    *ngIf="pregunta.get('isCheckbox')?.value; else radioOption">
-                                                                    <label class="form-check-label d-block">
-                                                                        <input type="checkbox"
-                                                                            class="form-check-input me-2"
-                                                                            [value]="opcion.id"
-                                                                            (change)="onCheckboxChange($event, j, i)"
-                                                                            [checked]="pregunta.get('respuesta')?.value?.includes(opcion.id)" />
-                                                                        {{ opcion.texto_opcion }}
-                                                                    </label>
-                                                                </ng-container>
-
-
-                                                                <ng-template #radioOption>
-                                                                    <label class="form-check-label d-block">
-                                                                        <input type="radio"
-                                                                            class="form-check-input me-2"
-                                                                            formControlName="respuesta"
-                                                                            [value]="opcion.id" />
-                                                                        {{ opcion.texto_opcion }}
-                                                                    </label>
-                                                                </ng-template>
-                                                            </div>
-                                                        </div>
-
-
-                                                        <div *ngIf="!pregunta.get('isCheckbox')?.value && pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
-                                                            class="text-danger">
-                                                            Esta pregunta es obligatoria
-                                                        </div>
-
-                                                        <hr class="question-separator" />
-                                                    </div>
-                                                </div>
-
-
-                                                <div class="navigation-buttons">
-                                                    <button type="button" awPreviousStep
-                                                        class="btn btn-secondary">Anterior</button>
-                                                    <button type="button" awNextStep
-                                                        class="btn btn-primary">Siguiente</button>
-                                                </div>
-                                            </aw-wizard-step>
-                                        </div>
-
-
-                                        <aw-wizard-completion-step stepTitle="Finalización">
-                                            <p>¡Cuestionario completado con éxito!</p>
-                                        </aw-wizard-completion-step>
-                                    </aw-wizard>
-                                </form>
-
-
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+              </div>
             </div>
+            <div ngbAccordionItem>
+              <h2 ngbAccordionHeader>
+                <button ngbAccordionButton>
+                  <b>Instrucciones de llenado</b>
+                </button>
+              </h2>
+              <div ngbAccordionCollapse>
+                <div ngbAccordionBody>
+                  <div class="contenido-centrado">
+                    <p>Este diagnóstico consta de 6 secciones.</p>
+                    <p>Marque con una ✔ la opción que más se aproxime a su experiencia o
+                      percepción.</p>
+                    <p>Su participación es anónima y confidencial.</p>
+                    <br />
+                    <p><strong>Escala de frecuencia (si aplica)</strong></p>
+                    <p>☐ Nunca</p>
+                    <p>☐ Algunas veces</p>
+                    <p>☐ Frecuentemente</p>
+                    <p>☐ Siempre</p>
+                    <p>En preguntas específicas, marque la opción que mejor refleje su
+                      experiencia.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <br /><br />
+
+        <div class="row">
+          <div class="col-md-12 grid-margin">
+            <div class="card">
+              <div class="card-body">
+                <form [formGroup]="formCuestionario" (ngSubmit)="submitCuestionario()"  class="wizard-container">
+                  <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
+
+                  <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
+                    [defaultStepIndex]="0">
+                    <div formArrayName="secciones">
+                      <aw-wizard-step *ngFor="let seccion of seccionesArray.controls; let i = index"
+                        [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i" [canExit]="canExitSection.bind(this, i)"
+                        (stepEnter)="onStepEnter($event, i)">
+                        <div formArrayName="preguntas" class="questions-group">
+                          <div *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
+                            [formGroupName]="j" class="question-item">
+                            <p class="question-text">
+                              {{ pregunta.get('texto_pregunta')?.value }}
+                            </p>
+
+                            <div class="options-list">
+                              <div *ngFor="let opcion of pregunta.get('m_opciones')?.value" class="form-check">
+
+                                <ng-container *ngIf="pregunta.get('isCheckbox')?.value; else radioOption">
+                                  <label class="form-check-label d-block">
+                                    <input type="checkbox" class="form-check-input me-2" [value]="opcion.id"
+                                      (change)="onCheckboxChange($event, j, i)"
+                                      [checked]="pregunta.get('respuesta')?.value?.includes(opcion.id)" />
+                                    {{ opcion.texto_opcion }}
+                                  </label>
+                                </ng-container>
+
+
+                                <ng-template #radioOption>
+                                  <label class="form-check-label d-block">
+                                    <input type="radio" class="form-check-input me-2" formControlName="respuesta"
+                                      [value]="opcion.id" />
+                                    {{ opcion.texto_opcion }}
+                                  </label>
+                                </ng-template>
+                              </div>
+                            </div>
+
+
+                            <div
+                              *ngIf="!pregunta.get('isCheckbox')?.value && pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
+                              class="text-danger">
+                              Esta pregunta es obligatoria
+                            </div>
+                            <div *ngIf="pregunta.get('hasOtroOption')?.value">
+                              <div *ngIf="isOtroSelected(pregunta)">
+                                <input type="text" class="form-control mt-2" formControlName="otroValor"
+                                  placeholder="Por favor especifica..." />
+                                <div *ngIf="pregunta.get('otroValor')?.invalid && pregunta.get('otroValor')?.touched"
+                                  class="text-danger">
+                                  Este campo es obligatorio
+                                </div>
+                              </div>
+                            </div>
+
+                            <hr class="question-separator" />
+                          </div>
+                        </div>
+
+
+                        <div class="navigation-buttons">
+                          <button type="button" awPreviousStep class="btn btn-secondary">Anterior</button>
+                          <button type="button" awNextStep class="btn btn-primary">Siguiente</button>
+                        </div>
+                      </aw-wizard-step>
+                    </div>
+
+
+                    <aw-wizard-completion-step stepTitle="Finalización">
+                      <p>¡Cuestionario completado con éxito!</p>
+                    </aw-wizard-completion-step>
+                  </aw-wizard>
+                </form>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
     </div>
+  </div>
 </div>

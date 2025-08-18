@@ -67,7 +67,7 @@ module.exports = {
       { seccion: seccion2, texto: "¿Su jefa o jefe directo promueve la igualdad entre hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿El trato entre personas de distinto sexo y cargo es respetuoso?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Ha sido discriminada(o) en su espacio de trabajo?", opciones: opcionesInversa },
-      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: ["Sexo","Edad","Discapacidad","Embarazo","Estado civil","Apariencia física","Orientación sexual","Identidad de género","Condición de salud","Otra_________"] },
+      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: ["Sexo","Edad","Discapacidad","Embarazo","Estado civil","Apariencia física","Orientación sexual","Identidad de género","Condición de salud","Otro"] },
       { seccion: seccion2, texto: "¿Ha observado expresiones, prácticas o actitudes que favorezcan en mayor medida a un sexo en detrimento del otro?", opciones: opcionesInversa },
       { seccion: seccion2, texto: "¿Se toma en cuenta por igual la opinión de hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Las responsabilidades laborales son asignadas con equidad entre hombres y mujeres?", opciones: opcionesFrecuencia },
@@ -94,7 +94,7 @@ module.exports = {
 
 
       { seccion: seccion6, texto: "¿Tiene bajo su cuidado a personas dependientes?", opciones: opcionesBinario },
-      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: ["Niñas/os","Personas adultas mayores","Personas con discapacidad","Otro_______________"] },
+      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: ["Niñas/os","Personas adultas mayores","Personas con discapacidad","Otro"] },
       { seccion: seccion6, texto: "¿En su trabajo le brindan las facilidades para atender asuntos personales, familiares o en su caso, de cuidado de personas dependientes?", opciones: opcionesFrecuencia },
       { seccion: seccion6, texto: "¿Ha faltado al trabajo porque se le negó permiso para atender asuntos personales?", opciones: opcionesInversa }
     ];
