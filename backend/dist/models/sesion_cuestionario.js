@@ -22,6 +22,10 @@ sesion.init({
         type: sequelize_1.DataTypes.DATE,
         allowNull: true
     },
+    comentarios: {
+        type: sequelize_1.DataTypes.STRING(255),
+        allowNull: true
+    },
     createdAt: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false,
