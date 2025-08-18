@@ -54,59 +54,87 @@
                     <div class="col-md-12 grid-margin">
                         <div class="card">
                             <div class="card-body">
-                                <form [formGroup]="formCuestionario" class="wizard-container">
+ <form [formGroup]="formCuestionario" class="wizard-container">
+  <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
 
-                                    <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
+  <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'" [defaultStepIndex]="0">
+    <div formArrayName="secciones">
+      <aw-wizard-step
+        *ngFor="let seccion of seccionesArray.controls; let i = index"
+        [stepTitle]="'Sección ' + (i + 1)"
+        [formGroupName]="i"
+        [canExit]="canExitSection.bind(this, i)"
+        (stepEnter)="onStepEnter($event, i)"
+      >
+        <div formArrayName="preguntas" class="questions-group">
+          <div
+            *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
+            [formGroupName]="j"
+            class="question-item"
+          >
+            <p class="question-text">
+              {{ pregunta.get('texto_pregunta')?.value }}
+            </p>
 
-                                    <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
-                                        [defaultStepIndex]="0">
-                                        <div formArrayName="secciones">
-                                            <aw-wizard-step
-                                                *ngFor="let seccion of seccionesArray.controls; let i = index"
-                                                [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i"
-                                                [canExit]="canExitSection.bind(this, i)"
-                                                (stepEnter)="onStepEnter($event, i)">
-                                                <div formArrayName="preguntas" class="questions-group">
-                                                    <div *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
-                                                        [formGroupName]="j" class="question-item">
-                                                        <p class="question-text">
-                                                            {{ pregunta.get('texto_pregunta')?.value }}
-                                                        </p>
-                                                        <div class="options-list">
-                                                            <div *ngFor="let opcion of pregunta.get('m_opciones')?.value"
-                                                                class="form-check">
-                                                                <label class="form-check-label d-block">
-                                                                    <input type="radio" formControlName="respuesta"
-                                                                        [value]="opcion.id"
-                                                                        class="form-check-input me-2" />
-                                                                    {{ opcion.texto_opcion }}
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                        <div *ngIf="pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
-                                                            class="text-danger">
-                                                            Esta pregunta es obligatoria
-                                                        </div>
-                                                        <hr class="question-separator" />
-                                                    </div>
-                                                </div>
+            <div class="options-list">
+              <div *ngFor="let opcion of pregunta.get('m_opciones')?.value" class="form-check">
+                <!-- Checkbox -->
+                <ng-container *ngIf="pregunta.get('isCheckbox')?.value; else radioOption">
+                  <label class="form-check-label d-block">
+                    <input
+                      type="checkbox"
+                      class="form-check-input me-2"
+                      [value]="opcion.id"
+                      (change)="onCheckboxChange($event, j, i)"
+                      [checked]="pregunta.get('respuesta')?.value?.includes(opcion.id)"
+                    />
+                    {{ opcion.texto_opcion }}
+                  </label>
+                </ng-container>
 
-                                                <div class="navigation-buttons">
-                                                    <button type="button" awPreviousStep class="btn btn-secondary">
-                                                        Anterior
-                                                    </button>
-                                                    <button type="button" awNextStep class="btn btn-primary">
-                                                        Siguiente
-                                                    </button>
-                                                </div>
-                                            </aw-wizard-step>
-                                        </div>
+                <!-- Radio -->
+                <ng-template #radioOption>
+                  <label class="form-check-label d-block">
+                    <input
+                      type="radio"
+                      class="form-check-input me-2"
+                      formControlName="respuesta"
+                      [value]="opcion.id"
+                    />
+                    {{ opcion.texto_opcion }}
+                  </label>
+                </ng-template>
+              </div>
+            </div>
 
-                                        <aw-wizard-completion-step stepTitle="Finalización">
-                                            <p>¡Cuestionario completado con éxito!</p>
-                                        </aw-wizard-completion-step>
-                                    </aw-wizard>
-                                </form>
+            <!-- Validación -->
+            <div
+              *ngIf="!pregunta.get('isCheckbox')?.value && pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
+              class="text-danger"
+            >
+              Esta pregunta es obligatoria
+            </div>
+
+            <hr class="question-separator" />
+          </div>
+        </div>
+
+        <!-- Navegación -->
+        <div class="navigation-buttons">
+          <button type="button" awPreviousStep class="btn btn-secondary">Anterior</button>
+          <button type="button" awNextStep class="btn btn-primary">Siguiente</button>
+        </div>
+      </aw-wizard-step>
+    </div>
+
+    <!-- Finalización -->
+    <aw-wizard-completion-step stepTitle="Finalización">
+      <p>¡Cuestionario completado con éxito!</p>
+    </aw-wizard-completion-step>
+  </aw-wizard>
+</form>
+
+
 
                             </div>
                         </div>
