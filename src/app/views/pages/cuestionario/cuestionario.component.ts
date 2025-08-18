@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, inject } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -16,6 +16,7 @@ import { RouterLink } from '@angular/router';
 import { ArchwizardModule, WizardComponent } from '@rg-software/angular-archwizard';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { MovingDirection } from '@rg-software/angular-archwizard';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-cuestionario',
@@ -35,7 +36,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   @ViewChild('wizardForm') wizardForm: WizardComponent;
   formCuestionario: FormGroup;
   currentSectionTitle = '';
-
+public _userService = inject(UserService);
   constructor(private fb: FormBuilder, private _cuestionarioService: CuestionarioService) {
     this.formCuestionario = this.fb.group({
       secciones: this.fb.array([]),
@@ -58,6 +59,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   }
 
   getPreguntas() {
+  
     this._cuestionarioService.getPreguntas().subscribe({
       next: (response) => {
         this.buildForm(response.data);
@@ -219,5 +221,17 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
+  const rfc = this._userService.currentUserValue?.rfc ?? '';
+    console.log(rfc);
+    this._cuestionarioService.savePreg(formData, rfc ).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+      },
+    });
+
+    
   }
 }
