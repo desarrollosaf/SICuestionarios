@@ -13,7 +13,7 @@ class respuestas extends Model<
   InferAttributes<respuestas>,
   InferCreationAttributes<respuestas>
 > {
-    declare id: string;
+    declare id: CreationOptional<string>;
     declare id_sesion: string;
     declare id_pregunta: string;
     declare id_opcion: string;
@@ -28,6 +28,7 @@ respuestas.init(
     {
         id: {
         type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true
         },
