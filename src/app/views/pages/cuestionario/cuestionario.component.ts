@@ -6,7 +6,8 @@ import {
   Validators,
   ReactiveFormsModule,
   FormsModule,
-  FormControl
+  FormControl,
+  AbstractControl
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CuestionarioService } from '../../../service/cuestionario.service';
@@ -41,7 +42,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
     });
   }
 
-  ngAfterViewInit() {}
+  ngAfterViewInit() { }
 
   ngOnInit(): void {
     this.getPreguntas();
@@ -65,7 +66,6 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       },
     });
   }
-
   buildForm(secciones: any[]) {
     const seccionesFormArray = this.seccionesArray;
 
@@ -80,20 +80,38 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
         let respuestaControl;
 
         if (isCheckbox) {
+     
           respuestaControl = this.fb.array([]);
+
+   
+          const hasOtroOption = pregunta.m_opciones.some((o: any) =>
+            o.texto_opcion.toLowerCase() === 'otro'
+          );
+
+          preguntasFormArray.push(
+            this.fb.group({
+              id: [pregunta.id],
+              texto_pregunta: [pregunta.texto_pregunta],
+              respuesta: respuestaControl,
+              otroValor: [''],  // control para input "Otro"
+              m_opciones: [pregunta.m_opciones],
+              isCheckbox: [isCheckbox],
+              hasOtroOption: [hasOtroOption],
+            })
+          );
+
         } else {
           respuestaControl = this.fb.control('', Validators.required);
+          preguntasFormArray.push(
+            this.fb.group({
+              id: [pregunta.id],
+              texto_pregunta: [pregunta.texto_pregunta],
+              respuesta: respuestaControl,
+              m_opciones: [pregunta.m_opciones],
+              isCheckbox: [isCheckbox],
+            })
+          );
         }
-
-        preguntasFormArray.push(
-          this.fb.group({
-            id: [pregunta.id],
-            texto_pregunta: [pregunta.texto_pregunta],
-            respuesta: respuestaControl,
-            m_opciones: [pregunta.m_opciones],
-            isCheckbox: [isCheckbox],
-          })
-        );
       });
 
       const seccionGroup = this.fb.group({
@@ -107,20 +125,51 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   }
 
   onCheckboxChange(event: any, preguntaIndex: number, seccionIndex: number) {
-    const respuestas: FormArray = this.getSeccionPreguntas(seccionIndex)
-      .at(preguntaIndex)
-      .get('respuesta') as FormArray;
+    const preguntaGroup = this.getSeccionPreguntas(seccionIndex).at(preguntaIndex) as FormGroup;
+    const respuestas: FormArray = preguntaGroup.get('respuesta') as FormArray;
 
-    if (event.target.checked) {
-      respuestas.push(new FormControl(event.target.value));
+    const value = event.target.value;
+    const checked = event.target.checked;
+
+    if (checked) {
+      respuestas.push(new FormControl(value));
     } else {
-      const index = respuestas.controls.findIndex(
-        (x) => x.value === event.target.value
-      );
+      const index = respuestas.controls.findIndex((x) => x.value === value);
       if (index !== -1) {
         respuestas.removeAt(index);
       }
     }
+
+    // Validación para el input "Otro"
+    const hasOtroOption = preguntaGroup.get('hasOtroOption')?.value;
+    if (hasOtroOption) {
+      const otroOpcion = preguntaGroup.get('m_opciones')?.value.find((o: any) => o.texto_opcion.toLowerCase() === 'Otro');
+
+      if (otroOpcion && otroOpcion.id === value) {
+        const otroValorControl = preguntaGroup.get('otroValor') as FormControl;
+        if (checked) {
+          
+          otroValorControl.setValidators([Validators.required]);
+        } else {
+          
+          otroValorControl.setValue('');
+          otroValorControl.clearValidators();
+        }
+        otroValorControl.updateValueAndValidity();
+      }
+    }
+  }
+
+  isOtroSelected(preguntaControl: AbstractControl): boolean {
+    const pregunta = preguntaControl as FormGroup;
+    const respuesta = pregunta.get('respuesta')?.value as any[];
+    const opciones = pregunta.get('m_opciones')?.value as any[];
+    if (!respuesta || !opciones) return false;
+
+    const otroOpcion = opciones.find(o => o.texto_opcion.toLowerCase() === 'otro');
+    if (!otroOpcion) return false;
+
+    return respuesta.includes(otroOpcion.id);
   }
 
   canExitSection(index: number): boolean {
@@ -146,5 +195,30 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   onStepEnter(direction: MovingDirection, index: number) {
     const seccion = this.seccionesArray.at(index);
     this.currentSectionTitle = seccion.get('titulo')?.value || '';
+  }
+
+  submitCuestionario() {
+    if (this.formCuestionario.invalid) {
+      this.markAllTouched(this.formCuestionario);
+      return;
+    }
+
+    
+    const resultado = this.seccionesArray.controls.map((seccionGroup) => {
+      const preguntas = seccionGroup.get('preguntas') as FormArray;
+      return preguntas.controls.map((preguntaGroup) => {
+        const respuesta = preguntaGroup.get('respuesta')?.value;
+        const otroValor = preguntaGroup.get('otroValor')?.value;
+
+        return {
+          idPregunta: preguntaGroup.get('id')?.value,
+          respuesta,
+          otroValor: otroValor || null,
+        };
+      });
+    });
+
+    console.log('Datos para enviar:', resultado);
+    
   }
 }
