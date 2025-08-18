@@ -41,7 +41,7 @@ class Server {
     midlewares() {
         this.app.use(express_1.default.json());
         this.app.use((0, cors_1.default)({
-            origin: 'https://administracionyfinanzasplem.gob.mx/genero/cuestionario',
+            origin: 'http://localhost:4200',
             credentials: true
         }));
         this.app.use((0, cookie_parser_1.default)());

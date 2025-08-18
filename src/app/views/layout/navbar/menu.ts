@@ -4,11 +4,13 @@ export const MENU: MenuItem[] = [
   {
     label: 'Cuestionario',
     icon: 'home',
-    link: '/cuestionario'
+    link: '/cuestionario',
+    roles: ['usuario'],
   },
   {
     label: 'Reportes',
     icon: 'mail',
+    roles: ['GEN25'],
     subMenus: [
       {
         subMenuItems: [

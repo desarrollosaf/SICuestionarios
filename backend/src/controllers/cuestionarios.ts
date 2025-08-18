@@ -5,9 +5,9 @@ import seccion from "../models/secciones"
 import sesion from "../models/sesion_cuestionario"
 import respuestas from "../models/respuesta"
 
-export const getpreguntas = async(req: Request, res: Response) =>{
 
-    try {
+export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
+  try {
         const pregunta = await seccion.findAll({
         include:[
             {
@@ -28,11 +28,14 @@ export const getpreguntas = async(req: Request, res: Response) =>{
              {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
         ]
     })
-    return res.json(pregunta);
+
+    return res.json({
+      data: pregunta
+    });
     } catch (error) {
-            console.error('Error al obtener preguntas:', error);
-            return res.status(500).json({ msg: 'Error interno del servidor' });
-        }
+        console.error('Error al obtener preguntas:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor' });
+    }
 }
 
 export const savecuestionario = async(req: Request, res: Request) => {

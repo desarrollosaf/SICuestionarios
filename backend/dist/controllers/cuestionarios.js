@@ -38,7 +38,9 @@ const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* (
                     { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
             ]
         });
-        return res.json(pregunta);
+       return res.json({
+        data: pregunta
+       });
     }
     catch (error) {
         console.error('Error al obtener preguntas:', error);

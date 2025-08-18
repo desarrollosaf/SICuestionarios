@@ -6,10 +6,12 @@ export interface MenuItem {
   link?: string;
   subMenus?: SubMenus[];
   isMegaMenu?: boolean;
+  roles?: string[];
 }
 
 export interface SubMenus {
-  subMenuItems?: SubMenuItems[]
+  subMenuItems?: SubMenuItems[],
+  roles?: string[];
 }
 
 export interface SubMenuItems {
@@ -17,6 +19,7 @@ export interface SubMenuItems {
   link?: string;
   isTitle?: boolean;
   badge?: Badge;
+  roles?: string[];
 }
 
 export interface Badge {
