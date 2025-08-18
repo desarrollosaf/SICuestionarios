@@ -16,9 +16,8 @@ class sesion extends Model<
   InferCreationAttributes<sesion>
 > {
     declare id: string;
-    declare id_cuestionario: string;
-    declare titulo: string;
-    declare orden: number;
+    declare id_usuario: string;
+    declare fecha_registro: string;
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
@@ -28,36 +27,25 @@ sesion.init(
     {
         id: {
         type: DataTypes.UUID,
-        allowNull: false,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: true,
         primaryKey: true
         },
-         id_cuestionario: {
-            type: DataTypes.UUID,
+        id_usuario: {
+            type: DataTypes.STRING(10),
             allowNull: false
         },
-         titulo: {
-            type: DataTypes.STRING(255),
+        fecha_registro: {
+            type: DataTypes.DATE,
             allowNull: false
-        }, 
-        orden: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        }, 
+        }
     },
     {
         sequelize,
-        tableName: 'seccions',
+        tableName: 'sesion_cuestionarios',
         timestamps: false,
     }
 );
-
-sesion.hasMany(preguntas,{
-    foreignKey: "id_seccion", as: "m_preguntas"
-});
-
-preguntas.hasMany(opciones,{
-    foreignKey: "id_preguntas", as: "m_opciones"
-})
 
 
 

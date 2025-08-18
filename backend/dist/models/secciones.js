@@ -5,38 +5,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const cuestionariosConnection_1 = __importDefault(require("../database/cuestionariosConnection"));
-class respuestas extends sequelize_1.Model {
+const preguntas_1 = __importDefault(require("./preguntas"));
+const opciones_1 = __importDefault(require("./opciones"));
+class seccion extends sequelize_1.Model {
 }
-respuestas.init({
+seccion.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
-        defaultValue: sequelize_1.DataTypes.UUIDV4,
         allowNull: false,
         primaryKey: true
     },
-    id_sesion: {
+    id_cuestionario: {
         type: sequelize_1.DataTypes.UUID,
         allowNull: false
     },
-    id_pregunta: {
-        type: sequelize_1.DataTypes.UUID,
-        allowNull: false
-    },
-    id_opcion: {
-        type: sequelize_1.DataTypes.UUID,
-        allowNull: false
-    },
-    valor_texto: {
+    titulo: {
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false
     },
-    valor_numero: {
-        type: sequelize_1.DataTypes.STRING(255),
+    orden: {
+        type: sequelize_1.DataTypes.INTEGER,
         allowNull: false
     },
 }, {
     sequelize: cuestionariosConnection_1.default,
-    tableName: 'respuesta',
+    tableName: 'seccions',
     timestamps: false,
 });
-exports.default = respuestas;
+seccion.hasMany(preguntas_1.default, {
+    foreignKey: "id_seccion", as: "m_preguntas"
+});
+preguntas_1.default.hasMany(opciones_1.default, {
+    foreignKey: "id_preguntas", as: "m_opciones"
+});
+exports.default = seccion;
