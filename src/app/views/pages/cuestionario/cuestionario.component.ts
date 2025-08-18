@@ -39,6 +39,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   constructor(private fb: FormBuilder, private _cuestionarioService: CuestionarioService) {
     this.formCuestionario = this.fb.group({
       secciones: this.fb.array([]),
+      comentarios: ['']  // <-- Campo opcional añadido
     });
   }
 
@@ -66,6 +67,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       },
     });
   }
+
   buildForm(secciones: any[]) {
     const seccionesFormArray = this.seccionesArray;
 
@@ -80,10 +82,8 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
         let respuestaControl;
 
         if (isCheckbox) {
-     
           respuestaControl = this.fb.array([]);
 
-   
           const hasOtroOption = pregunta.m_opciones.some((o: any) =>
             o.texto_opcion.toLowerCase() === 'otro'
           );
@@ -93,13 +93,12 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
               id: [pregunta.id],
               texto_pregunta: [pregunta.texto_pregunta],
               respuesta: respuestaControl,
-              otroValor: [''],  // control para input "Otro"
+              otroValor: [''],
               m_opciones: [pregunta.m_opciones],
               isCheckbox: [isCheckbox],
               hasOtroOption: [hasOtroOption],
             })
           );
-
         } else {
           respuestaControl = this.fb.control('', Validators.required);
           preguntasFormArray.push(
@@ -140,18 +139,15 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       }
     }
 
-    // Validación para el input "Otro"
     const hasOtroOption = preguntaGroup.get('hasOtroOption')?.value;
     if (hasOtroOption) {
-      const otroOpcion = preguntaGroup.get('m_opciones')?.value.find((o: any) => o.texto_opcion.toLowerCase() === 'Otro');
+      const otroOpcion = preguntaGroup.get('m_opciones')?.value.find((o: any) => o.texto_opcion.toLowerCase() === 'otro');
 
       if (otroOpcion && otroOpcion.id === value) {
         const otroValorControl = preguntaGroup.get('otroValor') as FormControl;
         if (checked) {
-          
           otroValorControl.setValidators([Validators.required]);
         } else {
-          
           otroValorControl.setValue('');
           otroValorControl.clearValidators();
         }
@@ -197,13 +193,11 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
     this.currentSectionTitle = seccion.get('titulo')?.value || '';
   }
 
-  submitCuestionario() {
-    if (this.formCuestionario.invalid) {
-      this.markAllTouched(this.formCuestionario);
-      return;
-    }
+  get comentariosControl(): FormControl {
+    return this.formCuestionario.get('comentarios') as FormControl;
+  }
 
-    
+  submitCuestionario() {
     const resultado = this.seccionesArray.controls.map((seccionGroup) => {
       const preguntas = seccionGroup.get('preguntas') as FormArray;
       return preguntas.controls.map((preguntaGroup) => {
@@ -217,8 +211,13 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
         };
       });
     });
+    const comentarios = this.formCuestionario.get('comentarios')?.value || '';
 
-    console.log('Datos para enviar:', resultado);
-    
+    const formData = new FormData();
+    formData.append('respuestas', JSON.stringify(resultado));
+    formData.append('comentarios', comentarios);
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
   }
 }
