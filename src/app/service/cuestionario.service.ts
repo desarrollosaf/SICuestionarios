@@ -18,4 +18,8 @@ export class CuestionarioService {
     return this.http.get<any>(`${this.myAppUrl}${this.myAPIUrl}/getpreguntas`)
   }
 
+  savePreg(preguntas: FormData, rfc: String):Observable<string> {
+    return this.http.post<string>(`${this.myAppUrl}${this.myAPIUrl}/savecuestionario/${rfc}`,preguntas)
+  }
+
 }
