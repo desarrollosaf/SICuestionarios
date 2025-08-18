@@ -73,8 +73,6 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       const preguntasFormArray = new FormArray<FormGroup<any>>([]);
 
       data.m_preguntas.forEach((pregunta: any, preguntaIndex: number) => {
-        // Sección 2 (índice 1), Pregunta 5 (índice 4)
-        // Sección 6 (índice 5), Pregunta 2 (índice 1)
         const isCheckbox =
           (seccionIndex === 1 && preguntaIndex === 4) ||
           (seccionIndex === 5 && preguntaIndex === 1);
@@ -82,10 +80,8 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
         let respuestaControl;
 
         if (isCheckbox) {
-          // Checkbox y opcional
           respuestaControl = this.fb.array([]);
         } else {
-          // Radio obligatorio
           respuestaControl = this.fb.control('', Validators.required);
         }
 
