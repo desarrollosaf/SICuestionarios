@@ -26,7 +26,7 @@ module.exports = {
 
     const idDiscriminacionSeccion2 = uuidv4();
 
-    await queryInterface.bulkInsert('Cuestionarios', [{
+    await queryInterface.bulkInsert('cuestionarios', [{
       id: cuestionarioId,
       titulo: 'DIAGNÓSTICO PARA CONTRIBUIR A LA IGUALDAD DE GÉNERO EN EL PODER LEGISLATIVO DEL ESTADO DE MÉXICO',
       descripcion: 'GENERO 2025',
@@ -34,7 +34,7 @@ module.exports = {
       updatedAt: new Date()
     }], {});
 
-    await queryInterface.bulkInsert('Seccions', [
+    await queryInterface.bulkInsert('seccions', [
       { id: seccion1, titulo: 'DATOS GENERALES ', id_cuestionario: cuestionarioId, orden: 1, createdAt: new Date(), updatedAt: new Date()},
       { id: seccion2, titulo: 'AMBIENTE DE TRABAJO Y NO DISCRIMINACIÓN', id_cuestionario: cuestionarioId, orden: 2, createdAt: new Date(), updatedAt: new Date()},
       { id: seccion3, titulo: 'CONDICIONES LABORALES Y DERECHOS', id_cuestionario: cuestionarioId, orden: 3, createdAt: new Date(), updatedAt: new Date()},
@@ -44,7 +44,7 @@ module.exports = {
     ], {});
 
 
-    await queryInterface.bulkInsert('Preguntas', [
+    await queryInterface.bulkInsert('preguntas', [
       { id: idSexo, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Sexo asignado al nacer', tipo: '1', orden: 1, createdAt: new Date(), updatedAt: new Date()},
       { id: idGenero, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Identidad de género', tipo: '1', orden: 2, createdAt: new Date(), updatedAt: new Date()},
       { id: idEdad, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Edad', tipo: '1', orden: 3, createdAt: new Date(), updatedAt: new Date()},
@@ -120,8 +120,8 @@ module.exports = {
     );
 
         
-    await queryInterface.bulkInsert('Preguntas', preguntas, {});
-    await queryInterface.bulkInsert('Opciones', opciones, {});
+    await queryInterface.bulkInsert('preguntas', preguntas, {});
+    await queryInterface.bulkInsert('opciones', opciones, {});
 
 
     const opcionesRaw = [
@@ -200,7 +200,7 @@ module.exports = {
       };
     });
 
-    await queryInterface.bulkInsert("Opciones", opcionesConOrden, {});
+    await queryInterface.bulkInsert("opciones", opcionesConOrden, {});
 
     
 

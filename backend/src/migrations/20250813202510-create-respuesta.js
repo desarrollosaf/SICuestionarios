@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Respuesta', {
+    await queryInterface.createTable('respuesta', {
       id: {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Sesion_Cuestionarios',
+          model: 'sesion_Cuestionarios',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -23,7 +23,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Preguntas',
+          model: 'preguntas',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -33,7 +33,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'Opciones',
+          model: 'opciones',
           key: 'id',
         },
         onDelete: 'CASCADE',
@@ -60,6 +60,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Respuesta');
+    await queryInterface.dropTable('respuesta');
   }
 };
