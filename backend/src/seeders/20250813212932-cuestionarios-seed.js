@@ -67,7 +67,7 @@ module.exports = {
       { seccion: seccion2, texto: "¿Su jefa o jefe directo promueve la igualdad entre hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿El trato entre personas de distinto sexo y cargo es respetuoso?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Ha sido discriminada(o) en su espacio de trabajo?", opciones: opcionesInversa },
-      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: ["Sexo","Edad","Discapacidad","Embarazo","Estado civil","Apariencia física","Orientación sexual","Identidad de género","Condición de salud","Otra_________"] },
+      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Ha observado expresiones, prácticas o actitudes que favorezcan en mayor medida a un sexo en detrimento del otro?", opciones: opcionesInversa },
       { seccion: seccion2, texto: "¿Se toma en cuenta por igual la opinión de hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Las responsabilidades laborales son asignadas con equidad entre hombres y mujeres?", opciones: opcionesFrecuencia },
@@ -91,11 +91,11 @@ module.exports = {
       { seccion: seccion5, texto: "¿Ha recibido formación en temas de igualdad de género?", opciones: opcionesFrecuencia },
       { seccion: seccion5, texto: "¿Las capacitaciones que ha recibido le han permitido reflexionar sobre sus actitudes?", opciones: opcionesSiNo },
       { seccion: seccion5, texto: "¿Le interesa capacitarse en temas de derechos humanos y género?", opciones: opcionesSiNo },
-      { seccion: seccion5, texto: "¿Cree que los temas de género son exclusivos para mujeres?", opciones: ["No","Muy poco","Parcialmente","Sí"] },
+      { seccion: seccion5, texto: "¿Cree que los temas de género son exclusivos para mujeres?", opciones: opcionesFrecuencia },
 
 
       { seccion: seccion6, texto: "¿Tiene bajo su cuidado a personas dependientes?", opciones: opcionesBinario },
-      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: ["Niñas/os","Personas adultas mayores","Personas con discapacidad","Otro_______________"] },
+      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: opcionesFrecuencia },
       { seccion: seccion6, texto: "¿En su trabajo le brindan las facilidades para atender asuntos personales, familiares o en su caso, de cuidado de personas dependientes?", opciones: opcionesFrecuencia },
       { seccion: seccion6, texto: "¿Ha faltado al trabajo porque se le negó permiso para atender asuntos personales?", opciones: opcionesInversa }
     ];
@@ -125,7 +125,7 @@ module.exports = {
         
     await queryInterface.bulkInsert('preguntas', preguntas, {});
     await queryInterface.bulkInsert('opciones', opciones, {});
-
+    
 
     const opcionesRaw = [
 
@@ -151,16 +151,7 @@ module.exports = {
       { id_preguntas: idEstadoCivil, texto_opcion: "Separada(o)/Divorciada(o)" },
       { id_preguntas: idEstadoCivil, texto_opcion: "Viuda(o)" },
 
-      { id_preguntas: idDependientes, texto_opcion: "Sí" },
-      { id_preguntas: idDependientes, texto_opcion: "No" },
 
-      { id_preguntas: idDiscapacidad, texto_opcion: "No" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Motriz" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Visual" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Auditiva" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Intelectual" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Psicosocial" },
-      { id_preguntas: idDiscapacidad, texto_opcion: "Sí - Otra" },
 
       { id_preguntas: idAntigPL, texto_opcion: "Menos de 6 meses" },
       { id_preguntas: idAntigPL, texto_opcion: "De 6 meses a 1 año" },
@@ -169,27 +160,15 @@ module.exports = {
       { id_preguntas: idAntigPL, texto_opcion: "De 6 a 10 años" },
       { id_preguntas: idAntigPL, texto_opcion: "Más de 10 años" },
 
-      { id_preguntas: idNivelPuesto, texto_opcion: "Mando superior" },
-      { id_preguntas: idNivelPuesto, texto_opcion: "Mando medio" },
-      { id_preguntas: idNivelPuesto, texto_opcion: "Personal operativo" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "Menos de 6 meses" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "De 6 meses a 1 año" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "De 1 a 3 años" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "De 3 a 6 años" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "De 6 a 10 años" },
+      { id_preguntas: idAntiPuestoPL, texto_opcion: "Más de 10 años" },
 
-      { id_preguntas: idContratacion, texto_opcion: "Base" },
-      { id_preguntas: idContratacion, texto_opcion: "Confianza" },
-      { id_preguntas: idContratacion, texto_opcion: "Honorarios" },
-      { id_preguntas: idContratacion, texto_opcion: "Otro" },
-
-
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Sexo" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Edad" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Discapacidad" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Embarazo" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Estado civil" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Apariencia física" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Orientación sexual" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Identidad de género" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Condición de salud" },
-      { id_preguntas: idDiscriminacionSeccion2, texto_opcion: "Ninguna" },
     ];
+
 
     const opcionesConOrden = opcionesRaw.map((op, index, arr) => {
       const orden = arr.filter(o => o.id_preguntas === op.id_preguntas).indexOf(op) + 1;
@@ -197,7 +176,7 @@ module.exports = {
         id: uuidv4(),
         id_preguntas: op.id_preguntas,
         texto_opcion: op.texto_opcion,
-        orden,
+        orden: orden,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
