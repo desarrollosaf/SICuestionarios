@@ -50,8 +50,8 @@ module.exports = {
       { id: idGenero, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Identidad de género', tipo: '1', orden: 2, createdAt: new Date(), updatedAt: new Date()},
       { id: idEdad, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Edad', tipo: '1', orden: 3, createdAt: new Date(), updatedAt: new Date()},
       { id: idEstadoCivil, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Estado civil', tipo: '1', orden: 4, createdAt: new Date(), updatedAt: new Date()},
-      { id: idAntigPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en el Poder Legislativo', tipo: '1', orden: 7, createdAt: new Date(), updatedAt: new Date()},
-      { id: idAntiPuestoPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en su puesto actual', tipo: '1', orden: 7, createdAt: new Date(), updatedAt: new Date()},
+      { id: idAntigPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en el Poder Legislativo', tipo: '1', orden: 5, createdAt: new Date(), updatedAt: new Date()},
+      { id: idAntiPuestoPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en su puesto actual', tipo: '1', orden: 6, createdAt: new Date(), updatedAt: new Date()},
 
     ], {});
 
