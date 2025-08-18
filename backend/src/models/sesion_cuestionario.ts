@@ -18,6 +18,7 @@ class sesion extends Model<
     declare id: CreationOptional<string>;
     declare id_usuario: string;
     declare fecha_registro: Date;
+    declare comentarios: string | null;
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
     declare deletedAt: CreationOptional<Date>;
@@ -37,6 +38,10 @@ sesion.init(
         },
         fecha_registro: {
             type: DataTypes.DATE,
+            allowNull: true
+        },
+         comentarios: {
+            type: DataTypes.STRING(255),
             allowNull: true
         },
         createdAt: {
