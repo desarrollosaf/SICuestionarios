@@ -14,14 +14,14 @@ class respuestas extends Model<
   InferCreationAttributes<respuestas>
 > {
     declare id: CreationOptional<string>;
-    declare id_sesion: string;
-    declare id_pregunta: string;
-    declare id_opcion: string;
-    declare valor_texto?: string;
-    declare valor_numero?: string;
-    declare createdAt?: Date;
-    declare updatedAt?: Date;
-    declare deletedAt?: Date;
+    declare id_sesion: ForeignKey<string>;
+    declare id_pregunta: ForeignKey<string>;
+    declare id_opcion: ForeignKey<string>;
+    declare valor_texto?: string | null;
+    declare valor_numero?: string| null;
+    declare createdAt?: CreationOptional<Date>;
+    declare updatedAt?: CreationOptional<Date>;
+    declare deletedAt?: CreationOptional<Date>;
 }
 
 respuestas.init(
@@ -52,6 +52,19 @@ respuestas.init(
             type: DataTypes.STRING(255),
             allowNull: false
         },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        deletedAt: {
+            type: DataTypes.DATE,
+            allowNull: false
+        }
     },
     {
         sequelize,
