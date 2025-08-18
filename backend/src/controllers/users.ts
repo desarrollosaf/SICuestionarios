@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import bcrypt from 'bcrypt'
 import  User  from '../models/saf/users'
+import  UserBase  from '../models/user'
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -16,15 +17,14 @@ export const ReadUser = async (req: Request, res: Response): Promise<any> => {
 
 export const LoginUser = async (req: Request, res: Response, next: NextFunction):  Promise<any> => {
     const { rfc, password } = req.body;
-    console.log(rfc)
     let passwordValid = false;
     let user: any = null;
     let bandera = true;
 
-    if (rfc.startsWith('ADMIN25')) {
-
+    if (rfc.startsWith('GEN25')) {
+        console.log('admin admin');
         bandera = false;
-        user = await User.findOne({ 
+        user = await UserBase.findOne({ 
             where: { name: rfc },
         })
         if (!user) {

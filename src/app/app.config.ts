@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { authInterceptor } from './views/pages/auth/auth.interceptor';
 
 
 const icons = {
@@ -29,6 +30,9 @@ const highlightOptions = {
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(
+      withInterceptors([authInterceptor])
+    ),
     importProvidersFrom(FeatherModule.pick(icons)),
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top' })), 

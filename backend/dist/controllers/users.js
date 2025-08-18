@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.cerrarsesion = exports.getCurrentUser = exports.LoginUser = exports.ReadUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const users_1 = __importDefault(require("../models/saf/users"));
+const user_1 = __importDefault(require("../models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const ReadUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const listUser = yield users_1.default.findAll();
@@ -26,13 +27,13 @@ const ReadUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.ReadUser = ReadUser;
 const LoginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { rfc, password } = req.body;
-    console.log(rfc);
     let passwordValid = false;
     let user = null;
     let bandera = true;
-    if (rfc.startsWith('ADMIN25')) {
+    if (rfc.startsWith('GEN25')) {
+        console.log('admin admin');
         bandera = false;
-        user = yield users_1.default.findOne({
+        user = yield user_1.default.findOne({
             where: { name: rfc },
         });
         if (!user) {
