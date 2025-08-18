@@ -133,7 +133,7 @@ module.exports = {
 
       { id_preguntas: idGenero, texto_opcion: "Mujer" },
       { id_preguntas: idGenero, texto_opcion: "Hombre" },
-      { id_preguntas: idGenero, texto_opcion: "No binario / género no conforme" },
+      { id_preguntas: idGenero, texto_opcion: "No binario / género neutro" },
       { id_preguntas: idGenero, texto_opcion: "Prefiero no decirlo" },
 
 
@@ -146,8 +146,8 @@ module.exports = {
 
       { id_preguntas: idEstadoCivil, texto_opcion: "Soltera(o)" },
       { id_preguntas: idEstadoCivil, texto_opcion: "Casada(o)" },
-      { id_preguntas: idEstadoCivil, texto_opcion: "Unión libre" },
-      { id_preguntas: idEstadoCivil, texto_opcion: "Separada(o)/Divorciada(o)" },
+      { id_preguntas: idEstadoCivil, texto_opcion: "Concubinato" },
+      { id_preguntas: idEstadoCivil, texto_opcion: "Divorciada(o)" },
       { id_preguntas: idEstadoCivil, texto_opcion: "Viuda(o)" },
 
 
