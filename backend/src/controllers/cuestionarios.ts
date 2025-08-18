@@ -4,7 +4,7 @@ import opciones from "../models/opciones"
 import seccion from "../models/secciones"
 import sesion from "../models/sesion_cuestionario"
 import respuestas from "../models/respuesta"
-
+import sequelize from "../database/connection"
 
 export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
   try {
@@ -38,40 +38,32 @@ export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>
     }
 }
 
-export const savecuestionario = async(req: Request, res: Request) => {
-    const { body } = req
-    // console.log(body);
-    const fechaActual = new Date();
-    const fecha = fechaActual.toISOString().split('T')[0];
-    const arrayPreguntas = body.preguntas; 
+export const savecuestionario = async(req: Request, res: Response) : Promise<any> => {
+    try {
+        const { body } = req
+        const arrayPreguntas = body.preguntas; 
 
-    // const idSesion = await sesion.create({
-    //     "id_usuario": body.rfc,
-    //     "fecha_registro": fecha
-    // });
-// console.log(idSesion)
+        const idSesion = await sesion.create({
+            "id_usuario": body.rfc,
+            "fecha_registro": new Date
+        });
 
-//     const respuestas = arrayPreguntas.map((item:{id_pregunta: string,id_respuesta: string}) => ({
-//             id_pregunta: item.id_pregunta,
-//             id_opcion: item.id_respuesta, 
-//             id_sesion: idSesion.id
-//           }))
-// console.log(respuestas)
-//           await respuestas.bulkCreate(respuestas);
+        const respuestasArr = arrayPreguntas.map((item:{id_pregunta: string,id_respuesta: string}) => ({
+            id_pregunta: item.id_pregunta,
+            id_opcion: item.id_respuesta, 
+            id_sesion: idSesion.id
+        }))
 
-       
+        await sequelize.transaction(async (t) => {
+            const respuestasSave = await respuestas.bulkCreate(respuestasArr);
+        })
 
-
-
-
-    // body.preguntas.forEach((pregunta, indice)=> {
-         // await respuestas.create({
-    //     "id_sesion": idSesion.id,
-    //     "id_pregunta": body.id_pregunta,
-    //     "id_opcion": body.id_opcion,
-    //     "valor_texto": body.valor_texto
-    // })
-    // });
-   
-    return 1;
+        return res.json({
+        status: 200,
+        msg: "Respuestas guardadas correctamente"
+        });
+    } catch (error) {
+        console.error('Error al guardar respuestas:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor'});
+    }
 }
