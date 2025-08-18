@@ -11,7 +11,7 @@ sesion.init({
     id: {
         type: sequelize_1.DataTypes.UUID,
         defaultValue: sequelize_1.DataTypes.UUIDV4,
-        allowNull: true,
+        allowNull: false,
         primaryKey: true
     },
     id_usuario: {
@@ -19,6 +19,19 @@ sesion.init({
         allowNull: false
     },
     fecha_registro: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: true
+    },
+    createdAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false,
+        defaultValue: sequelize_1.DataTypes.NOW
+    },
+    updatedAt: {
+        type: sequelize_1.DataTypes.DATE,
+        allowNull: false
+    },
+    deletedAt: {
         type: sequelize_1.DataTypes.DATE,
         allowNull: false
     }

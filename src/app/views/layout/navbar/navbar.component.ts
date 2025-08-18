@@ -6,6 +6,8 @@ import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
 
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
+import { SubMenus } from './menu.model';
+import { SubMenuItems } from './menu.model';
 import { FeatherIconDirective } from '../../../core/feather-icon/feather-icon.directive';
 import { UserService } from '../../../core/services/user.service';
 
@@ -27,6 +29,8 @@ export class NavbarComponent implements OnInit {
 
   currentTheme: string;
   menuItems: MenuItem[] = []
+  sub: SubMenus[] = [];
+  subItem: SubMenuItems[] = [];
 
   currentlyOpenedNavItem: HTMLElement | undefined;
 
@@ -42,7 +46,15 @@ export class NavbarComponent implements OnInit {
       this.showActiveTheme(this.currentTheme);
     });
 
+    const rfc = this._userService.currentUserValue?.rfc ?? '';
+    const role = rfc.startsWith('GEN25') ? 'GEN25' : 'usuario';
+
     this.menuItems = MENU;
+    if (role) {
+      this.menuItems = this.filterMenuByRole(MENU, role);
+    } else {
+      this.menuItems = []; 
+    }
 
     /**
      * Close the header menu after a route change on tablet and mobile devices
@@ -56,6 +68,22 @@ export class NavbarComponent implements OnInit {
         }
       });
     // }
+  }
+
+  private filterMenuByRole(menu: MenuItem[], role: string): MenuItem[] {
+    return menu
+      .filter(item => {
+        return !item.roles || item.roles.includes(role);
+      })
+      .map(item => ({
+        ...item,
+        subMenus: item.subMenus?.map(sub => ({
+          ...sub,
+          subMenuItems: (sub.subMenuItems ?? []).filter(subItem =>
+            !subItem.roles || subItem.roles.includes(role)
+          )
+        }))
+    }));
   }
 
   showActiveTheme(theme: string) {

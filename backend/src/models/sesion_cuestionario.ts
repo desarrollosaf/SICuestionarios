@@ -15,12 +15,12 @@ class sesion extends Model<
   InferAttributes<sesion>,
   InferCreationAttributes<sesion>
 > {
-    declare id: string;
+    declare id: CreationOptional<string>;
     declare id_usuario: string;
-    declare fecha_registro: string;
-    declare createdAt?: Date;
-    declare updatedAt?: Date;
-    declare deletedAt?: Date;
+    declare fecha_registro: Date;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date>;
 }
 
 sesion.init(
@@ -28,7 +28,7 @@ sesion.init(
         id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        allowNull: true,
+        allowNull: false,
         primaryKey: true
         },
         id_usuario: {
@@ -36,6 +36,19 @@ sesion.init(
             allowNull: false
         },
         fecha_registro: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        deletedAt: {
             type: DataTypes.DATE,
             allowNull: false
         }

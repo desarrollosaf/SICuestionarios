@@ -38,7 +38,7 @@ class Server {
     midlewares(){
         this.app.use(express.json())
         this.app.use(cors({
-            origin: 'https://administracionyfinanzasplem.gob.mx/genero/cuestionario',
+            origin: 'http://localhost:4200',
             credentials: true
         }));
 
@@ -48,6 +48,8 @@ class Server {
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             const publicPaths = [
                 '/api/user/login',
+                '/api/preguntas/getpreguntas',
+                 '/api/preguntas/savecuestionario',
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {

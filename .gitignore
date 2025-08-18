@@ -46,3 +46,5 @@ Thumbs.db
 /backend/src/database/connection.ts
 /backend/src/database/cuestionariosConnection.ts
 /backend/src/models/server.ts
+src/enviroments/enviroment.prod.ts
+src/enviroments/enviroment.ts

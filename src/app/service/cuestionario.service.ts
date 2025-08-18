@@ -14,8 +14,8 @@ export class CuestionarioService {
         this.myAPIUrl ='api/preguntas';
   }
 
-  getPreguntas(): Observable<string> {
-    return this.http.get<string>(`${this.myAppUrl}${this.myAPIUrl}/getpreguntas`)
+  getPreguntas(): Observable<any> {
+    return this.http.get<any>(`${this.myAppUrl}${this.myAPIUrl}/getpreguntas`)
   }
 
 }
