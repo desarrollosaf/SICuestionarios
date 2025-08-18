@@ -62,12 +62,12 @@ module.exports = {
     const opcionesBinario = ["No", "Muy poco", "Parcialmente", "Sí"];
 
     const preguntasBase = [
-      
+
       { seccion: seccion2, texto: "¿Considera que existe un ambiente de trabajo respetuoso y cordial en su espacio laboral?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Su jefa o jefe directo promueve la igualdad entre hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿El trato entre personas de distinto sexo y cargo es respetuoso?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Ha sido discriminada(o) en su espacio de trabajo?", opciones: opcionesInversa },
-      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: ["Sexo","Edad","Discapacidad","Embarazo","Estado civil","Apariencia física","Orientación sexual","Identidad de género","Condición de salud","Otra_________"] },
       { seccion: seccion2, texto: "¿Ha observado expresiones, prácticas o actitudes que favorezcan en mayor medida a un sexo en detrimento del otro?", opciones: opcionesInversa },
       { seccion: seccion2, texto: "¿Se toma en cuenta por igual la opinión de hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion2, texto: "¿Las responsabilidades laborales son asignadas con equidad entre hombres y mujeres?", opciones: opcionesFrecuencia },
@@ -86,16 +86,15 @@ module.exports = {
       { seccion: seccion4, texto: "¿Ha tenido oportunidades de crecimiento o ascenso?", opciones: opcionesAscenso },
       { seccion: seccion4, texto: "¿Considera que la rotación de personal se da más en mujeres?", opciones: opcionesBinario },
 
-
       { seccion: seccion5, texto: "¿La capacitación se ofrece por igual a hombres y mujeres?", opciones: opcionesFrecuencia },
       { seccion: seccion5, texto: "¿Ha recibido formación en temas de igualdad de género?", opciones: opcionesFrecuencia },
       { seccion: seccion5, texto: "¿Las capacitaciones que ha recibido le han permitido reflexionar sobre sus actitudes?", opciones: opcionesSiNo },
       { seccion: seccion5, texto: "¿Le interesa capacitarse en temas de derechos humanos y género?", opciones: opcionesSiNo },
-      { seccion: seccion5, texto: "¿Cree que los temas de género son exclusivos para mujeres?", opciones: opcionesFrecuencia },
+      { seccion: seccion5, texto: "¿Cree que los temas de género son exclusivos para mujeres?", opciones: ["No","Muy poco","Parcialmente","Sí"] },
 
 
       { seccion: seccion6, texto: "¿Tiene bajo su cuidado a personas dependientes?", opciones: opcionesBinario },
-      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: opcionesFrecuencia },
+      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: ["Niñas/os","Personas adultas mayores","Personas con discapacidad","Otro_______________"] },
       { seccion: seccion6, texto: "¿En su trabajo le brindan las facilidades para atender asuntos personales, familiares o en su caso, de cuidado de personas dependientes?", opciones: opcionesFrecuencia },
       { seccion: seccion6, texto: "¿Ha faltado al trabajo porque se le negó permiso para atender asuntos personales?", opciones: opcionesInversa }
     ];
