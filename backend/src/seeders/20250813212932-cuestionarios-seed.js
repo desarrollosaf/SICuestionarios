@@ -21,6 +21,7 @@ module.exports = {
     const idDependientes = uuidv4();
     const idDiscapacidad = uuidv4();
     const idAntigPL = uuidv4();
+    const idAntiPuestoPL = uuidv4();
     const idNivelPuesto = uuidv4();
     const idContratacion = uuidv4();
 
@@ -36,10 +37,10 @@ module.exports = {
 
     await queryInterface.bulkInsert('seccions', [
       { id: seccion1, titulo: 'DATOS GENERALES ', id_cuestionario: cuestionarioId, orden: 1, createdAt: new Date(), updatedAt: new Date()},
-      { id: seccion2, titulo: 'AMBIENTE DE TRABAJO Y NO DISCRIMINACIÓN', id_cuestionario: cuestionarioId, orden: 2, createdAt: new Date(), updatedAt: new Date()},
-      { id: seccion3, titulo: 'CONDICIONES LABORALES Y DERECHOS', id_cuestionario: cuestionarioId, orden: 3, createdAt: new Date(), updatedAt: new Date()},
-      { id: seccion4, titulo: 'PERMANENCIA Y PROMOCIÓN ', id_cuestionario: cuestionarioId, orden: 4, createdAt: new Date(), updatedAt: new Date()},
-      { id: seccion5, titulo: 'CAPACITACIÓN Y SENSIBILIZACIÓN EN IGUALDAD', id_cuestionario: cuestionarioId, orden: 5, createdAt: new Date(), updatedAt: new Date()},
+      { id: seccion2, titulo: 'AMBIENTE DE TRABAJO', id_cuestionario: cuestionarioId, orden: 2, createdAt: new Date(), updatedAt: new Date()},
+      { id: seccion3, titulo: 'CONDICIONES LABORALES', id_cuestionario: cuestionarioId, orden: 3, createdAt: new Date(), updatedAt: new Date()},
+      { id: seccion4, titulo: 'PERMANENCIA Y PROMOCIÓN', id_cuestionario: cuestionarioId, orden: 4, createdAt: new Date(), updatedAt: new Date()},
+      { id: seccion5, titulo: 'SENSIBILIZACIÓN Y CAPACITACIÓN', id_cuestionario: cuestionarioId, orden: 5, createdAt: new Date(), updatedAt: new Date()},
       { id: seccion6, titulo: 'CORRESPONSABILIDAD ENTRE VIDA PERSONAL, FAMILIAR Y LABORAL', id_cuestionario: cuestionarioId, orden: 6, createdAt: new Date(), updatedAt: new Date()}
     ], {});
 
@@ -48,72 +49,74 @@ module.exports = {
       { id: idSexo, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Sexo asignado al nacer', tipo: '1', orden: 1, createdAt: new Date(), updatedAt: new Date()},
       { id: idGenero, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Identidad de género', tipo: '1', orden: 2, createdAt: new Date(), updatedAt: new Date()},
       { id: idEdad, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Edad', tipo: '1', orden: 3, createdAt: new Date(), updatedAt: new Date()},
-      { id: idEstadoCivil, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Estado civil o situación conyugal', tipo: '1', orden: 4, createdAt: new Date(), updatedAt: new Date()},
-      { id: idDependientes, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: '¿Vive con hijas/os o personas dependientes?', tipo: '1', orden: 5, createdAt: new Date(), updatedAt: new Date()},
-      { id: idDiscapacidad, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: '¿Tiene alguna discapacidad?', tipo: '1', orden: 6, createdAt: new Date(), updatedAt: new Date()},
+      { id: idEstadoCivil, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Estado civil', tipo: '1', orden: 4, createdAt: new Date(), updatedAt: new Date()},
       { id: idAntigPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en el Poder Legislativo', tipo: '1', orden: 7, createdAt: new Date(), updatedAt: new Date()},
-      { id: idNivelPuesto, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Nivel de puesto', tipo: '1', orden: 8, createdAt: new Date(), updatedAt: new Date()},
-      { id: idContratacion, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Tipo de contratación', tipo: '1', orden: 9, createdAt: new Date(), updatedAt: new Date()},
-      { id: idDiscriminacionSeccion2, id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Ha sido discriminada(o) por alguna de las siguientes razones? (marque todas las que apliquen)', tipo: '1', createdAt: new Date(), updatedAt: new Date()},
+      { id: idAntiPuestoPL, id_cuestionario: cuestionarioId, id_seccion: seccion1, texto_pregunta: 'Antigüedad en su puesto actual', tipo: '1', orden: 7, createdAt: new Date(), updatedAt: new Date()},
 
     ], {});
 
+    const opcionesFrecuencia = ["Siempre", "Frecuentemente", "Algunas veces", "Nunca"];
+    const opcionesInversa = ["Nunca", "Algunas veces", "Frecuentemente", "Siempre"];
+    const opcionesSiNo = ["Sí", "Parcialmente", "Muy poco", "No"];
+    const opcionesAscenso = ["Sí", "Si, pero no se concretó", "No", "No estoy en un puesto con posibilidad de ascenso"];
+    const opcionesBinario = ["No", "Muy poco", "Parcialmente", "Sí"];
+
     const preguntasBase = [
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Considera que existe un ambiente de trabajo respetuoso y cordial en su espacio laboral?', orden: 1},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Se jefa o jefe directo promueve la igualdad entre mujeres y hombres?', orden: 2},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿El trato entre personas de distinto sexo o nivel jerárquico es equitativo y respetuoso?', orden: 3},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Detecta expresiones, prácticas o actitudes que refuercen estereotipos de género?', orden: 4},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Se toma en cuenta por igual la opinión de mujeres y hombres?', orden: 5},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Las responsabilidades laborales son asignadas con equidad entre mujeres y hombres?', orden: 6},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿Ha experimentado maltrato, acoso o intimidación por razón de género?', orden: 7},
-      { id_cuestionario: cuestionarioId, id_seccion: seccion2, texto_pregunta: '¿La autoridad de mujeres y hombres se respeta por igual?', orden: 8},
+      
+      { seccion: seccion2, texto: "¿Considera que existe un ambiente de trabajo respetuoso y cordial en su espacio laboral?", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "¿Su jefa o jefe directo promueve la igualdad entre hombres y mujeres?", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "¿El trato entre personas de distinto sexo y cargo es respetuoso?", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "¿Ha sido discriminada(o) en su espacio de trabajo?", opciones: opcionesInversa },
+      { seccion: seccion2, texto: "Si la respuesta de la pregunta anterior es Frecuentemente o Siempre, seleccione la opción que le represente: (Opcional)", opciones: ["Sexo","Edad","Discapacidad","Embarazo","Estado civil","Apariencia física","Orientación sexual","Identidad de género","Condición de salud","Otra_________"] },
+      { seccion: seccion2, texto: "¿Ha observado expresiones, prácticas o actitudes que favorezcan en mayor medida a un sexo en detrimento del otro?", opciones: opcionesInversa },
+      { seccion: seccion2, texto: "¿Se toma en cuenta por igual la opinión de hombres y mujeres?", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "¿Las responsabilidades laborales son asignadas con equidad entre hombres y mujeres?", opciones: opcionesFrecuencia },
+      { seccion: seccion2, texto: "¿Ha experimentado discriminación, violencia, hostigamiento laboral o acoso laboral en su espacio de trabajo?", opciones: opcionesInversa },
+      { seccion: seccion2, texto: "¿La autoridad de hombres y mujeres se respeta por igual?", opciones: opcionesFrecuencia },
 
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Conoce sus derechos laborales?', orden: 1 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Conoce sus prestaciones laborales?', orden: 2 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Percibe que las prestaciones se otorgan equitativamente entre mujeres y hombres?', orden: 3 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Las condiciones laborales son equitativas para ambos sexos?', orden: 4 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Percibe que características personales (edad, apariencia, etc.) influyen en el acceso a mejores condiciones?', orden: 5 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion3, texto_pregunta: '¿Se asignan funciones con base en estereotipos de género?', orden: 6 },
 
-      { id_cuestionario: cuestionarioId, id_seccion: seccion4, texto_pregunta: '¿Considera que el género influye en la posibilidad de ascender?', orden: 1 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion4, texto_pregunta: '¿Ha notado mayor rotación o salida del personal femenino?', orden: 2 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion4, texto_pregunta: '¿Su estado civil, embarazo o maternidad/paternidad han afectado su crecimiento profesional?', orden: 3 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion4, texto_pregunta: '¿Se promueve la participación igualitaria para ocupar puestos de dirección?', orden: 4 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion4, texto_pregunta: '¿Ha enfrentado obstáculos por motivos personales (embarazo, hijos/as, discapacidad, etc.) para ascender?', orden: 5 },
+      { seccion: seccion3, texto: "¿Conoce sus derechos y prestaciones laborales?", opciones: opcionesSiNo },
+      { seccion: seccion3, texto: "¿Considera que en su lugar de trabajo se respetan sus derechos y prestaciones laborales?", opciones: opcionesSiNo },
+      { seccion: seccion3, texto: "¿Considera que hombres y mujeres tienen las mismas condiciones laborales?", opciones: opcionesSiNo },
+      { seccion: seccion3, texto: "En su experiencia, ¿se toman en cuenta estereotipos de género al distribuir las actividades?", opciones: opcionesInversa },
 
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿Ha recibido formación básica en temas de igualdad de género?', orden: 1 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿La capacitación se ofrece por igual a mujeres y hombres?', orden: 2 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿Le interesa capacitarse en temas de género y derechos humanos?', orden: 3 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿Cree que los temas de género son exclusivos para mujeres?', orden: 4 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿Ha participado en cursos que promuevan la igualdad de género?', orden: 5 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion5, texto_pregunta: '¿Las capacitaciones que ha recibido le han permitido reflexionar sobre sus actitudes?', orden: 6 },
 
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Tiene bajo su cuidado a personas dependientes (niñas/os, adultos mayores, personas con discapacidad)?', orden: 1 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Existe flexibilidad en su unidad administrativa para atender asuntos personales o familiares?', orden: 2 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Ha faltado al trabajo porque se le negó un permiso por razones familiares?', orden: 3 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Su horario laboral le permite equilibrar su vida personal y familiar?', orden: 4 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Se le ha permitido realizar trabajo remoto o flexible para atender cuidados familiares?', orden: 5 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Se agendan reuniones fuera del horario laboral?', orden: 6 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Se le ha respetado su incapacidad por maternidad o licencia de paternidad?', orden: 7 },
-      { id_cuestionario: cuestionarioId, id_seccion: seccion6, texto_pregunta: '¿Ha participado con su familia en actividades recreativas organizadas por el Poder Legislativo?', orden: 8 },
+      { seccion: seccion4, texto: "¿Considera que el género influye en la posibilidad de ascender?", opciones: opcionesInversa },
+      { seccion: seccion4, texto: "¿Ha percibido que condiciones personales como: embarazo, tener hijas/os, o discapacidad han afectado la posibilidad de ascender?", opciones: opcionesInversa },
+      { seccion: seccion4, texto: "¿Ha tenido oportunidades de crecimiento o ascenso?", opciones: opcionesAscenso },
+      { seccion: seccion4, texto: "¿Considera que la rotación de personal se da más en mujeres?", opciones: opcionesBinario },
+
+
+      { seccion: seccion5, texto: "¿La capacitación se ofrece por igual a hombres y mujeres?", opciones: opcionesFrecuencia },
+      { seccion: seccion5, texto: "¿Ha recibido formación en temas de igualdad de género?", opciones: opcionesFrecuencia },
+      { seccion: seccion5, texto: "¿Las capacitaciones que ha recibido le han permitido reflexionar sobre sus actitudes?", opciones: opcionesSiNo },
+      { seccion: seccion5, texto: "¿Le interesa capacitarse en temas de derechos humanos y género?", opciones: opcionesSiNo },
+      { seccion: seccion5, texto: "¿Cree que los temas de género son exclusivos para mujeres?", opciones: ["No","Muy poco","Parcialmente","Sí"] },
+
+
+      { seccion: seccion6, texto: "¿Tiene bajo su cuidado a personas dependientes?", opciones: opcionesBinario },
+      { seccion: seccion6, texto: "Si la respuesta de la pregunta anterior es Parcialmente o Si, seleccione la opción que le represente: (Opcional)", opciones: ["Niñas/os","Personas adultas mayores","Personas con discapacidad","Otro_______________"] },
+      { seccion: seccion6, texto: "¿En su trabajo le brindan las facilidades para atender asuntos personales, familiares o en su caso, de cuidado de personas dependientes?", opciones: opcionesFrecuencia },
+      { seccion: seccion6, texto: "¿Ha faltado al trabajo porque se le negó permiso para atender asuntos personales?", opciones: opcionesInversa }
     ];
 
-    const opcionesFijas = ["Nunca", "Algunas veces", "Frecuentemente", "Siempre"];
 
-    const preguntas = preguntasBase.map(p => ({
+    const preguntas = preguntasBase.map((p, i) => ({
       id: uuidv4(),
-      ...p,
-      tipo: "1",
+      id_cuestionario: cuestionarioId,
+      id_seccion: p.seccion,
+      texto_pregunta: p.texto,
+      orden: i + 1,
       createdAt: new Date(),
       updatedAt: new Date()
     }));
 
-    const opciones = preguntas.flatMap(p =>
-      opcionesFijas.map((opcion, index) => ({
+    const opciones = preguntas.flatMap((pregunta, i) =>
+      preguntasBase[i].opciones.map((texto, j) => ({
         id: uuidv4(),
-        id_preguntas: p.id,
-        texto_opcion: opcion,
-        orden: index + 1,
+        id_preguntas: pregunta.id,
+        texto_opcion: texto,
+        orden: j + 1,
         createdAt: new Date(),
         updatedAt: new Date()
       }))
