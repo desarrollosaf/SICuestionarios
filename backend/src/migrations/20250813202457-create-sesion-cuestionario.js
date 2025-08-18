@@ -15,6 +15,10 @@ module.exports = {
       fecha_registro: {
         type: Sequelize.DATE
       },
+      comentarios: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
