@@ -29,7 +29,8 @@ const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
         if (registrado) {
             return res.json({
-                status: 300
+                status: 300,
+                fecha: registrado.fecha_registro
             });
         }
         else {
