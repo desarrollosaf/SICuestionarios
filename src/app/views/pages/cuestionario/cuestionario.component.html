@@ -33,17 +33,11 @@
                 <div ngbAccordionBody>
                   <div class="contenido-centrado">
                     <p>Este diagnóstico consta de 6 secciones.</p>
-                    <p>Marque con una ✔ la opción que más se aproxime a su experiencia o
-                      percepción.</p>
-                    <p>Su participación es anónima y confidencial.</p>
+                    <p class="mt-1">Marque con una ✔ la opción que mejor represente sus respuestas, mismas que serán anónimas y confidenciales.</p>
+                    <p class="mt-1">Su participación es anónima y confidencial.</p>
                     <br />
-                    <p><strong>Escala de frecuencia (si aplica)</strong></p>
-                    <p>☐ Nunca</p>
-                    <p>☐ Algunas veces</p>
-                    <p>☐ Frecuentemente</p>
-                    <p>☐ Siempre</p>
-                    <p>En preguntas específicas, marque la opción que mejor refleje su
-                      experiencia.</p>
+                    <p><strong>Consulta el <a href="" target="_blank" rel="noopener noreferrer">Aviso de Privacidad aquí.</a></strong></p>
+
                   </div>
                 </div>
               </div>
@@ -63,6 +57,7 @@
                   <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
                     [defaultStepIndex]="0">
                     <div formArrayName="secciones">
+                      <br>
                       <aw-wizard-step *ngFor="let seccion of seccionesArray.controls; let i = index"
                         [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i" [canExit]="canExitSection.bind(this, i)"
                         (stepEnter)="onStepEnter($event, i)">
