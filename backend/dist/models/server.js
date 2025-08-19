@@ -51,7 +51,6 @@ class Server {
         this.app.use((req, res, next) => {
             const publicPaths = [
                 '/api/user/login',
-                '/api/combos/getdependencias',
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {
