@@ -49,6 +49,10 @@ export const routes: Routes = [
       {
         path: 'cuestionario',
         loadChildren: () => import('./views/pages/cuestionario/cuestionario.route')
+      },
+       {
+        path: 'reportes',
+        loadChildren: () => import('./views/pages/reportes/reportes.route')
       }
     ]
   },
