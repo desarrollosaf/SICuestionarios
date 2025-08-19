@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.savecuestionario = exports.getpreguntas = void 0;
+exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
@@ -71,35 +71,48 @@ const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { id } = req.params;
         const arrayPreguntas = body.resultados;
         // console.log(arrayPreguntas);
-        const idSesion = yield sesion_cuestionario_1.default.create({
-            "id_usuario": id,
-            "fecha_registro": new Date,
-            "comentarios": body.comentarios
-        });
-        const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.flatMap(obj => {
-            if (Array.isArray(obj.respuesta)) {
-                return obj.respuesta.map(rsp => ({
-                    id_pregunta: obj.idPregunta,
-                    id_opcion: rsp,
-                    valor_texto: obj.otroValor,
-                    id_sesion: idSesion.id
-                }));
+        const registrado = yield sesion_cuestionario_1.default.findOne({
+            where: {
+                id_usuario: id
             }
-            else {
-                return [{
+        });
+        if (registrado) {
+            return res.json({
+                status: 300,
+                fecha: registrado.fecha_registro
+            });
+        }
+        else {
+            const idSesion = yield sesion_cuestionario_1.default.create({
+                "id_usuario": id,
+                "fecha_registro": new Date,
+                "comentarios": body.comentarios
+            });
+            const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.flatMap(obj => {
+                if (Array.isArray(obj.respuesta)) {
+                    return obj.respuesta.map(rsp => ({
                         id_pregunta: obj.idPregunta,
-                        id_opcion: obj.respuesta,
+                        id_opcion: rsp,
                         valor_texto: obj.otroValor,
                         id_sesion: idSesion.id
-                    }];
-            }
-        }));
-        yield connection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-            const respuestasSave = yield respuesta_1.default.bulkCreate(respuestasArr);
-        }));
-        return res.json({
-            status: 200
-        });
+                    }));
+                }
+                else {
+                    return [{
+                            id_pregunta: obj.idPregunta,
+                            id_opcion: obj.respuesta,
+                            valor_texto: obj.otroValor,
+                            id_sesion: idSesion.id
+                        }];
+                }
+            }));
+            yield connection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+                const respuestasSave = yield respuesta_1.default.bulkCreate(respuestasArr);
+            }));
+            return res.json({
+                status: 200
+            });
+        }
     }
     catch (error) {
         console.error('Error al guardar respuestas:', error);
@@ -107,3 +120,39 @@ const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.savecuestionario = savecuestionario;
+const getcuestionarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const pregunta = yield secciones_1.default.findAll({
+        include: [
+            {
+                model: preguntas_1.default,
+                as: "m_preguntas",
+                include: [
+                    {
+                        model: opciones_1.default,
+                        as: 'm_opciones',
+                        include: [
+                            {
+                                model: respuesta_1.default,
+                                as: 'm_respuestas',
+                            }
+                        ],
+                        // attributes: [
+                        //     [fn('COUNT', col('m_opciones.m_respuestas.id')), 'respuestaCount']
+                        // ]
+                    },
+                ],
+            },
+        ],
+        order: [
+            ['orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" },
+                { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
+        ]
+    });
+    console.log(pregunta);
+    return res.json({
+        data: pregunta
+    });
+});
+exports.getcuestionarios = getcuestionarios;
