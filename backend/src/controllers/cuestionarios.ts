@@ -17,7 +17,8 @@ export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>
     })
         if(registrado){
             return res.json({
-                status: 300
+                status: 300,
+                fecha: registrado.fecha_registro
             });
         }else{
                 const pregunta = await seccion.findAll({
