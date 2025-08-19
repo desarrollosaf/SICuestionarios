@@ -219,10 +219,10 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       'resultados': resultado,
       'comentarios': comentarios
     }
-
     const rfc = this._userService.currentUserValue?.rfc ?? '';
     this._cuestionarioService.savePreg(data, rfc).subscribe({
       next: (response) => {
+        this.getPreguntas();
         // console.log(response);
       },
       error: (e: HttpErrorResponse) => {

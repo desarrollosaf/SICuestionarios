@@ -57,6 +57,7 @@
                   <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
                     [defaultStepIndex]="0">
                     <div formArrayName="secciones">
+                      <br>
                       <aw-wizard-step *ngFor="let seccion of seccionesArray.controls; let i = index"
                         [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i" [canExit]="canExitSection.bind(this, i)"
                         (stepEnter)="onStepEnter($event, i)">
