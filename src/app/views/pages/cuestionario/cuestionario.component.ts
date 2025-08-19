@@ -62,6 +62,7 @@ public _userService = inject(UserService);
     const rfc = this._userService.currentUserValue?.rfc ?? '';
     this._cuestionarioService.getPreguntas(rfc).subscribe({
       next: (response) => {
+        console.log(response);
         this.buildForm(response.data);
       },
       error: (e: HttpErrorResponse) => {
