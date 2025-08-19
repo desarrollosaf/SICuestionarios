@@ -229,7 +229,15 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
         console.error(e);
       },
     });
+  }
 
-
+  getPreguntaGlobalIndexDesdeSeccion2(seccionIndex: number, preguntaIndex: number): number {
+    if (seccionIndex < 1) return -1;
+    let total = 0;
+    for (let i = 1; i < seccionIndex; i++) {
+      const preguntas = (this.seccionesArray.at(i) as FormGroup).get('preguntas') as FormArray;
+      total += preguntas.length;
+    }
+    return total + preguntaIndex + 1;
   }
 }
