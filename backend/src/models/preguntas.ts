@@ -9,6 +9,7 @@ import {
 
 import sequelize from '../database/cuestionariosConnection';
 import opciones from './opciones';
+import respuestas from './respuesta';
 
 class preguntas extends Model<
   InferAttributes<preguntas>,
@@ -63,4 +64,6 @@ preguntas.init(
 preguntas.hasMany(opciones,{
     foreignKey: "id_preguntas", as: "m_preguntas"
 })
+
+
 export default preguntas;

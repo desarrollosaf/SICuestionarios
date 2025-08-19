@@ -41,7 +41,8 @@ respuestas.init({
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: true
+        allowNull: true,
+        defaultValue: sequelize_1.DataTypes.NOW
     },
     deletedAt: {
         type: sequelize_1.DataTypes.DATE,

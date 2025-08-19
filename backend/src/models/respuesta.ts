@@ -59,7 +59,8 @@ respuestas.init(
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: true,
+            defaultValue: DataTypes.NOW
         },
         deletedAt: {
             type: DataTypes.DATE,
