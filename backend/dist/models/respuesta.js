@@ -41,11 +41,11 @@ respuestas.init({
     },
     updatedAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     },
     deletedAt: {
         type: sequelize_1.DataTypes.DATE,
-        allowNull: false
+        allowNull: true
     }
 }, {
     sequelize: cuestionariosConnection_1.default,

@@ -19,9 +19,9 @@ class respuestas extends Model<
     declare id_opcion: ForeignKey<string>;
     declare valor_texto?: string | null;
     declare valor_numero?: string| null;
-    declare createdAt?: CreationOptional<Date>;
-    declare updatedAt?: CreationOptional<Date>;
-    declare deletedAt?: CreationOptional<Date>;
+    declare createdAt: CreationOptional<Date>;
+    declare updatedAt: CreationOptional<Date>;
+    declare deletedAt: CreationOptional<Date>;
 }
 
 respuestas.init(
@@ -59,11 +59,11 @@ respuestas.init(
         },
         updatedAt: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
         },
         deletedAt: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
         }
     },
     {

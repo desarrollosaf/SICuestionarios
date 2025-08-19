@@ -54,22 +54,24 @@ exports.getpreguntas = getpreguntas;
 const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
-        const arrayPreguntas = body.preguntas;
+        const { id } = req.params;
+        const arrayPreguntas = body.resultados;
         const idSesion = yield sesion_cuestionario_1.default.create({
-            "id_usuario": body.rfc,
-            "fecha_registro": new Date
+            "id_usuario": id,
+            "fecha_registro": new Date,
+            "comentarios": body.comentarios
         });
-        const respuestasArr = arrayPreguntas.map((item) => ({
-            id_pregunta: item.id_pregunta,
-            id_opcion: item.id_respuesta,
+        const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.map(obj => ({
+            id_pregunta: obj.idPregunta,
+            id_opcion: obj.respuesta,
+            valor_texto: obj.otroValor,
             id_sesion: idSesion.id
-        }));
+        })));
         yield connection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             const respuestasSave = yield respuesta_1.default.bulkCreate(respuestasArr);
         }));
         return res.json({
-            status: 200,
-            msg: "Respuestas guardadas correctamente"
+            status: 200
         });
     }
     catch (error) {
