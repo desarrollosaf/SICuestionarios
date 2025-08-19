@@ -36,11 +36,13 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   @ViewChild('wizardForm') wizardForm: WizardComponent;
   formCuestionario: FormGroup;
   currentSectionTitle = '';
+  responde: boolean = false;
+  fechaRegistro: Date | null = null;
   public _userService = inject(UserService);
   constructor(private fb: FormBuilder, private _cuestionarioService: CuestionarioService) {
     this.formCuestionario = this.fb.group({
       secciones: this.fb.array([]),
-      comentarios: ['']  // <-- Campo opcional añadido
+      comentarios: ['']
     });
   }
 
@@ -62,8 +64,13 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
     const rfc = this._userService.currentUserValue?.rfc ?? '';
     this._cuestionarioService.getPreguntas(rfc).subscribe({
       next: (response) => {
-        console.log(response);
-        this.buildForm(response.data);
+        if (response?.status == 300) {
+          this.fechaRegistro = new Date(response.fecha); // convierte a Date
+          this.responde = true;
+        } else {
+          this.buildForm(response.data);
+        }
+
       },
       error: (e: HttpErrorResponse) => {
         console.error(e);
@@ -73,20 +80,15 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
 
   buildForm(secciones: any[]) {
     const seccionesFormArray = this.seccionesArray;
-
     secciones.forEach((data, seccionIndex) => {
       const preguntasFormArray = new FormArray<FormGroup<any>>([]);
-
       data.m_preguntas.forEach((pregunta: any, preguntaIndex: number) => {
         const isCheckbox =
           (seccionIndex === 1 && preguntaIndex === 4) ||
           (seccionIndex === 5 && preguntaIndex === 1);
-
         let respuestaControl;
-
         if (isCheckbox) {
           respuestaControl = this.fb.array([]);
-
           const hasOtroOption = pregunta.m_opciones.some((o: any) =>
             o.texto_opcion.toLowerCase() === 'otro'
           );
@@ -164,10 +166,8 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
     const respuesta = pregunta.get('respuesta')?.value as any[];
     const opciones = pregunta.get('m_opciones')?.value as any[];
     if (!respuesta || !opciones) return false;
-
     const otroOpcion = opciones.find(o => o.texto_opcion.toLowerCase() === 'otro');
     if (!otroOpcion) return false;
-
     return respuesta.includes(otroOpcion.id);
   }
 
@@ -215,30 +215,21 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
       });
     });
     const comentarios = this.formCuestionario.get('comentarios')?.value || '';
-
     const data = {
-      'resultados' : resultado,
-      'comentarios' : comentarios
+      'resultados': resultado,
+      'comentarios': comentarios
     }
-     
-    const formData = new FormData();
-    formData.append('respuestas', JSON.stringify(resultado));
-    formData.append('comentarios', comentarios);
-    formData.forEach((value, key) => {
-      console.log(`${key}:`, value);
-    });
 
-  const rfc = this._userService.currentUserValue?.rfc ?? '';
-    console.log(rfc);
-    this._cuestionarioService.savePreg(data, rfc ).subscribe({
+    const rfc = this._userService.currentUserValue?.rfc ?? '';
+    this._cuestionarioService.savePreg(data, rfc).subscribe({
       next: (response) => {
-        console.log(response);
+        // console.log(response);
       },
       error: (e: HttpErrorResponse) => {
         console.error(e);
       },
     });
 
-    
+
   }
 }
