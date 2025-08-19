@@ -1,16 +1,16 @@
 {
-    "development": {
-     "username": "usr_genero",
-     "password": "XenCoItYEywGdD1",
-     "database": "adminplem_generoCuestionario",
-     "host": "192.168.36.53",
+  "development": {
+     "username": "root",
+     "password": "",
+     "database": "cuestionarios",
+     "host": "localhost",
      "dialect": "mysql"
-    },
+  },
   "production": {
     "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "192.168.10.10",
+    "password": "",
+    "database": "cuestionarios",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }

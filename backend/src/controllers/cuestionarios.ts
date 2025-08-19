@@ -41,26 +41,30 @@ export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>
 export const savecuestionario = async(req: Request, res: Response) : Promise<any> => {
     try {
         const { body } = req
-        const arrayPreguntas = body.preguntas; 
+        const { id } = req.params
+        const arrayPreguntas = body.resultados; 
 
         const idSesion = await sesion.create({
-            "id_usuario": body.rfc,
-            "fecha_registro": new Date
+            "id_usuario": id,
+            "fecha_registro": new Date,
+            "comentarios": body.comentarios 
         });
 
-        const respuestasArr = arrayPreguntas.map((item:{id_pregunta: string,id_respuesta: string}) => ({
-            id_pregunta: item.id_pregunta,
-            id_opcion: item.id_respuesta, 
-            id_sesion: idSesion.id
-        }))
+        const respuestasArr = arrayPreguntas.flatMap((subarray: [item:{idPregunta: string,respuesta: string, otroValor: string}])  =>
+            subarray.map(obj => ({
+                id_pregunta: obj.idPregunta,
+                id_opcion: obj.respuesta, 
+                valor_texto: obj.otroValor,
+                id_sesion: idSesion.id
+            }))
+        );
 
         await sequelize.transaction(async (t) => {
             const respuestasSave = await respuestas.bulkCreate(respuestasArr);
         })
 
         return res.json({
-        status: 200,
-        msg: "Respuestas guardadas correctamente"
+        status: 200
         });
     } catch (error) {
         console.error('Error al guardar respuestas:', error);
