@@ -14,8 +14,8 @@ export class CuestionarioService {
         this.myAPIUrl ='api/preguntas';
   }
 
-  getPreguntas(): Observable<any> {
-    return this.http.get<any>(`${this.myAppUrl}${this.myAPIUrl}/getpreguntas`)
+  getPreguntas(rfc: String): Observable<any> {
+    return this.http.get<any>(`${this.myAppUrl}${this.myAPIUrl}/getpreguntas/${rfc}`)
   }
 
   savePreg(preguntas: any, rfc: String):Observable<string> {
