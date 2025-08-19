@@ -9,19 +9,19 @@ import { strict } from "assert"
 
 export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
   try {
-    // const { id } = req.params
+    const { id } = req.params
 
-    // const registrado = await sesion.findOne({
-    //     where: {
-    //         id_usuario: id
-    //     }
-    // })
-    //     if(registrado){
-    //         return res.json({
-    //             status: 300,
-    //             fecha: registrado.fecha_registro
-    //         });
-    //     }else{
+    const registrado = await sesion.findOne({
+        where: {
+            id_usuario: id
+        }
+    })
+        if(registrado){
+            return res.json({
+                status: 300,
+                fecha: registrado.fecha_registro
+            });
+        }else{
                 const pregunta = await seccion.findAll({
                 include:[
                     {
@@ -46,7 +46,7 @@ export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>
             return res.json({
             data: pregunta
             });
-        // }
+        }
     } catch (error) {
         console.error('Error al obtener preguntas:', error);
         return res.status(500).json({ msg: 'Error interno del servidor' });

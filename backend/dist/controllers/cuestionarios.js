@@ -21,42 +21,43 @@ const respuesta_1 = __importDefault(require("../models/respuesta"));
 const connection_1 = __importDefault(require("../database/connection"));
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // const { id } = req.params
-        // const registrado = await sesion.findOne({
-        //     where: {
-        //         id_usuario: id
-        //     }
-        // })
-        //     if(registrado){
-        //         return res.json({
-        //             status: 300,
-        //             fecha: registrado.fecha_registro
-        //         });
-        //     }else{
-        const pregunta = yield secciones_1.default.findAll({
-            include: [
-                {
-                    model: preguntas_1.default,
-                    as: "m_preguntas",
-                    include: [
-                        {
-                            model: opciones_1.default,
-                            as: 'm_opciones'
-                        },
-                    ],
-                },
-            ],
-            order: [
-                ['orden', 'asc'],
-                [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
-                [{ model: preguntas_1.default, as: "m_preguntas" },
-                    { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
-            ]
+        const { id } = req.params;
+        const registrado = yield sesion_cuestionario_1.default.findOne({
+            where: {
+                id_usuario: id
+            }
         });
-        return res.json({
-            data: pregunta
-        });
-        // }
+        if (registrado) {
+            return res.json({
+                status: 300,
+                fecha: registrado.fecha_registro
+            });
+        }
+        else {
+            const pregunta = yield secciones_1.default.findAll({
+                include: [
+                    {
+                        model: preguntas_1.default,
+                        as: "m_preguntas",
+                        include: [
+                            {
+                                model: opciones_1.default,
+                                as: 'm_opciones'
+                            },
+                        ],
+                    },
+                ],
+                order: [
+                    ['orden', 'asc'],
+                    [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+                    [{ model: preguntas_1.default, as: "m_preguntas" },
+                        { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
+                ]
+            });
+            return res.json({
+                data: pregunta
+            });
+        }
     }
     catch (error) {
         console.error('Error al obtener preguntas:', error);
