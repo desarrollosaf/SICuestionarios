@@ -36,7 +36,7 @@ export class CuestionarioComponent implements AfterViewInit, OnInit {
   @ViewChild('wizardForm') wizardForm: WizardComponent;
   formCuestionario: FormGroup;
   currentSectionTitle = '';
-public _userService = inject(UserService);
+  public _userService = inject(UserService);
   constructor(private fb: FormBuilder, private _cuestionarioService: CuestionarioService) {
     this.formCuestionario = this.fb.group({
       secciones: this.fb.array([]),

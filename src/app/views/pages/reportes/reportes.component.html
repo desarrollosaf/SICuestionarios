@@ -80,7 +80,6 @@
     </div>
 </div>
 
-
 <div class="row">
     <div class="col-md-12 stretch-card">
         <div class="card">
@@ -88,16 +87,11 @@
                 <h6 class="card-title text-center">
                     OLITASDEMAR
                 </h6>
-
-
                 <div class="card-body">
-
-
-
                     <div class="form-group">
                         <label for="validadorSelect" style="color:black"><strong>Selecciona una
                                 dependencia:</strong></label>
-                        <ng-select [items]="dependencia" [searchable]="false" bindLabel="nombre_completo" bindValue="id">
+                        <ng-select [items]="dependencia" [searchable]="false" bindLabel="nombre_completo" bindValue="id_Dependencia" (change)="getResultados($event)">
                         </ng-select>
                     </div>
 
