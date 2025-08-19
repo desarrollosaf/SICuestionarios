@@ -3,6 +3,7 @@ import cors from 'cors'
 import UsersSafs from '../models/saf/users';
 import rpreguntas from "../routes/preguntas";
 import routeUser from "../routes/user";
+import rcombos from  "../routes/combos";
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { verifyToken } from '../middlewares/auth';
@@ -30,6 +31,7 @@ class Server {
 
     router(){
         this.app.use(rpreguntas);
+        this.app.use(rcombos);
         this.app.use(routeUser);
 
     }
@@ -48,6 +50,7 @@ class Server {
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             const publicPaths = [
                 '/api/user/login',
+                '/api/combos/getdependencias',
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {

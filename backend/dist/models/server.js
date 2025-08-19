@@ -17,6 +17,7 @@ const cors_1 = __importDefault(require("cors"));
 const users_1 = __importDefault(require("../models/saf/users"));
 const preguntas_1 = __importDefault(require("../routes/preguntas"));
 const user_1 = __importDefault(require("../routes/user"));
+const combos_1 = __importDefault(require("../routes/combos"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const path_1 = __importDefault(require("path"));
 const auth_1 = require("../middlewares/auth");
@@ -36,6 +37,7 @@ class Server {
     }
     router() {
         this.app.use(preguntas_1.default);
+        this.app.use(combos_1.default);
         this.app.use(user_1.default);
     }
     midlewares() {
@@ -49,6 +51,7 @@ class Server {
         this.app.use((req, res, next) => {
             const publicPaths = [
                 '/api/user/login',
+                '/api/combos/getdependencias',
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {
