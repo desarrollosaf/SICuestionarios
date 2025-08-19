@@ -215,15 +215,21 @@ public _userService = inject(UserService);
     });
     const comentarios = this.formCuestionario.get('comentarios')?.value || '';
 
+    const data = {
+      'resultados' : resultado,
+      'comentarios' : comentarios
+    }
+     
     const formData = new FormData();
     formData.append('respuestas', JSON.stringify(resultado));
     formData.append('comentarios', comentarios);
     formData.forEach((value, key) => {
       console.log(`${key}:`, value);
     });
+
   const rfc = this._userService.currentUserValue?.rfc ?? '';
     console.log(rfc);
-    this._cuestionarioService.savePreg(formData, rfc ).subscribe({
+    this._cuestionarioService.savePreg(data, rfc ).subscribe({
       next: (response) => {
         console.log(response);
       },
