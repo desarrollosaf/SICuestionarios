@@ -8,30 +8,43 @@ import sequelize from "../database/connection"
 
 export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
   try {
-        const pregunta = await seccion.findAll({
-        include:[
-            {
-                model: preguntas,
-                as:"m_preguntas",
-                include: [
-                    {
-                    model: opciones,
-                    as: 'm_opciones'
-                    }, 
-                ],
-            },
-        ], 
-        order:[
-            ['orden', 'asc'], 
-            [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
-            [{model:preguntas, as: "m_preguntas"},
-             {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
-        ]
-    })
+    const { id } = req.params
 
-    return res.json({
-      data: pregunta
-    });
+    const registrado = await sesion.findOne({
+        where: {
+            id_usuario: id
+        }
+    })
+        if(registrado){
+            return res.json({
+                status: 300
+            });
+        }else{
+                const pregunta = await seccion.findAll({
+                include:[
+                    {
+                        model: preguntas,
+                        as:"m_preguntas",
+                        include: [
+                            {
+                            model: opciones,
+                            as: 'm_opciones'
+                            }, 
+                        ],
+                    },
+                ], 
+                order:[
+                    ['orden', 'asc'], 
+                    [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+                    [{model:preguntas, as: "m_preguntas"},
+                    {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
+                ]
+            })
+
+            return res.json({
+            data: pregunta
+            });
+        }
     } catch (error) {
         console.error('Error al obtener preguntas:', error);
         return res.status(500).json({ msg: 'Error interno del servidor' });
