@@ -59,8 +59,8 @@ public _userService = inject(UserService);
   }
 
   getPreguntas() {
-  
-    this._cuestionarioService.getPreguntas().subscribe({
+    const rfc = this._userService.currentUserValue?.rfc ?? '';
+    this._cuestionarioService.getPreguntas(rfc).subscribe({
       next: (response) => {
         this.buildForm(response.data);
       },
