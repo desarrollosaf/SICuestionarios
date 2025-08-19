@@ -126,10 +126,7 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
                             model: respuestas,
                             as: 'm_respuestas',
                             }
-                        ],
-                        // attributes: [
-                        //     [fn('COUNT', col('m_opciones.m_respuestas.id')), 'respuestaCount']
-                        // ]
+                        ], 
                     }, 
                 ],
             },
@@ -142,8 +139,24 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
         ]
     })
 
-console.log(pregunta);
+    const resultado = pregunta.map(sec => ({
+        idSeccion: sec.id,
+        nombreSeccion: sec.titulo,
+        ordenSeccion: sec.orden,
+        preguntas: sec.m_preguntas.map(preg => ({
+            idPregunta: preg.id,
+            nombrePregunta: preg.texto_pregunta,
+            ordenPregunta: preg.orden,
+            opciones: preg.m_opciones.map(opc => ({
+                idOpcion: opc.id,
+                nombreOpcion: opc.texto_opcion,
+                ordenOpcion: opc.orden,
+                totalRespuestas: (opc.m_respuestas?.length || 0)
+            }))
+        }))
+    }));
+
     return res.json({
-        data: pregunta
+        data: resultado
     });
 }

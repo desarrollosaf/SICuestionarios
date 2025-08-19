@@ -136,9 +136,6 @@ const getcuestionarios = (req, res) => __awaiter(void 0, void 0, void 0, functio
                                 as: 'm_respuestas',
                             }
                         ],
-                        // attributes: [
-                        //     [fn('COUNT', col('m_opciones.m_respuestas.id')), 'respuestaCount']
-                        // ]
                     },
                 ],
             },
@@ -150,9 +147,27 @@ const getcuestionarios = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
         ]
     });
-    console.log(pregunta);
+    const resultado = pregunta.map(sec => ({
+        idSeccion: sec.id,
+        nombreSeccion: sec.titulo,
+        ordenSeccion: sec.orden,
+        preguntas: sec.m_preguntas.map(preg => ({
+            idPregunta: preg.id,
+            nombrePregunta: preg.texto_pregunta,
+            ordenPregunta: preg.orden,
+            opciones: preg.m_opciones.map(opc => {
+                var _a;
+                return ({
+                    idOpcion: opc.id,
+                    nombreOpcion: opc.texto_opcion,
+                    ordenOpcion: opc.orden,
+                    totalRespuestas: (((_a = opc.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0)
+                });
+            })
+        }))
+    }));
     return res.json({
-        data: pregunta
+        data: resultado
     });
 });
 exports.getcuestionarios = getcuestionarios;
