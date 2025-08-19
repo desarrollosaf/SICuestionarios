@@ -5,6 +5,8 @@ import { ApexOptions, NgApexchartsModule } from "ng-apexcharts";
 import { FeatherIconDirective } from '../../../core/feather-icon/feather-icon.directive';
 import { ThemeCssVariableService, ThemeCssVariablesType } from '../../../core/services/theme-css-variable.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ReporteService } from '../../../service/reporte.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-reportes',
@@ -20,21 +22,28 @@ import { NgSelectModule } from '@ng-select/ng-select';
   styleUrl: './reportes.component.scss'
 })
 export class ReportesComponent {
+  public dependencia: any[] = [];
 
-  dependencia = [
-    { id: '1', nombre_completo:'LEGISLATURA' },
-    { id: '2',nombre_completo:'SECRETARÍA DE ASUNTOS PARLAMENTARIOS'},
-    { id: '3', nombre_completo:'ÓRGANO SUPERIOR DE FISCALIZACIÓN DEL ESTADO DE MÉXICO' },
-    { id: '4', nombre_completo:'SECRETARÍA DE ADMINISTRACIÓN Y FINANZAS' },
-    { id: '5', nombre_completo:'DIRECCIÓN GENERAL DE COMUNICACIÓN SOCIAL' },
-    { id: '6', nombre_completo:'CONTRALORÍA' },
-    { id: '7', nombre_completo:'INSTITUTO DE ESTUDIOS LEGISLATIVOS' },
-    { id: '8', nombre_completo:'UNIDAD DE INFORMACIÓN' },
-  ];
-
-  constructor() {
+  constructor(private _reporteService: ReporteService) {
   }
 
   ngOnInit(): void {
+    this.getDependencias();
+  }
+
+  getDependencias(){
+      this._reporteService.getDependencias().subscribe({
+      next: (response) => {
+        console.log(response.data);
+        this.dependencia = response.data
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+      },
+    });
+  }
+
+  getResultados(dependencia: any) {
+    console.log(dependencia);
   }
 }

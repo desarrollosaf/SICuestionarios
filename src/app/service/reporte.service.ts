@@ -5,7 +5,7 @@ import { enviroment } from '../../enviroments/enviroment';
 @Injectable({
   providedIn: 'root',
 })
-export class CuestionarioService {
+export class ReporteService {
   private myAppUrl: string;
   private myAPIUrl: string;
   private myAPIUrl2: string;
@@ -18,7 +18,7 @@ export class CuestionarioService {
 
   getDependencias(): Observable<any> {
     return this.http.get<any>(
-      `${this.myAppUrl}${this.myAPIUrl}/getdependencias`
+      `${this.myAppUrl}${this.myAPIUrl2}/getdependencias`
     );
   }
 }
