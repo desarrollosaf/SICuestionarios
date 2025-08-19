@@ -21,43 +21,42 @@ const respuesta_1 = __importDefault(require("../models/respuesta"));
 const connection_1 = __importDefault(require("../database/connection"));
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { id } = req.params;
-        const registrado = yield sesion_cuestionario_1.default.findOne({
-            where: {
-                id_usuario: id
-            }
+        // const { id } = req.params
+        // const registrado = await sesion.findOne({
+        //     where: {
+        //         id_usuario: id
+        //     }
+        // })
+        //     if(registrado){
+        //         return res.json({
+        //             status: 300,
+        //             fecha: registrado.fecha_registro
+        //         });
+        //     }else{
+        const pregunta = yield secciones_1.default.findAll({
+            include: [
+                {
+                    model: preguntas_1.default,
+                    as: "m_preguntas",
+                    include: [
+                        {
+                            model: opciones_1.default,
+                            as: 'm_opciones'
+                        },
+                    ],
+                },
+            ],
+            order: [
+                ['orden', 'asc'],
+                [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+                [{ model: preguntas_1.default, as: "m_preguntas" },
+                    { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
+            ]
         });
-        if (registrado) {
-            return res.json({
-                status: 300,
-                fecha: registrado.fecha_registro
-            });
-        }
-        else {
-            const pregunta = yield secciones_1.default.findAll({
-                include: [
-                    {
-                        model: preguntas_1.default,
-                        as: "m_preguntas",
-                        include: [
-                            {
-                                model: opciones_1.default,
-                                as: 'm_opciones'
-                            },
-                        ],
-                    },
-                ],
-                order: [
-                    ['orden', 'asc'],
-                    [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
-                    [{ model: preguntas_1.default, as: "m_preguntas" },
-                        { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
-                ]
-            });
-            return res.json({
-                data: pregunta
-            });
-        }
+        return res.json({
+            data: pregunta
+        });
+        // }
     }
     catch (error) {
         console.error('Error al obtener preguntas:', error);
@@ -70,17 +69,30 @@ const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { body } = req;
         const { id } = req.params;
         const arrayPreguntas = body.resultados;
+        // console.log(arrayPreguntas);
         const idSesion = yield sesion_cuestionario_1.default.create({
             "id_usuario": id,
             "fecha_registro": new Date,
             "comentarios": body.comentarios
         });
-        const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.map(obj => ({
-            id_pregunta: obj.idPregunta,
-            id_opcion: obj.respuesta,
-            valor_texto: obj.otroValor,
-            id_sesion: idSesion.id
-        })));
+        const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.flatMap(obj => {
+            if (Array.isArray(obj.respuesta)) {
+                return obj.respuesta.map(rsp => ({
+                    id_pregunta: obj.idPregunta,
+                    id_opcion: rsp,
+                    valor_texto: obj.otroValor,
+                    id_sesion: idSesion.id
+                }));
+            }
+            else {
+                return [{
+                        id_pregunta: obj.idPregunta,
+                        id_opcion: obj.respuesta,
+                        valor_texto: obj.otroValor,
+                        id_sesion: idSesion.id
+                    }];
+            }
+        }));
         yield connection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
             const respuestasSave = yield respuesta_1.default.bulkCreate(respuestasArr);
         }));
