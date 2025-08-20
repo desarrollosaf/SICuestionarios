@@ -8,6 +8,7 @@ import {
 } from 'sequelize';
 
 import sequelize from '../database/cuestionariosConnection';
+import sesion from './sesion_cuestionario';
 
 class respuestas extends Model<
   InferAttributes<respuestas>,
@@ -73,5 +74,10 @@ respuestas.init(
         timestamps: false,
     }
 )
+
+
+respuestas.belongsTo(sesion, {
+  foreignKey: "id_sesion", as: "m_sesion"
+}) 
 
 export default respuestas;
