@@ -91,10 +91,37 @@
                     <div class="form-group">
                         <label for="validadorSelect" style="color:black"><strong>Selecciona una
                                 dependencia:</strong></label>
-                        <ng-select [items]="dependencia" [searchable]="false" bindLabel="nombre_completo" bindValue="id_Dependencia" (change)="getResultados($event)">
+                        <ng-select [items]="dependencia" [searchable]="false" bindLabel="nombre_completo"
+                            bindValue="id_Dependencia" (change)="getResultados($event)">
                         </ng-select>
                     </div>
-
+                    <br>
+                    <div class="row">
+                        <div *ngIf="data?.length; else loading" ngbAccordion [closeOthers]="true">
+                            <div *ngFor="let seccion of data" ngbAccordionItem [collapsed]="false">
+                                <h2 ngbAccordionHeader>
+                                    <button ngbAccordionButton>
+                                        <b>{{ seccion?.nombreSeccion }}</b>
+                                    </button>
+                                </h2>
+                                <div ngbAccordionCollapse>
+                                    <div ngbAccordionBody>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4" *ngFor="let pregunta of seccion.preguntas">
+                                                <h6 *ngIf="pregunta?.nombrePregunta">{{ pregunta.nombrePregunta }}</h6>
+                                                <canvas *ngIf="pregunta?.opciones?.length" baseChart
+                                                    [data]="getChartData(pregunta)" [type]="'bar'"
+                                                    [options]="chartOptions"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #loading>
+                            <p>Cargando datos...</p>
+                        </ng-template>
+                    </div>
                 </div>
             </div>
         </div>
