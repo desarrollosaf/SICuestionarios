@@ -6,5 +6,5 @@ const router = (0, express_1.Router)();
 router.get("/api/preguntas/getpreguntas/:id", cuestionarios_1.getpreguntas);
 router.post('/api/preguntas/savecuestionario/:id', cuestionarios_1.savecuestionario);
 router.get("/api/preguntas/getcuestionarios", cuestionarios_1.getcuestionarios);
-router.get("/api/preguntas/getcuestionariosdep", cuestionarios_1.getcuestionariosdep);
+router.post("/api/preguntas/getcuestionariosdep", cuestionarios_1.getcuestionariosdep);
 exports.default = router;

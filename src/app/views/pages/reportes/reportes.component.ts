@@ -47,8 +47,8 @@ import Swal from 'sweetalert2';
 export class ReportesComponent {
   public dependencia: any[] = [];
   generoSlct = [
-    { id: 'H', name: 'Hombre' },
-    { id: 'M', name: 'Mujer' }
+    { id: 'Hombre', name: 'Hombre' },
+    { id: 'Mujer', name: 'Mujer' }
   ];
   selectedDependencia: string | null = null;
   selectedGenero: string | null = null;
@@ -114,27 +114,27 @@ export class ReportesComponent {
 
 
     if (!this.selectedDependencia && !this.selectedGenero) {
-      console.warn('Selecciona ambos valores');
        Swal.fire({
         position: "center",
         icon: "warning",
         title: "¡Atención!",
-        text: `Selecciona ambos valores`,
+        text: `Selecciona almenos una opción`,
         showConfirmButton: false,
         timer: 2000
       });
       return;
     }
 
-
-
-
-
-
-
     this.accordionOpen = false;
     this.data = [];
-    this._reporteService.getCuestionarios().subscribe({
+
+    const valores={ 
+      'id_dependencia': this.selectedDependencia,
+      'genero': this.selectedGenero
+
+  }
+  console.log(valores);
+    this._reporteService.getCuestionariosDep(valores).subscribe({
       next: (response) => {
         console.log(response);
         this.data = response.data;

@@ -27,4 +27,12 @@ export class ReporteService {
       `${this.myAppUrl}${this.myAPIUrl}/getcuestionarios`
     );
   }
+
+    getCuestionariosDep(valores: any ): Observable<any> {
+        return this.http.post<any>(
+            `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosdep`,valores
+        );
+    }
+
+  
 }
