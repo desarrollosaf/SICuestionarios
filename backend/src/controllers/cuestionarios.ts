@@ -167,12 +167,14 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
 export const getcuestionariosdep = async(req: Request, res: Response) : Promise<any> => {
     try {
         const { body } = req
+
+        console.log(body)
     
-        if( body.id_depentencia != null && body.genero == null){
-            console.log("eentra uf  body.id_depentencia != null && body.genero == null ")
+        if( body.id_dependencia != null && body.genero == null){
+            console.log("eentra uf  body.id_dependencia != null && body.genero == null ")
             const usersdep = await SUsuario.findAll({
                 where: {
-                    id_Dependencia: body.id_depentencia, 
+                    id_Dependencia: body.id_dependencia, 
                     Estado: 1
                 },
                 attributes: [
@@ -239,10 +241,10 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
                 data: resultado
             });
         
-        }else if( body.id_depentencia != null && body.genero != null){
+        }else if( body.id_dependencia != null && body.genero != null){
             const usersdep = await SUsuario.findAll({
                 where: {
-                    id_Dependencia: body.id_depentencia, 
+                    id_Dependencia: body.id_dependencia, 
                     Estado: 1
                 },
                 attributes: [
@@ -345,7 +347,7 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
             return res.json({
                 data: resultado
             });
-        }else if( body.id_depentencia == null && body.genero != null){
+        }else if( body.id_dependencia == null && body.genero != null){
         
             const genero = await preguntas.findAll({
                 where:{

@@ -175,11 +175,12 @@ exports.getcuestionarios = getcuestionarios;
 const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
-        if (body.id_depentencia != null && body.genero == null) {
-            console.log("eentra uf  body.id_depentencia != null && body.genero == null ");
+        console.log(body);
+        if (body.id_dependencia != null && body.genero == null) {
+            console.log("eentra uf  body.id_dependencia != null && body.genero == null ");
             const usersdep = yield s_usuario_1.default.findAll({
                 where: {
-                    id_Dependencia: body.id_depentencia,
+                    id_Dependencia: body.id_dependencia,
                     Estado: 1
                 },
                 attributes: [
@@ -245,10 +246,10 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                 data: resultado
             });
         }
-        else if (body.id_depentencia != null && body.genero != null) {
+        else if (body.id_dependencia != null && body.genero != null) {
             const usersdep = yield s_usuario_1.default.findAll({
                 where: {
-                    id_Dependencia: body.id_depentencia,
+                    id_Dependencia: body.id_dependencia,
                     Estado: 1
                 },
                 attributes: [
@@ -345,7 +346,7 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                 data: resultado
             });
         }
-        else if (body.id_depentencia == null && body.genero != null) {
+        else if (body.id_dependencia == null && body.genero != null) {
             const genero = yield preguntas_1.default.findAll({
                 where: {
                     'texto_pregunta': 'Sexo asignado al nacer'
