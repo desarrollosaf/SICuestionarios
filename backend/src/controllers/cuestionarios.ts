@@ -6,7 +6,9 @@ import sesion from "../models/sesion_cuestionario"
 import respuestas from "../models/respuesta"
 import sequelize from "../database/connection"
 import { strict } from "assert"
-import { col, fn } from "sequelize"
+import { col, fn, NUMBER, where } from "sequelize"
+import Dependencia from "../models/saf/t_dependencia"
+import SUsuario from "../models/saf/s_usuario"
 
 export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
   try {
@@ -113,7 +115,7 @@ export const savecuestionario = async(req: Request, res: Response) : Promise<any
 
 export const getcuestionarios = async(req: Request, res: Response) : Promise<any> => {
     const pregunta = await seccion.findAll({
-         include:[
+        include:[
             {
                 model: preguntas,
                 as:"m_preguntas",
@@ -159,4 +161,284 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
     return res.json({
         data: resultado
     });
+}
+
+
+export const getcuestionariosdep = async(req: Request, res: Response) : Promise<any> => {
+    try {
+        const { body } = req
+    
+        if( body.id_depentencia != null && body.genero == null){
+            console.log("eentra uf  body.id_depentencia != null && body.genero == null ")
+            const usersdep = await SUsuario.findAll({
+                where: {
+                    id_Dependencia: body.id_depentencia, 
+                    Estado: 1
+                },
+                attributes: [
+                    'N_Usuario'
+                ],
+            })
+        
+            const rfcs = usersdep.map(us =>  us.N_Usuario);
+            
+            const pregunta = await seccion.findAll({
+                include:[
+                    {
+                        model: preguntas,
+                        as:"m_preguntas",
+                        include: [
+                            {
+                                model: opciones,
+                                as: 'm_opciones',
+                                include: [
+                                    {
+                                    model: respuestas,
+                                    as: 'm_respuestas',
+                                    include: [
+                                        {
+                                            model: sesion,
+                                            as: 'm_sesion',
+                                            where:{
+                                                "id_usuario": rfcs
+                                            }
+                                        },
+                                    ],
+                                    },
+                                ],
+                            }, 
+                        ],
+                    },
+                ], 
+                order:[
+                    ['orden', 'asc'], 
+                    [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+                    [{model:preguntas, as: "m_preguntas"},
+                    {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
+                ]
+            })
+
+             const resultado = pregunta.map(sec => ({
+            idSeccion: sec.id,
+            nombreSeccion: sec.titulo,
+            ordenSeccion: sec.orden,
+            preguntas: sec.m_preguntas.map(preg => ({
+                idPregunta: preg.id,
+                nombrePregunta: preg.texto_pregunta,
+                ordenPregunta: preg.orden,
+                opciones: preg.m_opciones.map(opc => ({
+                    idOpcion: opc.id,
+                    nombreOpcion: opc.texto_opcion,
+                    ordenOpcion: opc.orden,
+                    totalRespuestas: (opc.m_respuestas?.length || 0)
+                    }))
+                }))
+            }));
+            
+            return res.json({
+                data: resultado
+            });
+        
+        }else if( body.id_depentencia != null && body.genero != null){
+            const usersdep = await SUsuario.findAll({
+                where: {
+                    id_Dependencia: body.id_depentencia, 
+                    Estado: 1
+                },
+                attributes: [
+                    'N_Usuario'
+                ],
+            })
+        
+            const rfcs = usersdep.map(us =>  us.N_Usuario);
+
+            const genero = await preguntas.findAll({
+                where:{
+                    'texto_pregunta': 'Sexo asignado al nacer'
+                },
+                include: [
+                    {
+                        model: opciones,
+                        as: "m_preguntas",
+                        where:{
+                            'texto_opcion': body.genero
+                        }
+                    }
+                ],
+            })
+
+            const ids = genero.map(pre =>  ({
+                idPregunta: pre.id,
+                nombrePregunta: pre.texto_pregunta,
+                opciones: pre.m_preguntas.map(opc => ({
+                        idOpcion: opc.id,
+                        nombreOpcion: opc.texto_opcion
+                }))
+            }));
+
+
+            const cuestionariosvalidos = respuestas.findAll({
+                where:{
+                    'id_pregunta': ids[0].idPregunta, 
+                    'id_opcion': ids[0].opciones[0].idOpcion
+                },
+            })
+        const idssesion = (await cuestionariosvalidos).map(cus =>  cus.id_sesion);
+
+        console.log(idssesion)
+
+            const pregunta = await seccion.findAll({
+                include:[
+                    {
+                        model: preguntas,
+                        as:"m_preguntas",
+                        include: [
+                            {
+                                model: opciones,
+                                as: 'm_opciones',
+                                include: [
+                                    {
+                                    model: respuestas,
+                                    as: 'm_respuestas',
+                                    include: [
+                                        {
+                                            model: sesion,
+                                            as: 'm_sesion',
+                                            where:{
+                                                "id_usuario": rfcs,
+                                                "id": idssesion
+                                            }
+                                        },
+                                    ],
+                                    },
+                                ],
+                            }, 
+                        ],
+                    },
+                ], 
+                order:[
+                    ['orden', 'asc'], 
+                    [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+                    [{model:preguntas, as: "m_preguntas"},
+                    {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
+                ]
+            })
+
+    
+            const resultado = pregunta.map(sec => ({
+            idSeccion: sec.id,
+            nombreSeccion: sec.titulo,
+            ordenSeccion: sec.orden,
+            preguntas: sec.m_preguntas.map(preg => ({
+                idPregunta: preg.id,
+                nombrePregunta: preg.texto_pregunta,
+                ordenPregunta: preg.orden,
+                opciones: preg.m_opciones.map(opc => ({
+                    idOpcion: opc.id,
+                    nombreOpcion: opc.texto_opcion,
+                    ordenOpcion: opc.orden,
+                    totalRespuestas: (opc.m_respuestas?.length || 0)
+                    }))
+                }))
+            }));
+
+            return res.json({
+                data: resultado
+            });
+        }else if( body.id_depentencia == null && body.genero != null){
+        
+            const genero = await preguntas.findAll({
+                where:{
+                    'texto_pregunta': 'Sexo asignado al nacer'
+                },
+                include: [
+                    {
+                        model: opciones,
+                        as: "m_preguntas",
+                        where:{
+                            'texto_opcion': body.genero
+                        }
+                    }
+                ],
+            })
+
+            const ids = genero.map(pre =>  ({
+                idPregunta: pre.id,
+                nombrePregunta: pre.texto_pregunta,
+                opciones: pre.m_preguntas.map(opc => ({
+                        idOpcion: opc.id,
+                        nombreOpcion: opc.texto_opcion
+                }))
+            }));
+
+            const cuestionariosvalidos = respuestas.findAll({
+                where:{
+                    'id_pregunta': ids[0].idPregunta, 
+                    'id_opcion': ids[0].opciones[0].idOpcion
+                },
+            })
+            const idssesion = (await cuestionariosvalidos).map(cus =>  cus.id_sesion);
+
+            const pregunta = await seccion.findAll({
+                include:[
+                    {
+                        model: preguntas,
+                        as:"m_preguntas",
+                        include: [
+                            {
+                                model: opciones,
+                                as: 'm_opciones',
+                                include: [
+                                    {
+                                    model: respuestas,
+                                    as: 'm_respuestas',
+                                    include: [
+                                        {
+                                            model: sesion,
+                                            as: 'm_sesion',
+                                            where:{
+                                                "id": idssesion
+                                            }
+                                        },
+                                    ],
+                                    },
+                                ],
+                            }, 
+                        ],
+                    },
+                ], 
+                order:[
+                    ['orden', 'asc'], 
+                    [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+                    [{model:preguntas, as: "m_preguntas"},
+                    {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
+                ]
+            })
+
+    
+            const resultado = pregunta.map(sec => ({
+            idSeccion: sec.id,
+            nombreSeccion: sec.titulo,
+            ordenSeccion: sec.orden,
+            preguntas: sec.m_preguntas.map(preg => ({
+                idPregunta: preg.id,
+                nombrePregunta: preg.texto_pregunta,
+                ordenPregunta: preg.orden,
+                opciones: preg.m_opciones.map(opc => ({
+                    idOpcion: opc.id,
+                    nombreOpcion: opc.texto_opcion,
+                    ordenOpcion: opc.orden,
+                    totalRespuestas: (opc.m_respuestas?.length || 0)
+                    }))
+                }))
+            }));
+
+            return res.json({
+                data: resultado
+            });
+        }
+    } catch (error) {
+        console.error('Error al generar consulta:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor'});
+    }
 }
