@@ -21,7 +21,7 @@ import { ChartData, ChartConfiguration } from 'chart.js';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { CommonModule } from '@angular/common';
 
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-reportes',
   imports: [
@@ -46,9 +46,14 @@ import { CommonModule } from '@angular/common';
 })
 export class ReportesComponent {
   public dependencia: any[] = [];
-
+  generoSlct = [
+    { id: 'H', name: 'Hombre' },
+    { id: 'M', name: 'Mujer' }
+  ];
+  selectedDependencia: string | null = null;
+  selectedGenero: string | null = null;
   data: any[] = [];
-
+  accordionOpen = true;
   chartOptions: ChartConfiguration['options'] = {
     responsive: true,
     animation: {
@@ -70,15 +75,9 @@ export class ReportesComponent {
 
   ngOnInit(): void {
     this.getDependencias();
-    this._reporteService.getCuestionarios().subscribe({
-      next: (response) => {
-        console.log(response);
-        this.data = response.data;
-      },
-      error: (e: HttpErrorResponse) => {
-        console.error(e);
-      },
-    });
+    this.showAllData();
+
+
   }
 
   getChartData(pregunta: any): ChartData<'bar'> {
@@ -107,7 +106,65 @@ export class ReportesComponent {
     });
   }
 
-  getResultados(dependencia: any) {
-    console.log(dependencia);
+
+
+  getResultados() {
+    console.log('Dependencia:', this.selectedDependencia);
+    console.log('Género:', this.selectedGenero);
+
+
+    if (!this.selectedDependencia && !this.selectedGenero) {
+      console.warn('Selecciona ambos valores');
+       Swal.fire({
+        position: "center",
+        icon: "warning",
+        title: "¡Atención!",
+        text: `Selecciona ambos valores`,
+        showConfirmButton: false,
+        timer: 2000
+      });
+      return;
+    }
+
+
+
+
+
+
+
+    this.accordionOpen = false;
+    this.data = [];
+    this._reporteService.getCuestionarios().subscribe({
+      next: (response) => {
+        console.log(response);
+        this.data = response.data;
+        setTimeout(() => {
+          this.accordionOpen = true;
+        });
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+      },
+    });
+  }
+
+
+
+
+  showAllData() {
+    this.accordionOpen = false;
+    this.data = [];
+    this._reporteService.getCuestionarios().subscribe({
+      next: (response) => {
+        console.log(response);
+        this.data = response.data;
+        setTimeout(() => {
+          this.accordionOpen = true;
+        });
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+      },
+    });
   }
 }
