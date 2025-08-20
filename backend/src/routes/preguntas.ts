@@ -7,5 +7,5 @@ const router = Router();
 router.get("/api/preguntas/getpreguntas/:id", getpreguntas)
 router.post('/api/preguntas/savecuestionario/:id', savecuestionario)
 router.get("/api/preguntas/getcuestionarios", getcuestionarios)
-router.get("/api/preguntas/getcuestionariosdep", getcuestionariosdep)
+router.post("/api/preguntas/getcuestionariosdep", getcuestionariosdep)
 export default router
