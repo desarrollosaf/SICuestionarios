@@ -21,4 +21,10 @@ export class ReporteService {
       `${this.myAppUrl}${this.myAPIUrl2}/getdependencias`
     );
   }
+
+   getCuestionarios(): Observable<any> {
+    return this.http.get<any>(
+      `${this.myAppUrl}${this.myAPIUrl}/getcuestionarios`
+    );
+  }
 }
