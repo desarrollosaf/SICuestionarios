@@ -549,13 +549,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 2){
                 const safMujeres = await respuestas.findAll({
@@ -598,13 +598,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 3){
                 const safMujeres = await respuestas.findAll({
@@ -647,13 +647,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 4){
                 const safMujeres = await respuestas.findAll({
@@ -696,13 +696,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-               data.push([
+               data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ] )
+                )
             }
             if(dep.idDependencia == 5){
                 const safMujeres = await respuestas.findAll({
@@ -745,13 +745,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 6){
                 const safMujeres = await respuestas.findAll({
@@ -794,13 +794,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 7){
                 const safMujeres = await respuestas.findAll({
@@ -843,13 +843,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
             if(dep.idDependencia == 8){
                 const safMujeres = await respuestas.findAll({
@@ -892,13 +892,13 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     totalHombres: (saf.m_sesion?.length || 0)
                 })
 
-                data.push([
+                data.push(
                     {
                     dependencia: dep.nombreDep,
                     mujeres: totm.length  || 0,
                     hombres: toth.length || 0
                     }
-                ]);
+                );
             }
         }
 
