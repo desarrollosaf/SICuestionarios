@@ -177,11 +177,11 @@ SUsuario.init(
 //   as: 'departamento',
 // });
 
-// SUsuario.belongsTo(sesion,{
-//   targetKey: "id_usuario",
-//   foreignKey: 'N_Usuario',
-//   as: "m_cuestionario"
-// })
+SUsuario.belongsTo(sesion,{
+  targetKey: "id_usuario",
+  foreignKey: 'N_Usuario',
+  as: "m_cuestionario"
+})
 
 
 export default SUsuario;

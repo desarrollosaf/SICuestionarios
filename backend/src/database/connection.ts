@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize"
 
-const sequelize = new Sequelize('adminplem_saf', 'root', '', {
+const sequelize = new Sequelize('adminple_saf', 'root', '', {
     host: 'localhost',
     dialect: 'mysql',
     define: {

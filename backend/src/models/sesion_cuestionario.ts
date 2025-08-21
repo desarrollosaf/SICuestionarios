@@ -40,7 +40,7 @@ sesion.init(
             type: DataTypes.DATE,
             allowNull: true
         },
-         comentarios: {
+        comentarios: {
             type: DataTypes.STRING(255),
             allowNull: true
         },

@@ -23,6 +23,8 @@ class respuestas extends Model<
     declare createdAt: CreationOptional<Date>;
     declare updatedAt: CreationOptional<Date>;
     declare deletedAt: CreationOptional<Date>;
+    
+    declare m_sesion?: sesion[];
 }
 
 respuestas.init(
@@ -74,7 +76,6 @@ respuestas.init(
         timestamps: false,
     }
 )
-
 
 respuestas.belongsTo(sesion, {
   foreignKey: "id_sesion", as: "m_sesion"

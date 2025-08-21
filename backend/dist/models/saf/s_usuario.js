@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const connection_1 = __importDefault(require("../../database/connection"));
+const sesion_cuestionario_1 = __importDefault(require("../sesion_cuestionario"));
 class SUsuario extends sequelize_1.Model {
 }
 SUsuario.init({
@@ -139,9 +140,9 @@ SUsuario.init({
 //   foreignKey: 'id_Departamento',   
 //   as: 'departamento',
 // });
-// SUsuario.belongsTo(sesion,{
-//   targetKey: "id_usuario",
-//   foreignKey: 'N_Usuario',
-//   as: "m_cuestionario"
-// })
+SUsuario.belongsTo(sesion_cuestionario_1.default, {
+    targetKey: "id_usuario",
+    foreignKey: 'N_Usuario',
+    as: "m_cuestionario"
+});
 exports.default = SUsuario;

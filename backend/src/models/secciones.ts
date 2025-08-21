@@ -22,6 +22,8 @@ class seccion extends Model<
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
+
+    declare m_preguntas?: preguntas[];
 }
 
 seccion.init(
