@@ -54,6 +54,10 @@ export class ReportesComponent {
   selectedGenero: string | null = null;
   data: any[] = [];
   dependencias: any[]=[];
+  primerasDependencias:any;
+  segundasDependencias:any;
+  tHombres = 0;
+  tMujeres = 0;
   accordionOpen = true;
   chartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -71,15 +75,12 @@ export class ReportesComponent {
     }
   };
 
-  constructor(private _reporteService: ReporteService) {
-  }
+  constructor(private _reporteService: ReporteService) {}
 
   ngOnInit(): void {
     this.getDependencias();
     this.showAllData();
     this.getTotalesDep();
-
-
   }
 
   getChartData(pregunta: any): ChartData<'bar'> {
@@ -107,8 +108,6 @@ export class ReportesComponent {
     });
   }
 
-
-
   getResultados() {
     if (!this.selectedDependencia && !this.selectedGenero) {
        Swal.fire({
@@ -121,16 +120,13 @@ export class ReportesComponent {
       });
       return;
     }
-
     this.accordionOpen = false;
     this.data = [];
 
     const valores={ 
       'id_dependencia': this.selectedDependencia,
       'genero': this.selectedGenero
-
-  }
-  console.log(valores);
+    }
     this._reporteService.getCuestionariosDep(valores).subscribe({
       next: (response) => {
         this.data = response.data;
@@ -148,13 +144,17 @@ export class ReportesComponent {
 getTotalesDep(){
      this._reporteService.getTotalesDep().subscribe({
       next: (response) => {
-
-
-      this.dependencias=response.data;
-      this.dependencias.forEach((dep: any) => {
-        console.log(dep);
+        this.dependencias=response.data;
+        this. primerasDependencias = this.dependencias.slice(0, 4);
+        this.segundasDependencias = this.dependencias.slice(4);
+        this.dependencias.forEach((dep: any) => {
+        if(dep.hombres){
+            this.tHombres = this.tHombres + dep.hombres ;
+        }
+        if(dep.mujeres){
+          this.tMujeres = this.tMujeres + dep.mujeres ;
+        }
       });
-
       },
       error: (e: HttpErrorResponse) => {
         console.error(e);
