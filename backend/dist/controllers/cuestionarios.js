@@ -539,13 +539,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 2) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -586,13 +584,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 3) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -633,13 +629,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 4) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -680,13 +674,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 5) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -727,13 +719,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 6) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -774,13 +764,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 7) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -821,13 +809,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
             if (dep.idDependencia == 8) {
                 const safMujeres = yield respuesta_1.default.findAll({
@@ -868,13 +854,11 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                     var _a;
                     totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });
-                data.push([
-                    {
-                        dependencia: dep.nombreDep,
-                        mujeres: totm.length || 0,
-                        hombres: toth.length || 0
-                    }
-                ]);
+                data.push({
+                    dependencia: dep.nombreDep,
+                    mujeres: totm.length || 0,
+                    hombres: toth.length || 0
+                });
             }
         }
         return res.json({
