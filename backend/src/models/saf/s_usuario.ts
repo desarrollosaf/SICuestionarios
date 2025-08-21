@@ -9,6 +9,7 @@ import sequelize from '../../database/connection';
 import Dependencia from '../saf/t_dependencia';
 import Direccion from '../saf/t_direccion';
 import Departamento from '../saf/t_departamento';
+import sesion from '../sesion_cuestionario';
 
 class SUsuario extends Model<
   InferAttributes<SUsuario>,
@@ -158,25 +159,29 @@ SUsuario.init(
   }
 );
 
-SUsuario.hasOne(Dependencia, {
-  sourceKey: 'id_Dependencia',         
-  foreignKey: 'id_Dependencia',   
-  as: 'dependencia',
-});
+// SUsuario.hasOne(Dependencia, {
+//   sourceKey: 'id_Dependencia',         
+//   foreignKey: 'id_Dependencia',   
+//   as: 'dependencia',
+// });
 
-SUsuario.hasOne(Direccion, {
-  sourceKey: 'id_Direccion',         
-  foreignKey: 'id_Direccion',   
-  as: 'direccion',
-});
+// SUsuario.hasOne(Direccion, {
+//   sourceKey: 'id_Direccion',         
+//   foreignKey: 'id_Direccion',   
+//   as: 'direccion',
+// });
 
-SUsuario.hasOne(Departamento, {
-  sourceKey: 'id_Departamento',         
-  foreignKey: 'id_Departamento',   
-  as: 'departamento',
-});
+// SUsuario.hasOne(Departamento, {
+//   sourceKey: 'id_Departamento',         
+//   foreignKey: 'id_Departamento',   
+//   as: 'departamento',
+// });
 
-
+// SUsuario.belongsTo(sesion,{
+//   targetKey: "id_usuario",
+//   foreignKey: 'N_Usuario',
+//   as: "m_cuestionario"
+// })
 
 
 export default SUsuario;
