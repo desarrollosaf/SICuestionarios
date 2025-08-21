@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         references: {
-          model: 'sesion_Cuestionarios',
+          model: 'sesion_cuestionarios',
           key: 'id',
         },
         onDelete: 'CASCADE',
