@@ -22,7 +22,7 @@ class Departamento extends Model<
   declare id_Direccion: number | null;
   declare c_presup: number;
   declare nombre_completo: string | null;
-  declare nom_cap: string | null;
+  // declare nom_cap: string | null;
 }
 
 
@@ -82,10 +82,10 @@ Departamento.init(
       type: DataTypes.STRING(500),
       allowNull: true,
     },
-    nom_cap: {
-      type: DataTypes.TEXT,
-      allowNull: true,
-    },
+    // nom_cap: {
+    //   type: DataTypes.TEXT,
+    //   allowNull: true,
+    // },
   },
   {
     sequelize,

@@ -62,10 +62,10 @@ Departamento.init({
         type: sequelize_1.DataTypes.STRING(500),
         allowNull: true,
     },
-    nom_cap: {
-        type: sequelize_1.DataTypes.TEXT,
-        allowNull: true,
-    },
+    // nom_cap: {
+    //   type: DataTypes.TEXT,
+    //   allowNull: true,
+    // },
 }, {
     sequelize: connection_1.default,
     tableName: 't_departamento',

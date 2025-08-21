@@ -24,6 +24,12 @@ class Dependencia extends Model<
   declare nombre_completo: string | null;
 
   declare m_usuarios?: SUsuario[];
+
+  static associate(models: any) {
+    Dependencia.hasMany(SUsuario,{
+        foreignKey: "id_Dependencia", as: "m_usuarios"
+    })
+  }
 }
 
 Dependencia.init(
@@ -81,11 +87,6 @@ Dependencia.init(
     timestamps: false,
   }
 );
-
-
-Dependencia.hasMany(SUsuario,{
-    foreignKey: "id_Dependencia", as: "m_usuarios"
-})
 
 
 export default Dependencia;
