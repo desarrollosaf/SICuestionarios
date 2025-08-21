@@ -3,77 +3,50 @@
     <div class="col-12 col-xl-12 stretch-card">
         <div class="row flex-grow-1">
             <div class="col-md-4 grid-margin stretch-card">
-                <div class="card">
+                <div class="card text-center">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0">New Customers</h6>
-                        </div>
+                        <h5 class="card-title mb-4">Total de personas que contestaron</h5>
                         <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h3 class="mb-2">3,897</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>+3.3%</span>
-                                        <i data-feather="arrow-up" appFeatherIcon class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
+                            <div class="col-6">
+                                <p class="mb-1">Hombre</p>
+                                <h6>123</h6>
                             </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <div class="mt-md-3 mt-xl-0">
-                                    hola
-                                </div>
+                            <div class="col-6">
+                                <p class="mb-1">Mujer</p>
+                                <h6>456</h6>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+  <div class="col-md-4 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body text-center">
+
+      <!-- Título centrado -->
+      <!-- <h5 class="card-title mb-4">Apago</h5> -->
+
+      <!-- Encabezado de la tabla -->
+      <div class="row fw-semibold text-center mb-2">
+        <div class="col-5 text-start">Dependencia</div>
+        <div class="col">Hombre</div>
+        <div class="col">Mujer</div>
+      </div>
+
+      <!-- Datos de dependencias -->
+      <div class="row text-center mb-2" *ngFor="let dep of dependencias">
+        <div class="col-5 text-start">{{ dep.dependencia }}</div>
+        <div class="col">{{ dep }}</div>
+        <div class="col">{{ dep }}</div>
+      </div>
+
+    </div>
+  </div>
+</div>
             <div class="col-md-4 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0">New Orders</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h3 class="mb-2">35,084</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-danger">
-                                        <span>-2.8%</span>
-                                        <i data-feather="arrow-down" appFeatherIcon class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <div class="mt-md-3 mt-xl-0">
-                                    hola2
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 grid-margin stretch-card">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-baseline">
-                            <h6 class="card-title mb-0">Growth</h6>
-                        </div>
-                        <div class="row">
-                            <div class="col-6 col-md-12 col-xl-5">
-                                <h3 class="mb-2">89.87%</h3>
-                                <div class="d-flex align-items-baseline">
-                                    <p class="text-success">
-                                        <span>+2.8%</span>
-                                        <i data-feather="arrow-up" appFeatherIcon class="icon-sm mb-1"></i>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-12 col-xl-7">
-                                <div class="mt-md-3 mt-xl-0">
-                                    ddd
-                                </div>
-                            </div>
-                        </div>
+                   
                     </div>
                 </div>
             </div>

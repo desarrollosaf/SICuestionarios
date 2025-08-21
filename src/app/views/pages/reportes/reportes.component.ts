@@ -53,6 +53,7 @@ export class ReportesComponent {
   selectedDependencia: string | null = null;
   selectedGenero: string | null = null;
   data: any[] = [];
+  dependencias: any[]=[];
   accordionOpen = true;
   chartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -76,6 +77,7 @@ export class ReportesComponent {
   ngOnInit(): void {
     this.getDependencias();
     this.showAllData();
+    this.getTotalesDep();
 
 
   }
@@ -108,10 +110,6 @@ export class ReportesComponent {
 
 
   getResultados() {
-    console.log('Dependencia:', this.selectedDependencia);
-    console.log('Género:', this.selectedGenero);
-
-
     if (!this.selectedDependencia && !this.selectedGenero) {
        Swal.fire({
         position: "center",
@@ -147,7 +145,23 @@ export class ReportesComponent {
   }
 
 
+getTotalesDep(){
+     this._reporteService.getTotalesDep().subscribe({
+      next: (response) => {
 
+
+      this.dependencias=response.data;
+      this.dependencias.forEach((dep: any) => {
+        console.log(dep);
+      });
+
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+      },
+    });
+  
+}
 
   showAllData() {
     this.accordionOpen = false;

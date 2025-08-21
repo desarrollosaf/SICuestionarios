@@ -33,6 +33,10 @@ export class ReporteService {
             `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosdep`,valores
         );
     }
-
+    getTotalesDep(): Observable<any> {
+        return this.http.get<any>(
+            `${this.myAppUrl}${this.myAPIUrl}/gettotalesdep`
+        );
+    }
   
 }
