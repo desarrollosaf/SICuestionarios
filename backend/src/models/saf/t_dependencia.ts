@@ -6,6 +6,7 @@ import {
   CreationOptional,
 } from 'sequelize';
 import sequelize from '../../database/connection'; 
+import SUsuario from './s_usuario';
 
 class Dependencia extends Model<
   InferAttributes<Dependencia>,
@@ -77,5 +78,11 @@ Dependencia.init(
     timestamps: false,
   }
 );
+
+
+Dependencia.hasMany(SUsuario,{
+    foreignKey: "id_Dependencia", as: "m_usuarios"
+})
+
 
 export default Dependencia;

@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
 const sesion_cuestionario_1 = __importDefault(require("../models/sesion_cuestionario"));
 const respuesta_1 = __importDefault(require("../models/respuesta"));
 const connection_1 = __importDefault(require("../database/connection"));
+const t_dependencia_1 = __importDefault(require("../models/saf/t_dependencia"));
 const s_usuario_1 = __importDefault(require("../models/saf/s_usuario"));
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -175,7 +176,6 @@ exports.getcuestionarios = getcuestionarios;
 const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
-        console.log(body);
         if (body.id_dependencia != null && body.genero == null) {
             console.log("eentra uf  body.id_dependencia != null && body.genero == null ");
             const usersdep = yield s_usuario_1.default.findAll({
@@ -286,7 +286,6 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                 },
             });
             const idssesion = (yield cuestionariosvalidos).map(cus => cus.id_sesion);
-            console.log(idssesion);
             const pregunta = yield secciones_1.default.findAll({
                 include: [
                     {
@@ -441,3 +440,450 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getcuestionariosdep = getcuestionariosdep;
+const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const dependencias = yield t_dependencia_1.default.findAll({
+            include: [
+                {
+                    "model": s_usuario_1.default,
+                    "as": "m_usuarios",
+                    where: {
+                        'Estado': 1
+                    },
+                }
+            ]
+        });
+        const deps = dependencias.map(dep => ({
+            idDependencia: dep.id_Dependencia,
+            nombreDep: dep.nombre_completo,
+            usuarios: dep.m_usuarios.map(us => us.N_Usuario)
+        }));
+        const mujer = yield preguntas_1.default.findAll({
+            where: {
+                'texto_pregunta': 'Sexo asignado al nacer'
+            },
+            include: [
+                {
+                    model: opciones_1.default,
+                    as: "m_preguntas",
+                    where: {
+                        'texto_opcion': "Mujer"
+                    }
+                }
+            ],
+        });
+        const hombre = yield preguntas_1.default.findAll({
+            where: {
+                'texto_pregunta': 'Sexo asignado al nacer'
+            },
+            include: [
+                {
+                    model: opciones_1.default,
+                    as: "m_preguntas",
+                    where: {
+                        'texto_opcion': "Hombre"
+                    }
+                }
+            ],
+        });
+        const idsMujeres = mujer.map(mj => ({
+            idPregunta: mj.id,
+            opciones: mj.m_preguntas.map(opc => ({
+                idOpcion: opc.id,
+            }))
+        }));
+        const idsHombres = hombre.map(hs => ({
+            idPregunta: hs.id,
+            opciones: hs.m_preguntas.map(opc => ({
+                idOpcion: opc.id,
+            }))
+        }));
+        let data = []; // Declaro fuera del ciclo
+        for (const dep of deps) {
+            if (dep.idDependencia == 1) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 2) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 3) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 4) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 5) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 6) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 7) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+            if (dep.idDependencia == 8) {
+                const safMujeres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsMujeres[0].idPregunta,
+                        'id_opcion': idsMujeres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const safHombres = yield respuesta_1.default.findAll({
+                    where: {
+                        'id_pregunta': idsHombres[0].idPregunta,
+                        'id_opcion': idsHombres[0].opciones[0].idOpcion
+                    },
+                    include: [
+                        {
+                            model: sesion_cuestionario_1.default,
+                            as: 'm_sesion',
+                            where: {
+                                "id_usuario": dep.usuarios
+                            }
+                        },
+                    ],
+                });
+                const totm = safMujeres.map(saf => {
+                    var _a;
+                    totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                const toth = safHombres.map(saf => {
+                    var _a;
+                    totalHombres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
+                });
+                data.push([
+                    {
+                        dependencia: dep.nombreDep,
+                        mujeres: totm.length || 0,
+                        hombres: toth.length || 0
+                    }
+                ]);
+            }
+        }
+        return res.json({
+            data: data
+        });
+    }
+    catch (error) {
+        console.error('Error al generar consulta:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor' });
+    }
+});
+exports.gettotalesdep = gettotalesdep;
