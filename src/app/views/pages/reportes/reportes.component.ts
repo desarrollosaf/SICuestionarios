@@ -97,7 +97,6 @@ export class ReportesComponent {
   getDependencias() {
     this._reporteService.getDependencias().subscribe({
       next: (response) => {
-        console.log(response.data);
         this.dependencia = response.data
       },
       error: (e: HttpErrorResponse) => {
@@ -136,7 +135,6 @@ export class ReportesComponent {
   console.log(valores);
     this._reporteService.getCuestionariosDep(valores).subscribe({
       next: (response) => {
-        console.log(response);
         this.data = response.data;
         setTimeout(() => {
           this.accordionOpen = true;
@@ -156,7 +154,6 @@ export class ReportesComponent {
     this.data = [];
     this._reporteService.getCuestionarios().subscribe({
       next: (response) => {
-        console.log(response);
         this.data = response.data;
         setTimeout(() => {
           this.accordionOpen = true;
