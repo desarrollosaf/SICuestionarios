@@ -24,6 +24,8 @@ class preguntas extends Model<
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
+
+    declare m_preguntas?: opciones[];
 }
 
 preguntas.init(

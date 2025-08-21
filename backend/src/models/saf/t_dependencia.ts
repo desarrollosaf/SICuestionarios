@@ -7,6 +7,7 @@ import {
 } from 'sequelize';
 import sequelize from '../../database/connection'; 
 import SUsuario from './s_usuario';
+import UsersSafs from './users';
 
 class Dependencia extends Model<
   InferAttributes<Dependencia>,
@@ -21,6 +22,8 @@ class Dependencia extends Model<
   declare Estado: number;
   declare orden: number | null;
   declare nombre_completo: string | null;
+
+  declare m_usuarios?: SUsuario[];
 }
 
 Dependencia.init(
@@ -29,38 +32,38 @@ Dependencia.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
-       field: 'id_Dependencia'
+      field: 'id_Dependencia'
     },
     C_presupDep: {
       type: DataTypes.INTEGER,
       allowNull: false,
-       field: 'C_presupDep'
+      field: 'C_presupDep'
     },
     Nombre: {
       type: DataTypes.STRING(100),
       allowNull: false,
-       field: 'Nombre'
+      field: 'Nombre'
     },
     Creado: {
       type: DataTypes.INTEGER,
       allowNull: false,
-       field: 'Creado'
+      field: 'Creado'
     },
     F_Creacion: {
       type: DataTypes.DATEONLY,
       allowNull: false,
-       field: 'F_Creacion'
+      field: 'F_Creacion'
     },
     
     U_Modificacion: {
       type: DataTypes.DATEONLY,
       allowNull: true,
-       field: 'U_Modificacion'
+      field: 'U_Modificacion'
     },
     Estado: {
       type: DataTypes.INTEGER,
       allowNull: false,
-       field: 'Estado'
+      field: 'Estado'
     },
     orden: {
       type: DataTypes.INTEGER,

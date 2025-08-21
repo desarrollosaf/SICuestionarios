@@ -149,25 +149,28 @@ const getcuestionarios = (req, res) => __awaiter(void 0, void 0, void 0, functio
                 { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
         ]
     });
-    const resultado = pregunta.map(sec => ({
-        idSeccion: sec.id,
-        nombreSeccion: sec.titulo,
-        ordenSeccion: sec.orden,
-        preguntas: sec.m_preguntas.map(preg => ({
-            idPregunta: preg.id,
-            nombrePregunta: preg.texto_pregunta,
-            ordenPregunta: preg.orden,
-            opciones: preg.m_opciones.map(opc => {
-                var _a;
-                return ({
-                    idOpcion: opc.id,
-                    nombreOpcion: opc.texto_opcion,
-                    ordenOpcion: opc.orden,
-                    totalRespuestas: (((_a = opc.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0)
-                });
-            })
-        }))
-    }));
+    const resultado = pregunta.map(sec => {
+        const seccion = sec;
+        return {
+            idSeccion: sec.id,
+            nombreSeccion: sec.titulo,
+            ordenSeccion: sec.orden,
+            preguntas: (seccion.m_preguntas || []).map((preg) => ({
+                idPregunta: preg.id,
+                nombrePregunta: preg.texto_pregunta,
+                ordenPregunta: preg.orden,
+                opciones: (preg.m_opciones || []).map((opc) => {
+                    var _a;
+                    return ({
+                        idOpcion: opc.id,
+                        nombreOpcion: opc.texto_opcion,
+                        ordenOpcion: opc.orden,
+                        totalRespuestas: (((_a = opc.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0)
+                    });
+                })
+            }))
+        };
+    });
     return res.json({
         data: resultado
     });
@@ -223,25 +226,28 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                         { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
                 ]
             });
-            const resultado = pregunta.map(sec => ({
-                idSeccion: sec.id,
-                nombreSeccion: sec.titulo,
-                ordenSeccion: sec.orden,
-                preguntas: sec.m_preguntas.map(preg => ({
-                    idPregunta: preg.id,
-                    nombrePregunta: preg.texto_pregunta,
-                    ordenPregunta: preg.orden,
-                    opciones: preg.m_opciones.map(opc => {
-                        var _a;
-                        return ({
-                            idOpcion: opc.id,
-                            nombreOpcion: opc.texto_opcion,
-                            ordenOpcion: opc.orden,
-                            totalRespuestas: (((_a = opc.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0)
-                        });
-                    })
-                }))
-            }));
+            const resultado = pregunta.map(sec => {
+                const seccion = sec;
+                return {
+                    idSeccion: sec.id,
+                    nombreSeccion: sec.titulo,
+                    ordenSeccion: sec.orden,
+                    preguntas: (seccion.m_preguntas || []).map((preg) => ({
+                        idPregunta: preg.id,
+                        nombrePregunta: preg.texto_pregunta,
+                        ordenPregunta: preg.orden,
+                        opciones: (preg.m_opciones || []).map((opc) => {
+                            var _a;
+                            return ({
+                                idOpcion: opc.id,
+                                nombreOpcion: opc.texto_opcion,
+                                ordenOpcion: opc.orden,
+                                totalRespuestas: (((_a = opc.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0)
+                            });
+                        })
+                    }))
+                };
+            });
             return res.json({
                 data: resultado
             });
@@ -271,14 +277,16 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                     }
                 ],
             });
-            const ids = genero.map(pre => ({
-                idPregunta: pre.id,
-                nombrePregunta: pre.texto_pregunta,
-                opciones: pre.m_preguntas.map(opc => ({
-                    idOpcion: opc.id,
-                    nombreOpcion: opc.texto_opcion
-                }))
-            }));
+            const ids = genero.map((pre) => {
+                return {
+                    idPregunta: pre.id,
+                    nombrePregunta: pre.texto_pregunta,
+                    opciones: (pre.m_preguntas || []).map((opc) => ({
+                        idOpcion: opc.id,
+                        nombreOpcion: opc.texto_opcio
+                    }))
+                };
+            });
             const cuestionariosvalidos = respuesta_1.default.findAll({
                 where: {
                     'id_pregunta': ids[0].idPregunta,
@@ -326,11 +334,11 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                 idSeccion: sec.id,
                 nombreSeccion: sec.titulo,
                 ordenSeccion: sec.orden,
-                preguntas: sec.m_preguntas.map(preg => ({
+                preguntas: (sec.m_preguntas || []).map((preg) => ({
                     idPregunta: preg.id,
                     nombrePregunta: preg.texto_pregunta,
                     ordenPregunta: preg.orden,
-                    opciones: preg.m_opciones.map(opc => {
+                    opciones: (preg.m_opciones || []).map((opc) => {
                         var _a;
                         return ({
                             idOpcion: opc.id,
@@ -360,10 +368,10 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                     }
                 ],
             });
-            const ids = genero.map(pre => ({
+            const ids = genero.map((pre) => ({
                 idPregunta: pre.id,
                 nombrePregunta: pre.texto_pregunta,
-                opciones: pre.m_preguntas.map(opc => ({
+                opciones: pre.m_preguntas.map((opc) => ({
                     idOpcion: opc.id,
                     nombreOpcion: opc.texto_opcion
                 }))
@@ -410,15 +418,15 @@ const getcuestionariosdep = (req, res) => __awaiter(void 0, void 0, void 0, func
                         { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
                 ]
             });
-            const resultado = pregunta.map(sec => ({
+            const resultado = pregunta.map((sec) => ({
                 idSeccion: sec.id,
                 nombreSeccion: sec.titulo,
                 ordenSeccion: sec.orden,
-                preguntas: sec.m_preguntas.map(preg => ({
+                preguntas: sec.m_preguntas.map((preg) => ({
                     idPregunta: preg.id,
                     nombrePregunta: preg.texto_pregunta,
                     ordenPregunta: preg.orden,
-                    opciones: preg.m_opciones.map(opc => {
+                    opciones: preg.m_opciones.map((opc) => {
                         var _a;
                         return ({
                             idOpcion: opc.id,
@@ -453,10 +461,10 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 }
             ]
         });
-        const deps = dependencias.map(dep => ({
+        const deps = dependencias.map((dep) => ({
             idDependencia: dep.id_Dependencia,
             nombreDep: dep.nombre_completo,
-            usuarios: dep.m_usuarios.map(us => us.N_Usuario)
+            usuarios: dep.m_usuarios.map((us) => us.N_Usuario)
         }));
         const mujer = yield preguntas_1.default.findAll({
             where: {
@@ -486,15 +494,15 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                 }
             ],
         });
-        const idsMujeres = mujer.map(mj => ({
+        const idsMujeres = mujer.map((mj) => ({
             idPregunta: mj.id,
-            opciones: mj.m_preguntas.map(opc => ({
+            opciones: mj.m_preguntas.map((opc) => ({
                 idOpcion: opc.id,
             }))
         }));
-        const idsHombres = hombre.map(hs => ({
+        const idsHombres = hombre.map((hs) => ({
             idPregunta: hs.id,
-            opciones: hs.m_preguntas.map(opc => ({
+            opciones: hs.m_preguntas.map((opc) => ({
                 idOpcion: opc.id,
             }))
         }));
@@ -531,7 +539,7 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
                         },
                     ],
                 });
-                const totm = safMujeres.map(saf => {
+                const totm = safMujeres.map((saf) => {
                     var _a;
                     totalMujeres: (((_a = saf.m_sesion) === null || _a === void 0 ? void 0 : _a.length) || 0);
                 });

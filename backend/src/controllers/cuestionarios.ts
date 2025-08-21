@@ -110,7 +110,6 @@ export const savecuestionario = async(req: Request, res: Response) : Promise<any
         console.error('Error al guardar respuestas:', error);
         return res.status(500).json({ msg: 'Error interno del servidor'});
     }
-            
 }
 
 export const getcuestionarios = async(req: Request, res: Response) : Promise<any> => {
@@ -118,7 +117,7 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
         include:[
             {
                 model: preguntas,
-                as:"m_preguntas",
+                as: "m_preguntas",
                 include: [
                     {
                         model: opciones,
@@ -140,23 +139,27 @@ export const getcuestionarios = async(req: Request, res: Response) : Promise<any
             {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
         ]
     })
+    
+    const resultado = pregunta.map(sec => {
+        const seccion = sec as any; 
 
-    const resultado = pregunta.map(sec => ({
-        idSeccion: sec.id,
-        nombreSeccion: sec.titulo,
-        ordenSeccion: sec.orden,
-        preguntas: sec.m_preguntas.map(preg => ({
-            idPregunta: preg.id,
-            nombrePregunta: preg.texto_pregunta,
-            ordenPregunta: preg.orden,
-            opciones: preg.m_opciones.map(opc => ({
-                idOpcion: opc.id,
-                nombreOpcion: opc.texto_opcion,
-                ordenOpcion: opc.orden,
-                totalRespuestas: (opc.m_respuestas?.length || 0)
+        return {
+            idSeccion: sec.id,
+            nombreSeccion: sec.titulo,
+            ordenSeccion: sec.orden,
+            preguntas: (seccion.m_preguntas || []).map((preg: any) => ({
+                idPregunta: preg.id,
+                nombrePregunta: preg.texto_pregunta,
+                ordenPregunta: preg.orden,
+                opciones: (preg.m_opciones || []).map((opc: any) => ({
+                    idOpcion: opc.id,
+                    nombreOpcion: opc.texto_opcion,
+                    ordenOpcion: opc.orden,
+                    totalRespuestas: (opc.m_respuestas?.length || 0)
+                }))
             }))
-        }))
-    }));
+        }
+    });
 
     return res.json({
         data: resultado
@@ -217,22 +220,26 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
                 ]
             })
 
-            const resultado = pregunta.map(sec => ({
-            idSeccion: sec.id,
-            nombreSeccion: sec.titulo,
-            ordenSeccion: sec.orden,
-            preguntas: sec.m_preguntas.map(preg => ({
-                idPregunta: preg.id,
-                nombrePregunta: preg.texto_pregunta,
-                ordenPregunta: preg.orden,
-                opciones: preg.m_opciones.map(opc => ({
-                    idOpcion: opc.id,
-                    nombreOpcion: opc.texto_opcion,
-                    ordenOpcion: opc.orden,
-                    totalRespuestas: (opc.m_respuestas?.length || 0)
+            const resultado = pregunta.map(sec => {
+                const seccion = sec as any; 
+
+                return {
+                    idSeccion: sec.id,
+                    nombreSeccion: sec.titulo,
+                    ordenSeccion: sec.orden,
+                    preguntas: (seccion.m_preguntas || []).map((preg: any) => ({
+                    idPregunta: preg.id,
+                    nombrePregunta: preg.texto_pregunta,
+                    ordenPregunta: preg.orden,
+                        opciones: (preg.m_opciones || []).map((opc: any) => ({
+                            idOpcion: opc.id,
+                            nombreOpcion: opc.texto_opcion,
+                            ordenOpcion: opc.orden,
+                            totalRespuestas: (opc.m_respuestas?.length || 0)
+                        }))
                     }))
-                }))
-            }));
+                }
+            });
             
             return res.json({
                 data: resultado
@@ -266,14 +273,16 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
                 ],
             })
 
-            const ids = genero.map(pre =>  ({
-                idPregunta: pre.id,
-                nombrePregunta: pre.texto_pregunta,
-                opciones: pre.m_preguntas.map(opc => ({
+            const ids = genero.map((pre: preguntas) => {
+                return {
+                    idPregunta: pre.id,
+                    nombrePregunta: pre.texto_pregunta,
+                    opciones: (pre.m_preguntas || []).map((opc: any) => ({
                         idOpcion: opc.id,
-                        nombreOpcion: opc.texto_opcion
-                }))
-            }));
+                        nombreOpcion: opc.texto_opcio
+                    }))
+                }
+            });
 
 
             const cuestionariosvalidos = respuestas.findAll({
@@ -323,14 +332,14 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
 
     
             const resultado = pregunta.map(sec => ({
-            idSeccion: sec.id,
-            nombreSeccion: sec.titulo,
-            ordenSeccion: sec.orden,
-            preguntas: sec.m_preguntas.map(preg => ({
-                idPregunta: preg.id,
-                nombrePregunta: preg.texto_pregunta,
-                ordenPregunta: preg.orden,
-                opciones: preg.m_opciones.map(opc => ({
+                idSeccion: sec.id,
+                nombreSeccion: sec.titulo,
+                ordenSeccion: sec.orden,
+                preguntas: (sec.m_preguntas || []).map((preg: any) => ({
+                    idPregunta: preg.id,
+                    nombrePregunta: preg.texto_pregunta,
+                    ordenPregunta: preg.orden,
+                opciones: (preg.m_opciones || []).map((opc: any) => ({
                     idOpcion: opc.id,
                     nombreOpcion: opc.texto_opcion,
                     ordenOpcion: opc.orden,
@@ -359,10 +368,10 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
                 ],
             })
 
-            const ids = genero.map(pre =>  ({
+            const ids = genero.map((pre: any) =>  ({
                 idPregunta: pre.id,
                 nombrePregunta: pre.texto_pregunta,
-                opciones: pre.m_preguntas.map(opc => ({
+                opciones: pre.m_preguntas.map((opc: any) => ({
                         idOpcion: opc.id,
                         nombreOpcion: opc.texto_opcion
                 }))
@@ -413,15 +422,15 @@ export const getcuestionariosdep = async(req: Request, res: Response) : Promise<
             })
 
     
-            const resultado = pregunta.map(sec => ({
+            const resultado = pregunta.map((sec: any) => ({
             idSeccion: sec.id,
             nombreSeccion: sec.titulo,
             ordenSeccion: sec.orden,
-            preguntas: sec.m_preguntas.map(preg => ({
+            preguntas: sec.m_preguntas.map((preg: any) => ({
                 idPregunta: preg.id,
                 nombrePregunta: preg.texto_pregunta,
                 ordenPregunta: preg.orden,
-                opciones: preg.m_opciones.map(opc => ({
+                opciones: preg.m_opciones.map((opc: any) => ({
                     idOpcion: opc.id,
                     nombreOpcion: opc.texto_opcion,
                     ordenOpcion: opc.orden,
@@ -454,10 +463,10 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
             ]
         });
 
-        const deps = dependencias.map(dep => ({
+        const deps = dependencias.map((dep: any) => ({
             idDependencia: dep.id_Dependencia,
             nombreDep: dep.nombre_completo,
-            usuarios:dep.m_usuarios.map(us => us.N_Usuario)
+            usuarios:dep.m_usuarios.map((us: any) => us.N_Usuario)
         }))
 
     
@@ -491,16 +500,16 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
             ],
         })
 
-        const idsMujeres = mujer.map(mj =>  ({
+        const idsMujeres = mujer.map((mj: any) =>  ({
             idPregunta: mj.id,
-            opciones: mj.m_preguntas.map(opc => ({
+            opciones: mj.m_preguntas.map((opc: any) => ({
                     idOpcion: opc.id,
             }))
         }));
 
-        const idsHombres = hombre.map(hs =>  ({
+        const idsHombres = hombre.map((hs: any) =>  ({
             idPregunta: hs.id,
-            opciones: hs.m_preguntas.map(opc => ({
+            opciones: hs.m_preguntas.map((opc: any) => ({
                     idOpcion: opc.id,
             }))
         }));
@@ -541,7 +550,7 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                     ],
                 })
 
-                const totm = safMujeres.map(saf =>{
+                const totm = safMujeres.map((saf: any) =>{
                     totalMujeres: (saf.m_sesion?.length || 0)
                 })
 
@@ -901,7 +910,6 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
                 );
             }
         }
-
         return res.json({
             data: data
         });
