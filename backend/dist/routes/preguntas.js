@@ -8,4 +8,5 @@ router.post('/api/preguntas/savecuestionario/:id', cuestionarios_1.savecuestiona
 router.get("/api/preguntas/getcuestionarios", cuestionarios_1.getcuestionarios);
 router.post("/api/preguntas/getcuestionariosdep", cuestionarios_1.getcuestionariosdep);
 router.get("/api/preguntas/gettotalesdep", cuestionarios_1.gettotalesdep);
+router.get("/api/preguntas/getcuestionariosus", cuestionarios_1.getcuestionariosus);
 exports.default = router;

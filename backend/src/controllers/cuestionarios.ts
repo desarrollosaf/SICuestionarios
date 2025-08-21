@@ -9,6 +9,9 @@ import { strict } from "assert"
 import { col, fn, NUMBER, where } from "sequelize"
 import Dependencia from "../models/saf/t_dependencia"
 import SUsuario from "../models/saf/s_usuario"
+import { waitForDebugger } from "inspector"
+import Direccion from "../models/saf/t_direccion"
+import Departamento from "../models/saf/t_departamento"
 
 export const getpreguntas = async(req: Request, res: Response) : Promise<any> =>{
   try {
@@ -912,6 +915,54 @@ export const gettotalesdep = async(req: Request, res: Response) : Promise<any> =
         }
         return res.json({
             data: data
+        });
+    } catch (error) {
+        console.error('Error al generar consulta:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor'});
+    }
+}
+
+
+export const getcuestionariosus = async(req: Request, res: Response) : Promise<any> => {
+    try {
+        const cuestionarios = await sesion.findAll()
+
+        const rfcs = cuestionarios.map(rf => rf.id_usuario);
+        
+        const usuarios = await SUsuario.findAll({
+            where: {
+                'N_Usuario': rfcs,
+            },
+            attributes:[
+                'Nombre', 'N_Usuario'
+            ],
+            include: [
+                {
+                    "model": Dependencia,
+                    "as": "dependencia",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": Direccion,
+                    "as": "direccion",
+                     attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": Departamento,
+                    "as": "departamento",
+                     attributes: [
+                        'nombre_completo'
+                    ]
+                }
+            ]
+        })
+
+        return res.json({
+            data: usuarios
         });
     } catch (error) {
         console.error('Error al generar consulta:', error);

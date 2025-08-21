@@ -5,6 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const connection_1 = __importDefault(require("../../database/connection"));
+const t_dependencia_1 = __importDefault(require("../saf/t_dependencia"));
+const t_direccion_1 = __importDefault(require("../saf/t_direccion"));
+const t_departamento_1 = __importDefault(require("../saf/t_departamento"));
 const sesion_cuestionario_1 = __importDefault(require("../sesion_cuestionario"));
 class SUsuario extends sequelize_1.Model {
 }
@@ -125,21 +128,21 @@ SUsuario.init({
         },
     ],
 });
-// SUsuario.hasOne(Dependencia, {
-//   sourceKey: 'id_Dependencia',         
-//   foreignKey: 'id_Dependencia',   
-//   as: 'dependencia',
-// });
-// SUsuario.hasOne(Direccion, {
-//   sourceKey: 'id_Direccion',         
-//   foreignKey: 'id_Direccion',   
-//   as: 'direccion',
-// });
-// SUsuario.hasOne(Departamento, {
-//   sourceKey: 'id_Departamento',         
-//   foreignKey: 'id_Departamento',   
-//   as: 'departamento',
-// });
+SUsuario.hasOne(t_dependencia_1.default, {
+    sourceKey: 'id_Dependencia',
+    foreignKey: 'id_Dependencia',
+    as: 'dependencia',
+});
+SUsuario.hasOne(t_direccion_1.default, {
+    sourceKey: 'id_Direccion',
+    foreignKey: 'id_Direccion',
+    as: 'direccion',
+});
+SUsuario.hasOne(t_departamento_1.default, {
+    sourceKey: 'id_Departamento',
+    foreignKey: 'id_Departamento',
+    as: 'departamento',
+});
 SUsuario.belongsTo(sesion_cuestionario_1.default, {
     targetKey: "id_usuario",
     foreignKey: 'N_Usuario',

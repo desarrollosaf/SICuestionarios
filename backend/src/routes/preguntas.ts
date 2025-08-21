@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getcuestionarios, getcuestionariosdep, getpreguntas, gettotalesdep, savecuestionario } from "../controllers/cuestionarios";
+import { getcuestionarios, getcuestionariosdep, getcuestionariosus, getpreguntas, gettotalesdep, savecuestionario } from "../controllers/cuestionarios";
 
 
 const router = Router();
@@ -9,5 +9,5 @@ router.post('/api/preguntas/savecuestionario/:id', savecuestionario)
 router.get("/api/preguntas/getcuestionarios", getcuestionarios)
 router.post("/api/preguntas/getcuestionariosdep", getcuestionariosdep)
 router.get("/api/preguntas/gettotalesdep", gettotalesdep)
-
+router.get("/api/preguntas/getcuestionariosus", getcuestionariosus)
 export default router

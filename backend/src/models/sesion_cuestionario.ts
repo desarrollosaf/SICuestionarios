@@ -10,6 +10,7 @@ import {
 import sequelize from '../database/cuestionariosConnection';
 import preguntas from './preguntas';
 import opciones from './opciones';
+import SUsuario from './saf/s_usuario';
 
 class sesion extends Model<
   InferAttributes<sesion>,
