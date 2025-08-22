@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit {
       next: (response: any) => {
         const userData = response.user;
         const bandera = response.bandera;
-
+      // console.log(userData.name);
         localStorage.setItem('isLoggedin', 'true'); 
         this._userService.setCurrentUser(userData);
         if (bandera) {
