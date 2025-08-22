@@ -38,5 +38,11 @@ export class ReporteService {
             `${this.myAppUrl}${this.myAPIUrl}/gettotalesdep`
         );
     }
+
+    getServidoresPublicos(): Observable<any> {
+        return this.http.get<any>(
+            `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosus`
+        );
+    }
   
 }

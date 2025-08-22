@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
@@ -21,6 +21,8 @@ const respuesta_1 = __importDefault(require("../models/respuesta"));
 const connection_1 = __importDefault(require("../database/connection"));
 const t_dependencia_1 = __importDefault(require("../models/saf/t_dependencia"));
 const s_usuario_1 = __importDefault(require("../models/saf/s_usuario"));
+const t_direccion_1 = __importDefault(require("../models/saf/t_direccion"));
+const t_departamento_1 = __importDefault(require("../models/saf/t_departamento"));
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -879,3 +881,48 @@ const gettotalesdep = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.gettotalesdep = gettotalesdep;
+const getcuestionariosus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const cuestionarios = yield sesion_cuestionario_1.default.findAll();
+        const rfcs = cuestionarios.map(rf => rf.id_usuario);
+        const usuarios = yield s_usuario_1.default.findAll({
+            where: {
+                'N_Usuario': rfcs,
+            },
+            attributes: [
+                'Nombre', 'N_Usuario'
+            ],
+            include: [
+                {
+                    "model": t_dependencia_1.default,
+                    "as": "dependencia",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": t_direccion_1.default,
+                    "as": "direccion",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": t_departamento_1.default,
+                    "as": "departamento",
+                    attributes: [
+                        'nombre_completo'
+                    ]
+                }
+            ]
+        });
+        return res.json({
+            data: usuarios
+        });
+    }
+    catch (error) {
+        console.error('Error al generar consulta:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor' });
+    }
+});
+exports.getcuestionariosus = getcuestionariosus;
