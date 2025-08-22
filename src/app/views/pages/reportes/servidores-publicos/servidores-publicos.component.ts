@@ -20,7 +20,10 @@ export class ServidoresPublicosComponent {
   pageSize: number = 10;
   filteredCount: number = 0;
   loading: boolean = true;
-
+  sorts: any[] = [];
+  filtroDependencia: string = '';
+  filtroDireccion: string = '';
+  filtroDepartamento: string = '';
   constructor(private _reporteService: ReporteService) { }
 
   ngOnInit(): void {
@@ -54,11 +57,17 @@ export class ServidoresPublicosComponent {
   updateFilter(event: any) {
     const val = (event.target?.value || '').toLowerCase();
     this.temp = this.originalData.filter((row: any) => {
-      return Object.values(row).some((field) => {
-        return field && field.toString().toLowerCase().includes(val);
-      });
+      const nombre = row.Nombre?.toLowerCase() || '';
+      const dependencia = row.dependencia?.nombre_completo?.toLowerCase() || '';
+      const direccion = row.direccion?.nombre_completo?.toLowerCase() || '';
+      const departamento = row.departamento?.nombre_completo?.toLowerCase() || '';
+      return (
+        nombre.includes(val) ||
+        dependencia.includes(val) ||
+        direccion.includes(val) ||
+        departamento.includes(val)
+      );
     });
-
     this.filteredCount = this.temp.length;
     this.setPage({ offset: 0 });
   }

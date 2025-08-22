@@ -15,43 +15,19 @@ export const MENU: MenuItem[] = [
       {
         subMenuItems: [
           {
-            label: 'Email',
+            label: 'Administrador',
             isTitle: true,
           },
           {
-            label: 'Inbox',
-            link: '/apps/email/inbox'
+            label: 'Graficas',
+            link: '/reportes'
           },
           {
-            label: 'Read',
-            link: '/apps/email/read'
-          },
-          {
-            label: 'Compose',
-            link: '/apps/email/compose'
+            label: 'Servidores publicos',
+            link: '/reportes/servidores-publicos'
           },
         ]
       },
-      {
-        subMenuItems: [
-          {
-            label: 'Other',
-            isTitle: true,
-          },
-          {
-            label: 'Chat',
-            link: '/apps/chat',
-          },
-          {
-            label: 'Calendar',
-            link: '/apps/calendar',
-            badge: {
-              variant: 'primary',
-              text: 'Event',
-            }
-          },
-        ]
-      }
     ]
   },
   
