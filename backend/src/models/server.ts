@@ -40,7 +40,7 @@ class Server {
     midlewares(){
         this.app.use(express.json())
         this.app.use(cors({
-            origin: 'https://administracionyfinanzasplem.gob.mx',
+            origin: 'https://administracionyfinanzasplem.gob.mx/',
             credentials: true
         }));
 
