@@ -34,7 +34,7 @@ export class ServidoresPublicosComponent {
   getServidoresP() {
     this._reporteService.getServidoresPublicos().subscribe({
       next: (response) => {
-        console.log(response);
+        // console.log(response);
         this.originalData = [...response.data];
         this.temp = [...this.originalData];
         this.filteredCount = this.temp.length;
@@ -73,7 +73,7 @@ export class ServidoresPublicosComponent {
   }
 
   descargarPDF(row: any) {
-    console.log('Descargando PDF para:', row);
+    // console.log('Descargando PDF para:', row);
     const url = row.urlPDF;
     window.open(url, '_blank');
   }
