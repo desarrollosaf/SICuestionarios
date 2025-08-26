@@ -88,5 +88,9 @@ Dependencia.init(
   }
 );
 
+// Dependencia.hasMany(SUsuario,{
+//   foreignKey: "id_Dependencia", as: "m_usuarios"
+// })
+
 
 export default Dependencia;

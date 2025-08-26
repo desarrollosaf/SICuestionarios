@@ -1,8 +1,8 @@
 {
   "development": {
-     "username": "usr_genero",
-     "password": "XenCoItYEywGdD1",
-     "database": "adminplem_generoCuestionario",
+     "username": "root",
+     "password": "",
+     "database": "cuestionarios",
      "host": "192.168.36.53",
      "dialect": "mysql"
   },
