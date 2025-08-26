@@ -120,7 +120,7 @@
                           <textarea id="comentarios" rows="4" class="form-control" [formControl]="comentariosControl"
                             placeholder="Escribe aquí tus comentarios..."></textarea>
                           <div class="mt-3 text-end">
-                            <button type="submit" class="btn btn-success">Enviar</button>
+                            <button type="submit" [disabled]="formCuestionario.invalid" class="btn btn-success">Enviar</button>
                           </div>
                         </div>
                         <div class="navigation-buttons mt-4">
