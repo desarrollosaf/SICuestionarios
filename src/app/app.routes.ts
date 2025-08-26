@@ -18,7 +18,6 @@ export const routes: Routes = [
       },
       {
         path: 'reportes',
-        canActivate: [UserAccessGuard],
         canActivateChild: [UserAccessGuard],
         loadChildren: () => import('./views/pages/reportes/reportes.route')
       }
