@@ -18,9 +18,10 @@ export class UserAccessGuard implements CanActivate, CanActivateChild {
       'GEN25JISP980721'
     ];
 
-    const userRfc = this.userService.getUserRfc()?.toUpperCase(); // por si viene en minúsculas
+    const rfc = this.userService.currentUserValue?.rfc ?? '';
+    const role = rfc.startsWith('GEN25') ? 'GEN25' : 'usuario';
 
-    if (userRfc && allowedRfcs.includes(userRfc)) {
+    if (role == 'GEN25') {
       return true;
     }
 
