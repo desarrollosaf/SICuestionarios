@@ -7,5 +7,4 @@ const sequelizeCuestionarios = new Sequelize('adminplem_generoCuestionario', 'us
         freezeTableName: true 
     }
 })
-
 export default sequelizeCuestionarios 
