@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
 
  
   onLoggedin(form: NgForm) {
-    console.log('envio login')
+    // console.log('envio login')
     const user: User = {
       rfc: form.value.Urfc,
       password: form.value.Upassword
@@ -89,7 +89,7 @@ export class LoginComponent implements OnInit {
       },
     });
 
-    console.log(user);
+    // console.log(user);
     
   }
 
