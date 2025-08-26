@@ -63,4 +63,7 @@ Dependencia.init({
     tableName: 't_dependencia',
     timestamps: false,
 });
+// Dependencia.hasMany(SUsuario,{
+//   foreignKey: "id_Dependencia", as: "m_usuarios"
+// })
 exports.default = Dependencia;

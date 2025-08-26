@@ -36,6 +36,33 @@ class SUsuario extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: Date | null;
+
+  
+  static associate(models: any) {
+    SUsuario.belongsTo(Dependencia, {
+      // sourceKey: 'id_Dependencia',         
+      foreignKey: 'id_Dependencia',   
+      as: 'dependencia',
+    });
+
+    SUsuario.belongsTo(Direccion, {
+      // sourceKey: 'id_Direccion',         
+      foreignKey: 'id_Direccion',   
+      as: 'direccion',
+    });
+
+    SUsuario.belongsTo(Departamento, {
+      // sourceKey: 'id_Departamento',         
+      foreignKey: 'id_Departamento',   
+      as: 'departamento',
+    });
+
+    SUsuario.belongsTo(sesion,{
+      targetKey: "id_usuario",
+      foreignKey: 'N_Usuario',
+      as: "m_cuestionario"
+    })
+  }
 }
 
 SUsuario.init(
@@ -159,29 +186,6 @@ SUsuario.init(
   }
 );
 
-SUsuario.hasOne(Dependencia, {
-  sourceKey: 'id_Dependencia',         
-  foreignKey: 'id_Dependencia',   
-  as: 'dependencia',
-});
-
-SUsuario.hasOne(Direccion, {
-  sourceKey: 'id_Direccion',         
-  foreignKey: 'id_Direccion',   
-  as: 'direccion',
-});
-
-SUsuario.hasOne(Departamento, {
-  sourceKey: 'id_Departamento',         
-  foreignKey: 'id_Departamento',   
-  as: 'departamento',
-});
-
-SUsuario.belongsTo(sesion,{
-  targetKey: "id_usuario",
-  foreignKey: 'N_Usuario',
-  as: "m_cuestionario"
-})
 
 
 export default SUsuario;
