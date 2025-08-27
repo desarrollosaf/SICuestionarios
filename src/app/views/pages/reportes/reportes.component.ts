@@ -47,8 +47,8 @@ import Swal from 'sweetalert2';
 export class ReportesComponent {
   public dependencia: any[] = [];
   generoSlct = [
-    { id: 'Hombre', name: 'Hombre' },
-    { id: 'Mujer', name: 'Mujer' }
+    { id: 'Hombre', name: 'Masculino' },
+    { id: 'Mujer', name: 'Femenino' }
   ];
   selectedDependencia: string | null = null;
   selectedGenero: string | null = null;
