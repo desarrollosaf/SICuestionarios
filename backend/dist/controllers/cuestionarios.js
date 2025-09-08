@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+exports.getExcel = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
@@ -926,3 +926,66 @@ const getcuestionariosus = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getcuestionariosus = getcuestionariosus;
+const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ExcelJS = require('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Datos');
+    const pregunta = yield secciones_1.default.findAll({
+        include: [
+            {
+                model: preguntas_1.default,
+                as: "m_preguntas",
+                include: [
+                    {
+                        model: opciones_1.default,
+                        as: 'm_opciones',
+                        include: [
+                            {
+                                model: respuesta_1.default,
+                                as: 'm_respuestas',
+                            }
+                        ],
+                    },
+                ],
+            },
+        ],
+        order: [
+            ['orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+            [{ model: preguntas_1.default, as: "m_preguntas" },
+                { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
+        ]
+    });
+    // Encabezados
+    worksheet.columns = [
+        { header: 'Sección', key: 'seccion', width: 30 },
+        { header: 'Pregunta', key: 'pregunta', width: 30 },
+        { header: 'Respuestas', key: 'respuesta', width: 30 },
+        { header: 'Totales', key: 'total', width: 30 },
+    ];
+    pregunta.forEach((seccion) => {
+        const nombreSeccion = seccion.titulo;
+        (seccion.m_preguntas || []).forEach((pregunta) => {
+            const nombrePregunta = pregunta.texto_pregunta;
+            (pregunta.m_opciones || []).forEach((opcion) => {
+                var _a;
+                const nombreOpcion = opcion.texto_opcion;
+                const totalRespuestas = ((_a = opcion.m_respuestas) === null || _a === void 0 ? void 0 : _a.length) || 0;
+                // Agregar fila al Excel
+                worksheet.addRow({
+                    seccion: nombreSeccion,
+                    pregunta: nombrePregunta,
+                    respuesta: nombreOpcion,
+                    total: totalRespuestas
+                });
+            });
+        });
+    });
+    // Enviar el archivo como descarga
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', 'attachment; filename=datos.xlsx');
+    yield workbook.xlsx.write(res);
+    res.end();
+    module.exports = { getExcel: exports.getExcel };
+});
+exports.getExcel = getExcel;
