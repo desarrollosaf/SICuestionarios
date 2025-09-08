@@ -3,7 +3,7 @@
      "username": "root",
      "password": "",
      "database": "cuestionarios",
-     "host": "192.168.36.53",
+     "host": "localhost",
      "dialect": "mysql"
   },
   "production": {
