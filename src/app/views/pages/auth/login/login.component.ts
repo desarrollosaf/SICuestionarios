@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
 
  
   onLoggedin(form: NgForm) {
-    console.log('envio login')
+    // console.log('envio login')
     const user: User = {
       rfc: form.value.Urfc,
       password: form.value.Upassword
@@ -57,7 +57,6 @@ export class LoginComponent implements OnInit {
       next: (response: any) => {
         const userData = response.user;
         const bandera = response.bandera;
-
         localStorage.setItem('isLoggedin', 'true'); 
         this._userService.setCurrentUser(userData);
         if (bandera) {
@@ -89,7 +88,7 @@ export class LoginComponent implements OnInit {
       },
     });
 
-    console.log(user);
+    // console.log(user);
     
   }
 

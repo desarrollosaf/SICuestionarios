@@ -53,4 +53,8 @@ export class UserService {
     });
   }
 
+  getUserRfc(): string | null {
+    return this.currentUserSubject.value?.rfc || null;
+  }
+
 }

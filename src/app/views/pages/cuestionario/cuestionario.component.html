@@ -15,11 +15,9 @@
               </h2>
               <div ngbAccordionCollapse>
                 <div ngbAccordionBody>
-                  Este instrumento tiene como finalidad identificar situaciones de desigualdad,
-                  discriminación o trato inequitativo por razón de género al interior del Poder
-                  Legislativo, con el objetivo de implementar acciones afirmativas, políticas de
-                  inclusión y buenas prácticas laborales que promuevan una cultura de igualdad
-                  sustantiva entre mujeres y hombres.
+                  Identificar situaciones de desigualdad, discriminación o trato inequitativo por razón de género al
+                  interior del Poder Legislativo, con la finalidad de fortalecer e implementar acciones y buenas
+                  prácticas que promuevan una cultura de igualdad sustantiva entre hombres y mujeres.
                 </div>
               </div>
             </div>
@@ -35,9 +33,9 @@
                     <p>Este diagnóstico consta de 6 secciones.</p>
                     <p class="mt-1">Marque con una ✔ la opción que mejor represente sus respuestas, mismas que serán
                       anónimas y confidenciales.</p>
-                    <p class="mt-1">Su participación es anónima y confidencial.</p>
+                   
                     <br />
-                    <p><strong>Consulta el <a href="" target="_blank" rel="noopener noreferrer">Aviso de Privacidad
+                    <p><strong>Consulta el <a href="https://legislacion.legislativoedomex.gob.mx/storage/documentos/avisosprivacidad/AvisodePrivacidadUIGEV.pdf" target="_blank" rel="noopener noreferrer">Aviso de Privacidad
                           aquí.</a></strong></p>
 
                   </div>
@@ -120,7 +118,8 @@
                           <textarea id="comentarios" rows="4" class="form-control" [formControl]="comentariosControl"
                             placeholder="Escribe aquí tus comentarios..."></textarea>
                           <div class="mt-3 text-end">
-                            <button type="submit" class="btn btn-success">Enviar</button>
+                            <button type="submit" [disabled]="formCuestionario.invalid"
+                              class="btn btn-success">Enviar</button>
                           </div>
                         </div>
                         <div class="navigation-buttons mt-4">
