@@ -44,5 +44,11 @@ export class ReporteService {
             `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosus`
         );
     }
+
+    getExcelF(valores: any ): Observable<Blob> {
+      return this.http.post(`${this.myAppUrl}${this.myAPIUrl}/getExcelFaltantes`,valores, {
+      responseType: 'blob' as 'blob',
+    });
+    }
   
 }

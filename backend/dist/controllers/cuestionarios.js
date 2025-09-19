@@ -12,7 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+
+exports.getExcelFaltantes = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+
 exports.getExcel = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
@@ -23,6 +27,8 @@ const t_dependencia_1 = __importDefault(require("../models/saf/t_dependencia"));
 const s_usuario_1 = __importDefault(require("../models/saf/s_usuario"));
 const t_direccion_1 = __importDefault(require("../models/saf/t_direccion"));
 const t_departamento_1 = __importDefault(require("../models/saf/t_departamento"));
+const { Sequelize } = require('sequelize');
+const ExcelJS = require('exceljs');
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -926,6 +932,55 @@ const getcuestionariosus = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getcuestionariosus = getcuestionariosus;
+
+const getExcelFaltantes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { body } = req;
+        const usuarioCuestionario = yield sesion_cuestionario_1.default.findAll({
+            attributes: [
+                'id_usuario',
+            ],
+            raw: true
+        });
+        const usuarioSaf = yield s_usuario_1.default.findAll({
+            attributes: [
+                'N_Usuario',
+                'Nombre',
+                'id_Dependencia',
+                'Estado',
+            ],
+            where: {
+                id_Dependencia: body.id_dependencia,
+                Estado: 1
+            },
+            raw: true
+        });
+        const idsRespondieron = new Set(usuarioCuestionario.map(u => u.id_usuario));
+        const usuariosConEstado = usuarioSaf.map(usuario => ({
+            N_usuario: usuario.N_Usuario,
+            Nombre: usuario.Nombre,
+            Respondio: idsRespondieron.has(usuario.N_Usuario) ? 'Sí' : 'No'
+        }));
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Usuarios');
+        worksheet.columns = [
+            { header: 'RFC', key: 'N_usuario', width: 20 },
+            { header: 'Nombre', key: 'Nombre', width: 30 },
+            { header: 'Respondió', key: 'Respondio', width: 15 }
+        ];
+        usuariosConEstado.forEach(usuario => worksheet.addRow(usuario));
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', 'attachment; filename=usuarios_no_respondieron.xlsx');
+        yield workbook.xlsx.write(res);
+        res.end();
+    }
+    catch (err) {
+        console.error(err);
+        res.status(500).send('Error al generar el Excel');
+    }
+});
+exports.getExcelFaltantes = getExcelFaltantes;
+
 const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ExcelJS = require('exceljs');
     const workbook = new ExcelJS.Workbook();
@@ -989,3 +1044,4 @@ const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     module.exports = { getExcel: exports.getExcel };
 });
 exports.getExcel = getExcel;
+
