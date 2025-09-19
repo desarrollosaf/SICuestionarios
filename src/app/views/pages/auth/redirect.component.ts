@@ -14,14 +14,11 @@ export class RedirectComponent implements OnInit {
   private userService = inject(UserService);
 
   ngOnInit(): void {
-    const allowedRfcs = [
-      'GEN25SAGM990220',
-      'GEN25DEGC941209',
-      'GEN25JISP980721'
-    ];
-    const userRfc = this.userService.getUserRfc()?.toUpperCase();
 
-    if (userRfc && allowedRfcs.includes(userRfc)) {
+    const rfc = this.userService.currentUserValue?.rfc ?? '';
+    const role = rfc.startsWith('GEN25') ? 'GEN25' : 'usuario';
+
+    if (role == 'GEN25') {
       this.router.navigate(['/reportes']);
     } else {
       this.router.navigate(['/cuestionario']);

@@ -21,6 +21,8 @@ class opciones extends Model<
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
+
+    
 }
 
 opciones.init(

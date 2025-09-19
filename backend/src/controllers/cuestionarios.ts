@@ -1036,5 +1036,76 @@ export const getExcelFaltantes = async (req: Request, res: Response): Promise<an
         res.status(500).send('Error al generar el Excel');
     }
 
+}
+
+export const getExcel = async(req: Request, res: Response) : Promise<any> => {
+    const ExcelJS = require('exceljs');
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Datos');
+
+const pregunta = await seccion.findAll({
+        include:[
+            {
+                model: preguntas,
+                as: "m_preguntas",
+                include: [
+                    {
+                        model: opciones,
+                        as: 'm_opciones',
+                        include: [
+                            {
+                            model: respuestas,
+                            as: 'm_respuestas',
+                            }
+                        ], 
+                    }, 
+                ],
+            },
+        ], 
+        order:[
+            ['orden', 'asc'], 
+            [{model:preguntas, as: "m_preguntas"}, 'orden', 'asc'],
+            [{model:preguntas, as: "m_preguntas"},
+            {model:opciones, as: "m_opciones"}, 'orden', 'asc'],
+        ]
+    })
+  // Encabezados
+    worksheet.columns = [
+    { header: 'Sección', key: 'seccion', width: 30 },
+    { header: 'Pregunta', key: 'pregunta', width: 30 },
+    { header: 'Respuestas', key: 'respuesta', width: 30 },
+    { header: 'Totales', key: 'total', width: 30 },
+];
+
+    pregunta.forEach((seccion: any) => {
+    const nombreSeccion = seccion.titulo;
+        (seccion.m_preguntas || []).forEach((pregunta: any) => {
+            const nombrePregunta = pregunta.texto_pregunta;
+            (pregunta.m_opciones || []).forEach((opcion: any) => {
+            const nombreOpcion = opcion.texto_opcion;
+            const totalRespuestas = opcion.m_respuestas?.length || 0;
+
+            // Agregar fila al Excel
+            worksheet.addRow({
+                seccion: nombreSeccion,
+                pregunta: nombrePregunta,
+                respuesta: nombreOpcion,
+                total: totalRespuestas
+            });
+            });
+        });
+    });
+
+  // Enviar el archivo como descarga
+  res.setHeader(
+    'Content-Type',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  );
+  res.setHeader('Content-Disposition', 'attachment; filename=datos.xlsx');
+
+  await workbook.xlsx.write(res);
+  res.end();
+
+module.exports = { getExcel };
 
 }

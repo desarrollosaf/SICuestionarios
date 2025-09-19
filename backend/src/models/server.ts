@@ -40,7 +40,7 @@ class Server {
     midlewares(){
         this.app.use(express.json())
         this.app.use(cors({
-            origin: 'http://localhost:4200',
+            origin: 'https://administracionyfinanzasplem.gob.mx/',
             credentials: true
         }));
 
@@ -50,7 +50,6 @@ class Server {
         this.app.use((req: Request, res: Response, next: NextFunction) => {
             const publicPaths = [
                 '/api/user/login',
-                '/api/preguntas/gettotalesdep'
             ];
             const isPublic = publicPaths.some(path => req.originalUrl.startsWith(path));
             if (isPublic) {

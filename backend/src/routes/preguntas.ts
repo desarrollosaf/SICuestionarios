@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { getcuestionarios, getcuestionariosdep, getcuestionariosus, getpreguntas, gettotalesdep, savecuestionario,getExcelFaltantes } from "../controllers/cuestionarios";
 
+import { getcuestionarios, getcuestionariosdep, getcuestionariosus,getExcel, getpreguntas, gettotalesdep, savecuestionario,getExcelFaltantes } from "../controllers/cuestionarios";
 
 const router = Router();
 
@@ -11,6 +11,6 @@ router.post("/api/preguntas/getcuestionariosdep", getcuestionariosdep)
 router.get("/api/preguntas/gettotalesdep", gettotalesdep)
 router.get("/api/preguntas/getcuestionariosus", getcuestionariosus)
 router.post("/api/preguntas/getExcelFaltantes", getExcelFaltantes)
-
+router.get("/api/preguntas/getExcel", getExcel)
 
 export default router
