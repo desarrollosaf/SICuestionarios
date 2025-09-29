@@ -12,11 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-
-exports.getExcelFaltantes = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
-
-exports.getExcel = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
-
+exports.getExcel = exports.getExcelFaltantes = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
@@ -932,7 +928,6 @@ const getcuestionariosus = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.getcuestionariosus = getcuestionariosus;
-
 const getExcelFaltantes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
@@ -943,29 +938,59 @@ const getExcelFaltantes = (req, res) => __awaiter(void 0, void 0, void 0, functi
             raw: true
         });
         const usuarioSaf = yield s_usuario_1.default.findAll({
+            where: {
+                'id_Dependencia': body.id_dependencia,
+                'Estado': 1
+            },
             attributes: [
                 'N_Usuario',
                 'Nombre',
                 'id_Dependencia',
+                'id_Direccion',
                 'Estado',
             ],
-            where: {
-                id_Dependencia: body.id_dependencia,
-                Estado: 1
-            },
-            raw: true
+            include: [
+                {
+                    "model": t_dependencia_1.default,
+                    "as": "dependencia",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": t_direccion_1.default,
+                    "as": "direccion",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": t_departamento_1.default,
+                    "as": "departamento",
+                    attributes: [
+                        'nombre_completo'
+                    ]
+                }
+            ],
         });
         const idsRespondieron = new Set(usuarioCuestionario.map(u => u.id_usuario));
-        const usuariosConEstado = usuarioSaf.map(usuario => ({
-            N_usuario: usuario.N_Usuario,
-            Nombre: usuario.Nombre,
-            Respondio: idsRespondieron.has(usuario.N_Usuario) ? 'Sí' : 'No'
-        }));
+        const usuariosConEstado = usuarioSaf.map(usuario => {
+            var _a, _b;
+            return ({
+                N_usuario: usuario.N_Usuario,
+                Nombre: usuario.Nombre,
+                Respondio: idsRespondieron.has(usuario.N_Usuario) ? 'Sí' : 'No',
+                Direccion: (_a = usuario.direccion) === null || _a === void 0 ? void 0 : _a.nombre_completo,
+                Departamento: (_b = usuario.departamento) === null || _b === void 0 ? void 0 : _b.nombre_completo,
+            });
+        });
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Usuarios');
         worksheet.columns = [
             { header: 'RFC', key: 'N_usuario', width: 20 },
             { header: 'Nombre', key: 'Nombre', width: 30 },
+            { header: 'Direccion', key: 'Direccion', width: 30 },
+            { header: 'Departamento', key: 'Departamento', width: 30 },
             { header: 'Respondió', key: 'Respondio', width: 15 }
         ];
         usuariosConEstado.forEach(usuario => worksheet.addRow(usuario));
@@ -980,7 +1005,6 @@ const getExcelFaltantes = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getExcelFaltantes = getExcelFaltantes;
-
 const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const ExcelJS = require('exceljs');
     const workbook = new ExcelJS.Workbook();
@@ -1044,4 +1068,3 @@ const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     module.exports = { getExcel: exports.getExcel };
 });
 exports.getExcel = getExcel;
-
