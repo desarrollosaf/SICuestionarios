@@ -985,26 +985,54 @@ export const getExcelFaltantes = async (req: Request, res: Response): Promise<an
             raw: true
         });
 
+
         const usuarioSaf = await SUsuario.findAll({
+            where: {
+                'id_Dependencia': body.id_dependencia,
+                'Estado': 1
+            },
             attributes: [
                 'N_Usuario',
                 'Nombre',
                 'id_Dependencia',
+                'id_Direccion',
                 'Estado',
             ],
-            where: {
-                id_Dependencia: body.id_dependencia,
-                Estado: 1
-            },
-            raw: true
+            include: [
+                {
+                    "model": Dependencia,
+                    "as": "dependencia",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": Direccion,
+                    "as": "direccion",
+                    attributes: [
+                        'nombre_completo'
+                    ],
+                },
+                {
+                    "model": Departamento,
+                    "as": "departamento",
+                    attributes: [
+                        'nombre_completo'
+                    ]
+                }
+            ],
+           
+         
         });
 
         const idsRespondieron = new Set(usuarioCuestionario.map(u => u.id_usuario));
-
         const usuariosConEstado = usuarioSaf.map(usuario => ({
             N_usuario: usuario.N_Usuario,
             Nombre: usuario.Nombre,
-            Respondio: idsRespondieron.has(usuario.N_Usuario as string) ? 'Sí' : 'No'
+            Respondio: idsRespondieron.has(usuario.N_Usuario as string) ? 'Sí' : 'No',
+            Direccion: usuario.direccion?.nombre_completo,
+            Departamento: usuario.departamento?.nombre_completo,
+
         }));
 
         const workbook = new ExcelJS.Workbook();
@@ -1013,6 +1041,8 @@ export const getExcelFaltantes = async (req: Request, res: Response): Promise<an
         worksheet.columns = [
             { header: 'RFC', key: 'N_usuario', width: 20 },
             { header: 'Nombre', key: 'Nombre', width: 30 },
+            { header: 'Direccion', key: 'Direccion', width: 30 },
+            { header: 'Departamento', key: 'Departamento', width: 30 },
             { header: 'Respondió', key: 'Respondio', width: 15 }
         ];
 
