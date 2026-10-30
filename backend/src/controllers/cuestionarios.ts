@@ -1021,8 +1021,6 @@ export const getExcelFaltantes = async (req: Request, res: Response): Promise<an
                     ]
                 }
             ],
-           
-         
         });
 
         const idsRespondieron = new Set(usuarioCuestionario.map(u => u.id_usuario));
