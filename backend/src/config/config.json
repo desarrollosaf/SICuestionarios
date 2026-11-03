@@ -4,13 +4,15 @@
      "password": "",
      "database": "cuestionarios",
      "host": "localhost",
-     "dialect": "mysql"
+     "dialect": "mysql",
+    "timezone": "-06:00"
   },
   "production": {
     "username": "usr_genero",
     "password": "XenCoItYEywGdD1.ts",
     "database": "adminplem_generoCuestionario",
     "host": "192.168.36.53",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "timezone": "-06:00"
   }
 }
