@@ -4,8 +4,12 @@ const { v4: uuidv4 } = require('uuid');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    
-    
+    // Ya existe el cuestionario 2025: no se vuelve a insertar (evita duplicarlo con db:seed:all)
+    const [existentes] = await queryInterface.sequelize.query(
+      "SELECT id FROM cuestionarios WHERE descripcion = 'GENERO 2025' LIMIT 1"
+    );
+    if (existentes.length) return;
+
     const cuestionarioId = uuidv4();
     const seccion1 = uuidv4();
     const seccion2 = uuidv4();
