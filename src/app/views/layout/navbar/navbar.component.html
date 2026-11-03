@@ -58,7 +58,7 @@
           <span class="avatar">{{ iniciales }}</span>
           <span class="perfil-info">
             <span class="perfil-nombre" [title]="nombre || rfc">{{ nombre || rfc }}</span>
-            <span class="perfil-rol">{{ esAdmin ? 'Administrador' : 'Servidor público' }}</span>
+            <span class="perfil-rol">{{ esAdmin ? 'Administrador' : 'Persona servidora pública' }}</span>
           </span>
           <i class="feather icon-chevron-down chevron"></i>
         </button>
@@ -70,7 +70,7 @@
               @if (nombre) {
               <p class="perfil-rol">{{ rfc }}</p>
               }
-              <span class="perfil-badge">{{ esAdmin ? 'Administrador' : 'Servidor público' }}</span>
+              <span class="perfil-badge">{{ esAdmin ? 'Administrador' : 'Persona servidora pública' }}</span>
             </div>
           </div>
           <a href="" ngbDropdownItem class="salir" (click)="onLogout($event)">
