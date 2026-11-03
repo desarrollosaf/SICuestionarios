@@ -17,6 +17,7 @@ class sesion extends Model<
   InferCreationAttributes<sesion>
 > {
     declare id: CreationOptional<string>;
+    declare id_cuestionario: string;
     declare id_usuario: string;
     declare fecha_registro: Date;
     declare comentarios: string | null;
@@ -33,6 +34,11 @@ sesion.init(
         allowNull: false,
         primaryKey: true
         },
+        // Cuestionario (año) al que pertenece esta respuesta
+        id_cuestionario: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
         id_usuario: {
             type: DataTypes.STRING(10),
             allowNull: false
@@ -42,7 +48,7 @@ sesion.init(
             allowNull: true
         },
         comentarios: {
-            type: DataTypes.STRING(255),
+            type: DataTypes.TEXT,
             allowNull: true
         },
         createdAt: {

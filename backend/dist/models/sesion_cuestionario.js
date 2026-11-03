@@ -14,6 +14,11 @@ sesion.init({
         allowNull: false,
         primaryKey: true
     },
+    // Cuestionario (año) al que pertenece esta respuesta
+    id_cuestionario: {
+        type: sequelize_1.DataTypes.UUID,
+        allowNull: false
+    },
     id_usuario: {
         type: sequelize_1.DataTypes.STRING(10),
         allowNull: false
@@ -23,7 +28,7 @@ sesion.init({
         allowNull: true
     },
     comentarios: {
-        type: sequelize_1.DataTypes.STRING(255),
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: true
     },
     createdAt: {

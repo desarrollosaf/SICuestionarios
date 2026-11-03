@@ -4,6 +4,7 @@ import {
   InferAttributes,
   InferCreationAttributes,
   CreationOptional,
+  NonAttribute,
 } from 'sequelize';
 import sequelize from '../../database/connection'; 
 import Dependencia from '../saf/t_dependencia';
@@ -36,6 +37,10 @@ class SUsuario extends Model<
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
   declare deletedAt: Date | null;
+
+  declare dependencia?: NonAttribute<Dependencia>;
+  declare direccion?: NonAttribute<Direccion>;
+  declare departamento?: NonAttribute<Departamento>;
 
   
   static associate(models: any) {

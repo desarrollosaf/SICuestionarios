@@ -30,6 +30,20 @@ preguntas.init({
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false
     },
+    obligatoria: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    // Pregunta que debe responderse con alguna de `opciones_condicion` para mostrar ésta
+    id_pregunta_condicion: {
+        type: sequelize_1.DataTypes.UUID,
+        allowNull: true
+    },
+    opciones_condicion: {
+        type: sequelize_1.DataTypes.TEXT,
+        allowNull: true
+    },
     orden: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false

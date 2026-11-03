@@ -1,13 +1,9 @@
-import { Component, HostListener, Inject, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
-import { ThemeModeService } from '../../../core/services/theme-mode.service';
-import { DOCUMENT, NgClass, NgFor, NgIf } from '@angular/common';
 
 import { MENU } from './menu';
 import { MenuItem } from './menu.model';
-import { SubMenus } from './menu.model';
-import { SubMenuItems } from './menu.model';
 import { FeatherIconDirective } from '../../../core/feather-icon/feather-icon.directive';
 import { UserService } from '../../../core/services/user.service';
 
@@ -18,56 +14,73 @@ import { UserService } from '../../../core/services/user.service';
         FeatherIconDirective,
         RouterLink,
         RouterLinkActive,
-        NgFor,
-        NgIf,
-        NgClass
     ],
     templateUrl: './navbar.component.html',
     styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent implements OnInit {
 
-  currentTheme: string;
-  menuItems: MenuItem[] = []
-  sub: SubMenus[] = [];
-  subItem: SubMenuItems[] = [];
-
-  currentlyOpenedNavItem: HTMLElement | undefined;
+  menuItems: MenuItem[] = [];
+  menuAbierto = false;
+  rfc = '';
+  nombre = '';
+  esAdmin = false;
 
   constructor(
     private router: Router,
-    private themeModeService: ThemeModeService,
     private _userService: UserService
   ) {}
 
   ngOnInit(): void {
-    this.themeModeService.currentTheme.subscribe( (theme) => {
-      this.currentTheme = theme;
-      this.showActiveTheme(this.currentTheme);
-    });
+    const usuario = this._userService.currentUserValue;
+    this.rfc = usuario?.rfc ?? '';
+    this.nombre = this.formatearNombre(usuario?.nombre);
 
-    const rfc = this._userService.currentUserValue?.rfc ?? '';
-    const role = rfc.startsWith('GEN25') ? 'GEN25' : 'usuario';
-
-    this.menuItems = MENU;
-    if (role) {
-      this.menuItems = this.filterMenuByRole(MENU, role);
-    } else {
-      this.menuItems = []; 
-    }
-
-    /**
-     * Close the header menu after a route change on tablet and mobile devices
-     */
-    // if (window.matchMedia('(max-width: 991px)').matches) {
-      this.router.events.forEach((event) => {
-        if (event instanceof NavigationEnd) {
-          document.querySelector('.horizontal-menu .bottom-navbar')?.classList.remove('header-toggled');
-          document.querySelector('[data-toggle="horizontal-menu-toggle"]')?.classList.remove('open');
-          document.body.classList.remove('header-open');
-        }
+    // Sesiones iniciadas antes de que el login regresara el nombre: se pide al back
+    if (usuario && !usuario.nombre) {
+      this._userService.getCurrentUser().subscribe({
+        next: (me) => {
+          if (!me?.nombre) return;
+          // Se guarda sólo lo necesario; las sesiones viejas traían el hash de la contraseña
+          this._userService.setCurrentUser({
+            rfc: me.rfc || usuario.rfc,
+            nombre: me.nombre,
+            email: usuario.email ?? null,
+          });
+          this.nombre = this.formatearNombre(me.nombre);
+        },
+        error: () => {},
       });
-    // }
+    }
+    this.esAdmin = this.rfc.startsWith('GEN25');
+    const role = this.esAdmin ? 'GEN25' : 'usuario';
+
+    this.menuItems = this.filterMenuByRole(MENU, role);
+
+    // Cierra el menú móvil después de navegar
+    this.router.events.forEach((event) => {
+      if (event instanceof NavigationEnd) {
+        this.menuAbierto = false;
+      }
+    });
+  }
+
+  get iniciales(): string {
+    if (this.nombre) {
+      return this.nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
+    }
+    return this.rfc.replace(/^GEN25/, '').slice(0, 2).toUpperCase() || 'U';
+  }
+
+  // "DESALES GARCÍA CESAR" -> "Desales García Cesar"
+  private formatearNombre(nombre?: string | null): string {
+    return (nombre ?? '')
+      .trim()
+      .toLocaleLowerCase('es-MX')
+      .split(/\s+/)
+      .filter(Boolean)
+      .map(p => ['de', 'del', 'la', 'las', 'los', 'y'].includes(p) ? p : p.charAt(0).toLocaleUpperCase('es-MX') + p.slice(1))
+      .join(' ');
   }
 
   private filterMenuByRole(menu: MenuItem[], role: string): MenuItem[] {
@@ -84,36 +97,6 @@ export class NavbarComponent implements OnInit {
           )
         }))
     }));
-  }
-
-  showActiveTheme(theme: string) {
-    const themeSwitcher = document.querySelector('#theme-switcher') as HTMLInputElement;
-    const box = document.querySelector('.box') as HTMLElement;
-
-    if (!themeSwitcher) {
-      return;
-    }
-
-    // Toggle the custom checkbox based on the theme
-    if (theme === 'dark') {
-      themeSwitcher.checked = true;
-      box.classList.remove('light');
-      box.classList.add('dark');
-    } else if (theme === 'light') {
-      themeSwitcher.checked = false;
-      box.classList.remove('dark');
-      box.classList.add('light');
-    }
-  }
-
-  /**
-   * Change the theme on #theme-switcher checkbox changes
-   */
-  onThemeCheckboxChange(e: Event) {
-    const checkbox = e.target as HTMLInputElement;
-    const newTheme: string = checkbox.checked ? 'dark' : 'light';
-    this.themeModeService.toggleTheme(newTheme);
-    this.showActiveTheme(newTheme);
   }
 
   /**
@@ -139,18 +122,8 @@ export class NavbarComponent implements OnInit {
 
   }
 
-  /**
-   * Fixed header menu on scroll
-   */
-  @HostListener('window:scroll', ['$event']) getScrollHeight() {    
-    if (window.matchMedia('(min-width: 992px)').matches) {
-      let header: HTMLElement = document.querySelector('.horizontal-menu') as HTMLElement;
-      if(window.pageYOffset >= 60) {
-        header.parentElement!.classList.add('fixed-on-scroll')
-      } else {
-        header.parentElement!.classList.remove('fixed-on-scroll')
-      }
-    }
+  @HostListener('document:keydown.escape') cerrarMenu() {
+    this.menuAbierto = false;
   }
 
   /**
@@ -161,34 +134,15 @@ export class NavbarComponent implements OnInit {
     return item.subMenus !== undefined ? item.subMenus.length > 0 : false;
   }
 
-  /**
-   * Toggle the header menu on tablet and mobile devices
-   */
-  toggleHeaderMenu() {
-    // document.querySelector('.horizontal-menu .bottom-navbar')!.classList.toggle('header-toggled');
-
-    const horizontalMenuToggleButton = document.querySelector('[data-toggle="horizontal-menu-toggle"]');
-    const bottomNavbar = document.querySelector('.horizontal-menu .bottom-navbar');
-    if (!bottomNavbar?.classList.contains('header-toggled')) {
-      bottomNavbar?.classList.add('header-toggled');
-      horizontalMenuToggleButton?.classList.add('open');
-      document.body.classList.add('header-open'); // Used to create a backdrop"
-    } else {
-      bottomNavbar?.classList.remove('header-toggled');
-      horizontalMenuToggleButton?.classList.remove('open');
-      document.body.classList.remove('header-open');
-    }
-  }
-
-  // Show or hide the submenu on mobile and tablet devices when a nav-item is clicked
-  toggleSubmenuOnSmallDevices(navItem: HTMLElement) {
-    if (window.matchMedia('(max-width: 991px)').matches) {
-      if (this.currentlyOpenedNavItem === navItem) {
-        this.currentlyOpenedNavItem = undefined;
-      } else {
-        this.currentlyOpenedNavItem = navItem;
-      }
-    }
+  // Marca como activo un menú con submenú cuando la ruta actual es una de sus opciones
+  tieneLinkActivo(item: MenuItem): boolean {
+    return (item.subMenus ?? []).some(sub =>
+      (sub.subMenuItems ?? []).some(subItem =>
+        !!subItem.link && this.router.isActive(subItem.link, {
+          paths: 'exact', queryParams: 'ignored', fragment: 'ignored', matrixParams: 'ignored'
+        })
+      )
+    );
   }
 
 }

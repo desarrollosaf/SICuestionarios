@@ -42,3 +42,13 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
     res.status(401).json({ msg: 'Token inválido' });
   }
 };
+
+// Sólo administradores (RFC con prefijo GEN25); usar después de verifyToken
+export const soloAdmin = (req: Request, res: Response, next: NextFunction): void => {
+  const rfc: string = (req as any).user?.rfc || '';
+  if (!rfc.startsWith('GEN25')) {
+    res.status(403).json({ msg: 'No autorizado' });
+    return;
+  }
+  next();
+};

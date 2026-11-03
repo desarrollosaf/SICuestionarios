@@ -1,161 +1,304 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<div class="row">
-  <div class="col-md-12 stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <h6 class="card-title text-center">
-          DIAGNÓSTICO PARA CONTRIBUIR A LA IGUALDAD DE GÉNERO EN EL PODER LEGISLATIVO DEL ESTADO DE MÉXICO
-        </h6>
+<div class="cuestionario" id="cuestionario-top">
 
-        <div class="row">
-          <div ngbAccordion [closeOthers]="true">
-            <div ngbAccordionItem [collapsed]="false">
-              <h2 ngbAccordionHeader>
-                <button ngbAccordionButton><b>Objetivo del diagnóstico</b></button>
-              </h2>
-              <div ngbAccordionCollapse>
-                <div ngbAccordionBody>
-                  Identificar situaciones de desigualdad, discriminación o trato inequitativo por razón de género al
-                  interior del Poder Legislativo, con la finalidad de fortalecer e implementar acciones y buenas
-                  prácticas que promuevan una cultura de igualdad sustantiva entre hombres y mujeres.
-                </div>
-              </div>
-            </div>
-            <div ngbAccordionItem>
-              <h2 ngbAccordionHeader>
-                <button ngbAccordionButton>
-                  <b>Instrucciones de llenado</b>
-                </button>
-              </h2>
-              <div ngbAccordionCollapse>
-                <div ngbAccordionBody>
-                  <div class="contenido-centrado">
-                    <p>Este diagnóstico consta de 6 secciones.</p>
-                    <p class="mt-1">Marque con una ✔ la opción que mejor represente sus respuestas, mismas que serán
-                      anónimas y confidenciales.</p>
-                   
-                    <br />
-                    <p><strong>Consulta el <a href="https://legislacion.legislativoedomex.gob.mx/storage/documentos/avisosprivacidad/AvisodePrivacidadUIGEV.pdf" target="_blank" rel="noopener noreferrer">Aviso de Privacidad
-                          aquí.</a></strong></p>
+  <!-- Encabezado -->
+  <header class="hero">
+    <div class="hero-deco" aria-hidden="true">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">
+        Diagnóstico para contribuir a la igualdad de género en el Poder Legislativo del Estado de México
+      </h1>
+      <p class="hero-text">
+        Identificar situaciones de desigualdad, discriminación o trato inequitativo por razón de género al
+        interior del Poder Legislativo, con la finalidad de fortalecer e implementar acciones y buenas
+        prácticas que promuevan una cultura de igualdad sustantiva entre hombres y mujeres.
+      </p>
 
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      @if (!responde && !cargando && !errorCarga) {
+      <ul class="hero-meta">
+        <li><i class="bi bi-layers"></i> {{ seccionesArray.length }} secciones</li>
+        <li><i class="bi bi-list-check"></i> {{ cantidadPreguntas }} preguntas</li>
+        <li><i class="bi bi-clock"></i> 10–15 min</li>
+        <li><i class="bi bi-shield-lock"></i> Anónimo y confidencial</li>
+      </ul>
 
-        <br /><br />
-        @if(!this.responde){
-        <div class="row">
-          <div class="col-md-12 grid-margin">
-            <div class="card">
-              <div class="card-body">
-                <form [formGroup]="formCuestionario" (ngSubmit)="submitCuestionario()" class="wizard-container">
-                  <h6 class="card-title text-center text-primary">{{ currentSectionTitle }}</h6>
+      <button type="button" class="hero-toggle" (click)="instruccionesColapsadas = !instruccionesColapsadas"
+        [attr.aria-expanded]="!instruccionesColapsadas" aria-controls="instrucciones">
+        <i class="bi bi-info-circle"></i>
+        Instrucciones de llenado
+        <i class="bi bi-chevron-down chevron" [class.abierto]="!instruccionesColapsadas"></i>
+      </button>
+      <div id="instrucciones" [(ngbCollapse)]="instruccionesColapsadas">
+        <ul class="instrucciones">
+          <li><i class="bi bi-hand-index"></i> Selecciona la opción que mejor represente tu respuesta; puedes hacer
+            clic en cualquier parte del recuadro.</li>
+          <li><i class="bi bi-ui-checks"></i> Cuando una pregunta permite varias respuestas, lo indicamos debajo de
+            ella.</li>
+          <li><i class="bi bi-cloud-check"></i> Tu avance se guarda automáticamente en este equipo, así que puedes
+            continuar después.</li>
+          <li><i class="bi bi-shield-check"></i> Tus respuestas son anónimas y confidenciales. Consulta el
+            <a href="https://legislacion.legislativoedomex.gob.mx/storage/documentos/avisosprivacidad/AvisodePrivacidadUIGEV.pdf"
+              target="_blank" rel="noopener noreferrer">Aviso de Privacidad</a>.
+          </li>
+        </ul>
+      </div>
+      }
+    </div>
+  </header>
 
-                  <aw-wizard #wizardForm *ngIf="seccionesArray.length > 0" [navBarLocation]="'top'"
-                    [defaultStepIndex]="0">
-                    <div formArrayName="secciones">
-                      <br>
-                      <aw-wizard-step *ngFor="let seccion of seccionesArray.controls; let i = index"
-                        [stepTitle]="'Sección ' + (i + 1)" [formGroupName]="i" [canExit]="canExitSection.bind(this, i)"
-                        (stepEnter)="onStepEnter($event, i)">
-                        <div formArrayName="preguntas" class="questions-group">
-                          <div *ngFor="let pregunta of getSeccionPreguntas(i).controls; let j = index"
-                            [formGroupName]="j" class="question-item">
+  @if (cargando) {
+  <!-- Cargando -->
+  <div class="panel estado">
+    <div class="skeleton">
+      <span class="sk sk-titulo"></span>
+      <span class="sk"></span>
+      <span class="sk"></span>
+      <span class="sk sk-corto"></span>
+    </div>
+    <p class="estado-texto">Cargando cuestionario…</p>
+  </div>
+  } @else if (errorCarga) {
+  <!-- Error de carga -->
+  <div class="panel estado">
+    <div class="estado-icon error"><i class="bi bi-wifi-off"></i></div>
+    <h4>No pudimos cargar el cuestionario</h4>
+    <p class="estado-texto">Revisa tu conexión e inténtalo de nuevo.</p>
+    <button type="button" class="btn btn-primary btn-lg-pill" (click)="getPreguntas()">
+      <i class="bi bi-arrow-clockwise me-1"></i> Reintentar
+    </button>
+  </div>
+  } @else if (responde) {
+  <!-- Ya respondido -->
+  <div class="panel estado exito">
+    @if (recienEnviado) {
+    <div class="confeti" aria-hidden="true">
+      @for (c of confeti; track $index) {
+      <span [class]="'c' + c.color" [style.left.%]="c.left" [style.animation-delay.s]="c.delay"
+        [style.animation-duration.s]="c.duracion" [style.rotate.deg]="c.giro"></span>
+      }
+    </div>
+    }
+    <div class="estado-icon ok"><i class="bi bi-check-lg"></i></div>
+    <h3>¡Gracias por tu participación!</h3>
+    <p class="estado-texto">
+      Tus respuestas quedaron registradas correctamente. Tu opinión nos ayuda a construir un espacio de trabajo
+      más igualitario.
+    </p>
+    @if (fechaRegistro) {
+    <p class="fecha-registro">
+      <i class="bi bi-calendar-check"></i>
+      {{ fechaRegistro | date: 'fullDate' }} · {{ fechaRegistro | date: 'shortTime' }}
+    </p>
+    }
+  </div>
+  } @else {
+  <!-- Cuestionario -->
+  <form [formGroup]="formCuestionario" (ngSubmit)="submitCuestionario()" novalidate>
 
-                            <p class="question-text">
-                              <ng-container *ngIf="i >= 1">
-                                {{ getPreguntaGlobalIndexDesdeSeccion2(i, j) }}.
-                              </ng-container>
-                              {{ pregunta.get('texto_pregunta')?.value }}
-                            </p>
+    <!-- Progreso + pasos (fijo al hacer scroll) -->
+    <div class="barra-progreso">
+      <div class="anillo" role="progressbar" [attr.aria-valuenow]="progreso" aria-valuemin="0"
+        aria-valuemax="100" aria-label="Avance del cuestionario">
+        <svg viewBox="0 0 48 48">
+          <circle class="anillo-fondo" cx="24" cy="24" r="20" />
+          <circle class="anillo-valor" cx="24" cy="24" r="20" [attr.stroke-dasharray]="circunferencia"
+            [attr.stroke-dashoffset]="offsetProgreso" />
+        </svg>
+        <span>{{ progreso }}%</span>
+      </div>
 
-                            <div class="options-list">
-                              <div *ngFor="let opcion of pregunta.get('m_opciones')?.value" class="form-check">
-                                <ng-container *ngIf="pregunta.get('isCheckbox')?.value; else radioOption">
-                                  <label class="form-check-label d-block">
-                                    <input type="checkbox" class="form-check-input me-2" [value]="opcion.id"
-                                      (change)="onCheckboxChange($event, j, i)"
-                                      [checked]="pregunta.get('respuesta')?.value?.includes(opcion.id)" />
-
-                                    {{ opcion.texto_opcion }}
-                                  </label>
-                                </ng-container>
-
-                                <ng-template #radioOption>
-                                  <label class="form-check-label d-block">
-                                    <input type="radio" class="form-check-input me-2" formControlName="respuesta"
-                                      [value]="opcion.id" />
-                                    {{ opcion.texto_opcion }}
-                                  </label>
-                                </ng-template>
-                              </div>
-                            </div>
-
-                            <div
-                              *ngIf="!pregunta.get('isCheckbox')?.value && pregunta.get('respuesta')?.invalid && pregunta.get('respuesta')?.touched"
-                              class="text-danger">
-                              Esta pregunta es obligatoria
-                            </div>
-
-                            <div *ngIf="pregunta.get('hasOtroOption')?.value">
-                              <div *ngIf="isOtroSelected(pregunta)">
-                                <input type="text" class="form-control mt-2" formControlName="otroValor"
-                                  placeholder="Por favor especifica..." />
-                                <div *ngIf="pregunta.get('otroValor')?.invalid && pregunta.get('otroValor')?.touched"
-                                  class="text-danger">
-                                  Este campo es obligatorio
-                                </div>
-                              </div>
-                            </div>
-                            <hr class="question-separator" />
-                          </div>
-                        </div>
-                        <div *ngIf="i === 5" class="mt-4">
-                          <label for="comentarios" class="form-label">28. Comentarios adicionales (opcional):</label>
-                          <textarea id="comentarios" rows="4" class="form-control" [formControl]="comentariosControl"
-                            placeholder="Escribe aquí tus comentarios..."></textarea>
-                          <div class="mt-3 text-end">
-                            <button type="submit" [disabled]="formCuestionario.invalid"
-                              class="btn btn-success">Enviar</button>
-                          </div>
-                        </div>
-                        <div class="navigation-buttons mt-4">
-                          <button type="button" awPreviousStep class="btn btn-secondary">Anterior</button>
-                          <button *ngIf="i < 5" type="button" awNextStep class="btn btn-primary">Siguiente</button>
-                        </div>
-                      </aw-wizard-step>
-                    </div>
-                  </aw-wizard>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        }@else{
-        <div class="row justify-content-center">
-          <div class="col-md-8 col-lg-6">
-            <div class="card text-center shadow-sm border-success">
-              <div class="card-body py-5">
-                <div class="mb-4">
-                  <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                </div>
-                <h4 class="text-success">¡Respuestas registradas con éxito!</h4>
-                <p class="text-muted mt-1">
-                  <b>Registrado el {{ fechaRegistro | date: 'fullDate' }} a las {{ fechaRegistro | date: 'shortTime'
-                    }}</b>
-                </p>
-                <p class="text-muted mt-2 mb-0">
-                  Gracias por completar el cuestionario.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <ol class="stepper">
+        @for (seccion of seccionesArray.controls; track $index; let i = $index) {
+        <li [class.hecho]="seccionCompleta(i)" [class.actual]="i === pasoActual">
+          <button type="button" class="step" (click)="seleccionarPaso(i)" [class.activo]="i === pasoActual"
+            [class.completo]="seccionCompleta(i) && i !== pasoActual" [class.bloqueado]="!puedeIrA(i)"
+            [attr.aria-current]="i === pasoActual ? 'step' : null" [title]="seccion.get('titulo')?.value">
+            <span class="step-num">
+              @if (seccionCompleta(i) && i !== pasoActual) {
+              <i class="bi bi-check-lg"></i>
+              } @else {
+              {{ i + 1 }}
+              }
+            </span>
+            <span class="step-label">{{ seccion.get('titulo')?.value | nombrePropio }}</span>
+          </button>
+        </li>
         }
+      </ol>
+
+      <div class="barra-contador">
+        <strong>{{ totalRespondidas }}</strong><span>/{{ totalPreguntas }}</span>
       </div>
     </div>
-  </div>
+
+    @if (borradorRestaurado) {
+    <div class="aviso aviso-info" role="status">
+      <i class="bi bi-cloud-check"></i>
+      <span>Recuperamos tus respuestas anteriores. Puedes continuar donde te quedaste.</span>
+      <button type="button" class="btn-close" aria-label="Cerrar" (click)="borradorRestaurado = false"></button>
+    </div>
+    }
+
+    <div formArrayName="secciones">
+      @for (seccion of seccionesArray.controls; track $index; let i = $index) {
+      @if (i === pasoActual) {
+      <section [formGroupName]="i" class="panel seccion" [attr.aria-labelledby]="'titulo-seccion-' + i">
+
+        <div class="seccion-header">
+          <div class="seccion-icono"><i class="bi" [ngClass]="iconoSeccion(seccion.get('titulo')?.value)"></i></div>
+          <div class="seccion-info">
+            <span class="seccion-num">Sección {{ i + 1 }} de {{ seccionesArray.length }}</span>
+            <h2 class="seccion-titulo" [id]="'titulo-seccion-' + i">{{ seccion.get('titulo')?.value | nombrePropio }}</h2>
+          </div>
+          <div class="seccion-contador" [class.completo]="seccionCompleta(i)">
+            @if (seccionCompleta(i)) {
+            <i class="bi bi-check-circle-fill"></i> Completa
+            } @else {
+            {{ respondidasSeccion(i) }}/{{ totalSeccion(i) }}
+            }
+          </div>
+        </div>
+
+        <div class="seccion-body" formArrayName="preguntas">
+          @for (pregunta of getSeccionPreguntas(i).controls; track $index; let j = $index) {
+          @if (estado.visibles[i][j]) {
+          <div [formGroupName]="j" class="pregunta" role="group" [id]="'q-' + i + '-' + j"
+            [attr.aria-labelledby]="'qt-' + i + '-' + j" [class.respondida]="estado.contestadas[i][j]"
+            [class.con-error]="hasError(pregunta)" [class.condicional]="pregunta.get('condicion')?.value"
+            [style.animation-delay.ms]="pregunta.get('condicion')?.value ? 0 : j * 40">
+
+            <div class="pregunta-header">
+              <span class="pregunta-num">
+                @if (estado.contestadas[i][j]) {
+                <i class="bi bi-check-lg"></i>
+                } @else if (i >= 1) {
+                {{ getPreguntaGlobalIndexDesdeSeccion2(i, j) }}
+                } @else {
+                <i class="bi bi-person-vcard"></i>
+                }
+              </span>
+              <div class="pregunta-texto-wrap">
+                <p class="pregunta-texto" [id]="'qt-' + i + '-' + j">{{ pregunta.get('texto_pregunta')?.value }}</p>
+                @if (pregunta.get('isCheckbox')?.value || !pregunta.get('obligatoria')?.value) {
+                <div class="pregunta-etiquetas">
+                  @if (pregunta.get('isCheckbox')?.value) {
+                  <span class="pregunta-ayuda"><i class="bi bi-ui-checks"></i> Puedes elegir varias</span>
+                  }
+                  @if (!pregunta.get('obligatoria')?.value) {
+                  <span class="pregunta-ayuda opcional"><i class="bi bi-dash-circle"></i> Opcional</span>
+                  }
+                </div>
+                }
+              </div>
+            </div>
+
+            <div class="opciones" [class.opciones-cortas]="pregunta.get('m_opciones')?.value?.length <= 3"
+              [class.multiple]="pregunta.get('isCheckbox')?.value">
+              @for (opcion of pregunta.get('m_opciones')?.value; track opcion.id; let k = $index) {
+              <label class="opcion" [class.seleccionada]="isSelected(pregunta, opcion.id)">
+                @if (pregunta.get('isCheckbox')?.value) {
+                <input type="checkbox" class="visually-hidden" [value]="opcion.id"
+                  (change)="onCheckboxChange($event, j, i)" [checked]="isSelected(pregunta, opcion.id)" />
+                } @else {
+                <input type="radio" class="visually-hidden" formControlName="respuesta" [value]="opcion.id"
+                  (change)="onRadioChange(i, j)" />
+                }
+                <span class="opcion-marca" aria-hidden="true">
+                  @if (isSelected(pregunta, opcion.id)) {
+                  <i class="bi bi-check-lg"></i>
+                  } @else {
+                  {{ letras[k] }}
+                  }
+                </span>
+                <span class="opcion-texto">{{ opcion.texto_opcion }}</span>
+              </label>
+              }
+            </div>
+
+            @if (pregunta.get('hasOtroOption')?.value && isOtroSelected(pregunta)) {
+            <div class="otro-campo">
+              <i class="bi bi-pencil"></i>
+              <input type="text" class="form-control" formControlName="otroValor" placeholder="Por favor especifica…" maxlength="255"
+                aria-label="Especifica otra opción"
+                [class.is-invalid]="pregunta.get('otroValor')?.invalid && pregunta.get('otroValor')?.touched" />
+            </div>
+            }
+
+            @if (hasError(pregunta)) {
+            <p class="pregunta-error" role="alert">
+              <i class="bi bi-exclamation-circle-fill"></i>
+              {{ pregunta.get('otroValor')?.invalid ? 'Escribe tu respuesta en el campo de texto.' : 'Esta pregunta es obligatoria.' }}
+            </p>
+            }
+          </div>
+          }
+          }
+
+          @if (esUltimoPaso) {
+          <div class="pregunta comentarios">
+            <div class="pregunta-header">
+              <span class="pregunta-num"><i class="bi bi-chat-text"></i></span>
+              <div class="pregunta-texto-wrap">
+                <label for="comentarios" class="pregunta-texto">
+                  {{ numeroComentarios }}. Comentarios adicionales
+                </label>
+                <span class="pregunta-ayuda">Opcional</span>
+              </div>
+            </div>
+            <textarea id="comentarios" rows="4" class="form-control" [formControl]="comentariosControl"
+              [maxlength]="maxComentarios"
+              placeholder="Escribe aquí cualquier comentario que quieras compartir…"></textarea>
+            <small class="contador-caracteres">{{ comentariosControl.value?.length || 0 }}/{{ maxComentarios }}</small>
+          </div>
+          }
+        </div>
+
+        @if (faltantesPaso > 0) {
+        <div class="aviso aviso-warning" role="alert">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          <span>
+            {{ faltantesPaso === 1 ? 'Te falta 1 pregunta' : 'Te faltan ' + faltantesPaso + ' preguntas' }}
+            por responder en esta sección.
+          </span>
+        </div>
+        }
+
+        @if (errorEnvio && esUltimoPaso) {
+        <div class="aviso aviso-danger" role="alert">
+          <i class="bi bi-x-octagon-fill"></i>
+          <span>{{ errorEnvio }}</span>
+        </div>
+        }
+
+        <div class="acciones" id="acciones-paso">
+          @if (pasoActual > 0) {
+          <button type="button" class="btn btn-ghost" (click)="anterior()">
+            <i class="bi bi-arrow-left"></i> Anterior
+          </button>
+          } @else {
+          <span></span>
+          }
+
+          @if (!esUltimoPaso) {
+          <button type="button" class="btn btn-primary btn-lg-pill" (click)="siguiente()">
+            Siguiente sección <i class="bi bi-arrow-right"></i>
+          </button>
+          } @else {
+          <button type="submit" class="btn btn-success btn-lg-pill" [disabled]="enviando">
+            @if (enviando) {
+            <span class="spinner-border spinner-border-sm" role="status"></span> Enviando…
+            } @else {
+            <i class="bi bi-send-fill"></i> Enviar respuestas
+            }
+          </button>
+          }
+        </div>
+      </section>
+      }
+      }
+    </div>
+  </form>
+  }
 </div>

@@ -1,7 +1,16 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Injectable, signal, inject, computed } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { enviroment } from '../../enviroments/enviroment';
+
+export interface AnioCuestionario {
+  anio: number;
+  titulo: string;
+  activo: boolean;
+  personas: number;
+}
+
+// Todos los reportes aceptan `anio`; si no se manda, el back usa el cuestionario activo
 @Injectable({
   providedIn: 'root',
 })
@@ -16,39 +25,54 @@ export class ReporteService {
     this.myAPIUrl2 = 'api/combos';
   }
 
+  private params(anio?: number | null): HttpParams {
+    return anio ? new HttpParams().set('anio', anio) : new HttpParams();
+  }
+
   getDependencias(): Observable<any> {
     return this.http.get<any>(
       `${this.myAppUrl}${this.myAPIUrl2}/getdependencias`
     );
   }
 
-   getCuestionarios(): Observable<any> {
+  getAnios(): Observable<{ data: AnioCuestionario[] }> {
+    return this.http.get<{ data: AnioCuestionario[] }>(`${this.myAppUrl}${this.myAPIUrl}/getanios`);
+  }
+
+  getCuestionarios(anio?: number | null): Observable<any> {
     return this.http.get<any>(
-      `${this.myAppUrl}${this.myAPIUrl}/getcuestionarios`
+      `${this.myAppUrl}${this.myAPIUrl}/getcuestionarios`, { params: this.params(anio) }
     );
   }
 
-    getCuestionariosDep(valores: any ): Observable<any> {
-        return this.http.post<any>(
-            `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosdep`,valores
-        );
-    }
-    getTotalesDep(): Observable<any> {
-        return this.http.get<any>(
-            `${this.myAppUrl}${this.myAPIUrl}/gettotalesdep`
-        );
-    }
+  getCuestionariosDep(valores: any): Observable<any> {
+    return this.http.post<any>(
+      `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosdep`, valores
+    );
+  }
 
-    getServidoresPublicos(): Observable<any> {
-        return this.http.get<any>(
-            `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosus`
-        );
-    }
+  getTotalesDep(anio?: number | null): Observable<any> {
+    return this.http.get<any>(
+      `${this.myAppUrl}${this.myAPIUrl}/gettotalesdep`, { params: this.params(anio) }
+    );
+  }
 
-    getExcelF(valores: any ): Observable<Blob> {
-      return this.http.post(`${this.myAppUrl}${this.myAPIUrl}/getExcelFaltantes`,valores, {
+  getServidoresPublicos(anio?: number | null): Observable<any> {
+    return this.http.get<any>(
+      `${this.myAppUrl}${this.myAPIUrl}/getcuestionariosus`, { params: this.params(anio) }
+    );
+  }
+
+  getRespuestasUsuario(rfc: string, anio?: number | null): Observable<any> {
+    return this.http.get<any>(
+      `${this.myAppUrl}${this.myAPIUrl}/getrespuestasusuario/${encodeURIComponent(rfc)}`, { params: this.params(anio) }
+    );
+  }
+
+  getExcelF(valores: any): Observable<Blob> {
+    return this.http.post(`${this.myAppUrl}${this.myAPIUrl}/getExcelFaltantes`, valores, {
       responseType: 'blob' as 'blob',
     });
-    }
-  
+  }
+
 }

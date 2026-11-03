@@ -1,0 +1,207 @@
+// Estilos compartidos por las pantallas de reportes
+
+:host {
+  display: block;
+
+  --rp-radius: 16px;
+  --rp-radius-sm: 10px;
+  --rp-surface: var(--bs-body-bg);
+  --rp-muted: var(--bs-tertiary-bg);
+  --rp-border: var(--bs-border-color-translucent);
+  --rp-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 8px 24px -14px rgba(15, 23, 42, .14);
+  --rp-primary-soft: rgba(var(--bs-primary-rgb), .08);
+  --rp-mujeres: var(--bs-primary);
+  --rp-hombres: #0ea5a4;
+}
+
+// ---------- Encabezado ----------
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bs-primary);
+}
+
+.page-title {
+  margin: .3rem 0 .4rem;
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.page-subtitle {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--bs-secondary-color);
+}
+
+// ---------- Panel ----------
+
+.panel {
+  margin-bottom: 1.5rem;
+  background: var(--rp-surface);
+  border: 1px solid var(--rp-border);
+  border-radius: var(--rp-radius);
+  box-shadow: var(--rp-shadow);
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--rp-border);
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.panel-subtitle {
+  margin: .3rem 0 0;
+  font-size: .88rem;
+  color: var(--bs-secondary-color);
+}
+
+.panel-body {
+  padding: 1.25rem 1.5rem;
+}
+
+// ---------- Botones ----------
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: .6rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .55rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  background: none;
+
+  &:hover:not(:disabled) {
+    color: var(--bs-body-color);
+    background: var(--rp-muted);
+  }
+
+  &:disabled {
+    opacity: .4;
+  }
+}
+
+// ---------- Selector de año ----------
+.anio-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .6rem;
+}
+
+.anio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin: 0;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+}
+
+.select-anio {
+  width: auto;
+  min-width: 160px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+// ---------- Estados ----------
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--bs-secondary-color);
+
+  > i {
+    font-size: 2.5rem;
+    color: var(--bs-primary);
+    opacity: .6;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+    color: var(--bs-body-color);
+  }
+
+  .btn {
+    margin-top: .75rem;
+  }
+}
+
+.sk {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--rp-muted) 25%, var(--bs-border-color) 50%, var(--rp-muted) 75%);
+  background-size: 200% 100%;
+  animation: rp-brillo 1.4s infinite linear;
+}
+
+@keyframes rp-brillo {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes rp-entrar {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .panel-header,
+  .panel-body {
+    padding: 1rem;
+  }
+}
