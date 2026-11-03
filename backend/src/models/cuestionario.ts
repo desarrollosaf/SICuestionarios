@@ -16,6 +16,8 @@ class cuestionarios extends Model<
     declare id: string;
     declare titulo: string;
     declare descripcion?: string;
+    declare anio: number;
+    declare activo: boolean; // el que contestan las personas
     declare createdAt?: Date;
     declare updatedAt?: Date;
     declare deletedAt?: Date;
@@ -35,6 +37,15 @@ cuestionarios.init(
         descripcion: {
             type: DataTypes.STRING(255),
             allowNull: false
+        },
+        anio: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
+        activo: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: false
         },
     },
     {

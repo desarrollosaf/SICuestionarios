@@ -1,66 +1,99 @@
-import { Component, inject, ViewChild } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ColumnMode, DatatableComponent, NgxDatatableModule } from '@siemens/ngx-datatable';
-import { RouterModule } from '@angular/router';
-import { ReporteService } from '../../../../service/reporte.service';
+import { NgbPaginationModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { AnioCuestionario, ReporteService } from '../../../../service/reporte.service';
+import { PdfRespuestasService } from '../../../../service/pdf-respuestas.service';
+import { NombrePropioPipe } from '../../../../core/pipes/nombre-propio.pipe';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-servidores-publicos',
-  imports: [NgxDatatableModule, CommonModule, RouterModule],
+  imports: [CommonModule, FormsModule, NgbPaginationModule, NgbTooltipModule, NgSelectModule, NombrePropioPipe],
   templateUrl: './servidores-publicos.component.html',
   styleUrl: './servidores-publicos.component.scss'
 })
-export class ServidoresPublicosComponent {
+export class ServidoresPublicosComponent implements OnInit {
   originalData: any[] = [];
   temp: any[] = [];
   rows: any[] = [];
-  page: number = 0;
+  page: number = 1;
   pageSize: number = 10;
+  readonly pageSizes = [10, 25, 50];
   filteredCount: number = 0;
   loading: boolean = true;
-  sorts: any[] = [];
-  filtroDependencia: string = '';
-  filtroDireccion: string = '';
-  filtroDepartamento: string = '';
-  constructor(private _reporteService: ReporteService) { }
+  error = false;
+  busqueda = '';
+  filtroDependencia: string | null = null;
+  dependencias: string[] = [];
+  generandoPdf = new Set<string>();
+  anios: AnioCuestionario[] = [];
+  anioSeleccionado: number | null = null;
+
+  constructor(private _reporteService: ReporteService, private _pdfService: PdfRespuestasService) { }
 
   ngOnInit(): void {
-    this.getServidoresP();
+    this._reporteService.getAnios().subscribe({
+      next: (response) => {
+        this.anios = response.data || [];
+        // Por defecto, el año activo (el que se está contestando)
+        this.anioSeleccionado = (this.anios.find(a => a.activo) ?? this.anios[0])?.anio ?? null;
+        this.getServidoresP();
+      },
+      error: () => this.getServidoresP(),
+    });
+  }
 
+  seleccionarAnio(anio: number) {
+    if (anio === this.anioSeleccionado) return;
+    this.anioSeleccionado = anio;
+    this.getServidoresP();
   }
 
   getServidoresP() {
-    this._reporteService.getServidoresPublicos().subscribe({
+    this.loading = true;
+    this.error = false;
+    this._reporteService.getServidoresPublicos(this.anioSeleccionado).subscribe({
       next: (response) => {
-        // console.log(response);
         this.originalData = [...response.data];
-        this.temp = [...this.originalData];
-        this.filteredCount = this.temp.length;
-        this.setPage({ offset: 0 });
+        this.dependencias = [...new Set(
+          this.originalData.map(r => r.dependencia?.nombre_completo).filter(Boolean) as string[]
+        )].sort();
+        this.aplicarFiltros();
         this.loading = false;
       },
       error: (e: HttpErrorResponse) => {
         console.error(e);
+        this.loading = false;
+        this.error = true;
       },
     });
   }
 
-  setPage(pageInfo: any) {
-    this.page = pageInfo.offset;
-    const start = this.page * this.pageSize;
+  setPage(page: number) {
+    this.page = page;
+    const start = (this.page - 1) * this.pageSize;
     const end = start + this.pageSize;
     this.rows = this.temp.slice(start, end);
   }
 
-  updateFilter(event: any) {
-    const val = (event.target?.value || '').toLowerCase();
+  cambiarTamano() {
+    this.setPage(1);
+  }
+
+  aplicarFiltros() {
+    const val = this.normalizar(this.busqueda);
     this.temp = this.originalData.filter((row: any) => {
-      const nombre = row.Nombre?.toLowerCase() || '';
-      const dependencia = row.dependencia?.nombre_completo?.toLowerCase() || '';
-      const direccion = row.direccion?.nombre_completo?.toLowerCase() || '';
-      const departamento = row.departamento?.nombre_completo?.toLowerCase() || '';
+      if (this.filtroDependencia && row.dependencia?.nombre_completo !== this.filtroDependencia) {
+        return false;
+      }
+      if (!val) return true;
+      const nombre = this.normalizar(row.Nombre);
+      const dependencia = this.normalizar(row.dependencia?.nombre_completo);
+      const direccion = this.normalizar(row.direccion?.nombre_completo);
+      const departamento = this.normalizar(row.departamento?.nombre_completo);
       return (
         nombre.includes(val) ||
         dependencia.includes(val) ||
@@ -69,13 +102,67 @@ export class ServidoresPublicosComponent {
       );
     });
     this.filteredCount = this.temp.length;
-    this.setPage({ offset: 0 });
+    this.setPage(1);
+  }
+
+  limpiarBusqueda() {
+    this.busqueda = '';
+    this.filtroDependencia = null;
+    this.aplicarFiltros();
+  }
+
+  get hayFiltros(): boolean {
+    return !!this.busqueda || !!this.filtroDependencia;
+  }
+
+  get rangoInicio(): number {
+    return this.filteredCount ? (this.page - 1) * this.pageSize + 1 : 0;
+  }
+
+  get rangoFin(): number {
+    return Math.min(this.page * this.pageSize, this.filteredCount);
+  }
+
+  // Ignora mayúsculas y acentos al buscar
+  private normalizar(texto?: string | null): string {
+    return (texto || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  }
+
+  iniciales(nombre?: string | null): string {
+    return (nombre || '').split(/\s+/).filter(Boolean).slice(0, 2).map(p => p[0]).join('').toUpperCase() || '?';
   }
 
   descargarPDF(row: any) {
-    // console.log('Descargando PDF para:', row);
-    const url = row.urlPDF;
-    window.open(url, '_blank');
+    const rfc = row.N_Usuario;
+    if (!rfc || this.generandoPdf.has(rfc)) return;
+    this.generandoPdf.add(rfc);
+    this._reporteService.getRespuestasUsuario(rfc, this.anioSeleccionado).subscribe({
+      next: async (response) => {
+        try {
+          await this._pdfService.generar(response.data);
+        } catch (e) {
+          console.error(e);
+          this.errorPdf();
+        }
+        this.generandoPdf.delete(rfc);
+      },
+      error: (e: HttpErrorResponse) => {
+        console.error(e);
+        this.generandoPdf.delete(rfc);
+        this.errorPdf(e.status === 404 ? 'Esta persona aún no tiene respuestas registradas.' : undefined);
+      },
+    });
+  }
+
+  private errorPdf(texto = 'Inténtalo de nuevo en un momento.') {
+    Swal.fire({
+      position: 'center',
+      icon: 'error',
+      title: 'No se pudo generar el PDF',
+      text: texto,
+      showConfirmButton: false,
+      timer: 2500
+    });
   }
 
 }

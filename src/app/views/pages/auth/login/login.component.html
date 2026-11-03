@@ -1,38 +1,70 @@
-<div class="container-fluid auth-background">
-  <div class="row w-100 mx-0 auth-page">
-    <div class="col-md-6 col-lg-5 col-xl-4 mx-auto">
-      <div class="card">
-        <div class="row">
-          <!--<div class="col-md-4 pe-md-0">
-            <div class="auth-side-wrapper" [ngStyle]="{ 'background-image': 'url(https://placehold.co/250x650)' }">
-  
-            </div>
-          </div>-->
-            <div class="auth-form-wrapper px-4 py-5">
-              <a routerLink="." class="nobleui-logo d-block mb-2"><span></span></a>
-              <h6 class="fw-bold mb-4 text-center" style="color: #96134b; font-size: 1.2rem;">
-                Iniciar sesión
-              </h6>
-              <form  #f="ngForm" (ngSubmit)="onLoggedin(f)"  class="forms-sample">
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Usuario: </label>
-                  
-                  <input class="form-control"  placeholder="XAXXA01010"  id="Urfc" name="Urfc" placeholder="Usuario" ngModel required />
-                </div>
-                <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Contraseña: </label>
-                  <input class="form-control" type="password" placeholder="******"  id="Upassword" name="Upassword" placeholder="Contraseña" ngModel required />
-                </div>
-              
-                <div>
-                  <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" >Ingresar</button>
-                </div>
-                <!--<a routerLink="/auth/restaurar-contrasena" class="d-block mt-3 text-secondary">¿Olvidaste tu contraseña? <strong>Restablécela aquí</strong></a>-->
-              </form>
-            </div>
-         
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<main class="login">
+  <div class="login-contenido">
+
+    <!-- Marca -->
+    <section class="marca">
+      <img class="marca-logos" src="images/logos-congreso-saf.png"
+        alt="Congreso del Estado de México · Secretaría de Administración y Finanzas" width="312" height="64">
+      <span class="marca-eyebrow">Cuestionario de género {{ anio }}</span>
+      <h1 class="marca-titulo">Diagnóstico para contribuir a la igualdad de género</h1>
+      <p class="marca-texto">en el Poder Legislativo del Estado de México</p>
+    </section>
+
+    <!-- Formulario -->
+    <section class="tarjeta" aria-labelledby="titulo-login">
+      <h2 id="titulo-login" class="tarjeta-titulo">Iniciar sesión</h2>
+      <p class="tarjeta-subtitulo">Ingresa con tu RFC y tu contraseña.</p>
+
+      <form #f="ngForm" (ngSubmit)="onLoggedin(f)" novalidate>
+        <div class="campo">
+          <label for="Urfc" class="form-label">Usuario (RFC)</label>
+          <div class="input-icono">
+            <i class="bi bi-person"></i>
+            <input class="form-control" id="Urfc" name="Urfc" #rfc="ngModel" ngModel required
+              placeholder="Ej. ABCD123456" autocomplete="username" autocapitalize="characters" spellcheck="false"
+              [class.is-invalid]="rfc.invalid && rfc.touched" />
+          </div>
+          @if (rfc.invalid && rfc.touched) {
+          <small class="campo-error">Escribe tu RFC.</small>
+          }
         </div>
-      </div>
-    </div>
+
+        <div class="campo">
+          <label for="Upassword" class="form-label">Contraseña</label>
+          <div class="input-icono">
+            <i class="bi bi-lock"></i>
+            <input class="form-control" [type]="mostrarPassword ? 'text' : 'password'" id="Upassword" name="Upassword"
+              #pass="ngModel" ngModel required placeholder="••••••••" autocomplete="current-password"
+              [class.is-invalid]="pass.invalid && pass.touched" />
+            <button type="button" class="ver-password" (click)="mostrarPassword = !mostrarPassword"
+              [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              [attr.aria-pressed]="mostrarPassword">
+              <i class="bi" [class.bi-eye]="!mostrarPassword" [class.bi-eye-slash]="mostrarPassword"></i>
+            </button>
+          </div>
+          @if (pass.invalid && pass.touched) {
+          <small class="campo-error">Escribe tu contraseña.</small>
+          }
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-ingresar" [disabled]="cargando">
+          @if (cargando) {
+          <span class="spinner-border spinner-border-sm" role="status"></span> Ingresando…
+          } @else {
+          Ingresar <i class="bi bi-arrow-right"></i>
+          }
+        </button>
+      </form>
+
+      <p class="aviso">
+        <i class="bi bi-info-circle"></i>
+        <span>Consulta el <a
+            href="https://legislacion.legislativoedomex.gob.mx/storage/documentos/avisosprivacidad/AvisodePrivacidadUIGEV.pdf"
+            target="_blank" rel="noopener noreferrer">Aviso de Privacidad</a>.</span>
+      </p>
+    </section>
   </div>
-</div>
+
+  <div class="patron" aria-hidden="true"></div>
+</main>

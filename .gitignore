@@ -48,3 +48,6 @@ Thumbs.db
 /backend/src/models/server.ts
 src/enviroments/enviroment.prod.ts
 src/enviroments/enviroment.ts
+
+# Respaldos de base de datos (contienen datos personales)
+backend/respaldos/

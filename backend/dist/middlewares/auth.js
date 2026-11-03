@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = void 0;
+exports.soloAdmin = exports.verifyToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SECRET_KEY = process.env.SECRET_KEY || 'TSE-Poder-legislativo';
 // export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
@@ -38,3 +38,14 @@ const verifyToken = (req, res, next) => {
     }
 };
 exports.verifyToken = verifyToken;
+// Sólo administradores (RFC con prefijo GEN25); usar después de verifyToken
+const soloAdmin = (req, res, next) => {
+    var _a;
+    const rfc = ((_a = req.user) === null || _a === void 0 ? void 0 : _a.rfc) || '';
+    if (!rfc.startsWith('GEN25')) {
+        res.status(403).json({ msg: 'No autorizado' });
+        return;
+    }
+    next();
+};
+exports.soloAdmin = soloAdmin;

@@ -1,163 +1,404 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<div class="row">
-    <div class="col-12 col-xl-12 stretch-card">
-        <div class="row flex-grow-1">
-            <div class="row">
-                <div class="col-md-4 mx-auto grid-margin stretch-card">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title mb-4">Total de personas que contestaron</h5>
-                            <div class="row">
-                                <div class="col-6">
-                                    <p class="mb-1">Hombres</p>
-                                    <h6>{{tHombres}}</h6>
-                                </div>
-                                <div class="col-6">
-                                    <p class="mb-1">Mujeres</p>
-                                    <h6>{{tMujeres}}</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title mb-4">titulo</h5>
-                            <hr class="d-md-none my-4">
-                            <div class="row fw-semibold text-center mb-2">
-                                <div class="col-5 text-start">Dependencia</div>
-                                <div class="col">Hombre</div>
-                                <div class="col">Mujer</div>
-                            </div>
-                            <div class="row text-center mb-2" *ngFor="let dep of primerasDependencias">
-                                <div class="col-5 text-start">{{ dep.dependencia }}</div>
-                                <div class="col">{{ dep.hombres }}</div>
-                                <div class="col">{{ dep.mujeres }}</div>
-                                <hr class="my-2">
-                            </div>
+<div class="reportes">
 
-                        </div>
-
-                    </div>
-                </div>
-
-
-                <div class="col-md-6 grid-margin stretch-card">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h5 class="card-title mb-4">titulo</h5>
-                            <div class="row fw-semibold text-center mb-2">
-                                <div class="col-5 text-start">Dependencia</div>
-                                <div class="col">Hombre</div>
-                                <div class="col">Mujer</div>
-                            </div>
-                            <div class="row text-center mb-2" *ngFor="let dep of segundasDependencias">
-                                <div class="col-5 text-start">{{ dep.dependencia }}</div>
-                                <div class="col">{{ dep.hombres }}</div>
-                                <div class="col">{{ dep.mujeres }}</div>
-                                <hr class="my-2">
-                            </div>
-
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Encabezado -->
+  <header class="page-header">
+    <div>
+      <span class="eyebrow"><i class="bi bi-bar-chart-line"></i> Reportes</span>
+      <h1 class="page-title">Resultados del diagnóstico</h1>
+      <p class="page-subtitle">
+        Consulta cuántas personas han contestado y qué respondieron en cada pregunta. Puedes filtrar por dependencia y
+        género.
+      </p>
     </div>
-</div>
-<div class="row">
-    <div class="col-md-12 stretch-card">
-        <div class="card">
-            <div class="card-body">
-                <!-- <h6 class="card-title text-center">
-                    OLITASDEMAR
-                </h6> -->
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <label class="form-label">Dependencia:</label>
-                                    <ng-select [items]="dependencia" [searchable]="false" bindLabel="nombre_completo"
-                                        bindValue="id_Dependencia" [(ngModel)]="selectedDependencia"
-                                        placeholder="--Selecciona--">
-                                    </ng-select>
-                                </div>
-                            </div>
-                        </div>
+  </header>
 
-
-                        <div class="col-sm-6">
-                            <div class="mb-3">
-                                <div class="form-group">
-                                    <label class="form-label">Género:</label>
-                                    <ng-select [items]="generoSlct" [searchable]="false" bindLabel="name" bindValue="id"
-                                        [(ngModel)]="selectedGenero" placeholder="--Selecciona--">
-                                    </ng-select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="text-center">
-                        <button class="btn btn-primary me-2" (click)="getResultados()">
-                            <i class="bi bi-search"></i> Buscar
-                        </button>
-                    </div>
-                    <br>
-                    <div class="text-center">
-                        
-
-                        <button class="btn btn-primary" (click)="getExcelF()">
-                            <i class="bi bi-cloud-download"></i> Descargar Excel
-                        </button>   
-                    </div>
-
-
-                    <br>
-                    <div *ngIf="accordionOpen" class="row">
-                        <div *ngIf="data?.length; else loading" ngbAccordion [closeOthers]="true">
-                            <div *ngFor="let seccion of data" ngbAccordionItem [collapsed]="false">
-                                <h2 ngbAccordionHeader>
-                                    <button ngbAccordionButton>
-                                        <b>{{ seccion?.nombreSeccion }}</b>
-                                    </button>
-                                </h2>
-                                <div ngbAccordionCollapse>
-                                    <div ngbAccordionBody>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-4" *ngFor="let pregunta of seccion.preguntas">
-                                                <h6 *ngIf="pregunta?.nombrePregunta">{{ pregunta.nombrePregunta }}</h6>
-                                                <canvas *ngIf="pregunta?.opciones?.length" baseChart
-                                                    [data]="getChartData(pregunta)" [type]="'bar'"
-                                                    [options]="chartOptions"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <ng-template #loading>
-                            <div class="row justify-content-center">
-                                <div class="col-md-8 col-lg-6">
-                                    <div class=" text-center">
-                                        <div class="py-2">
-                                            <div class="mb-1">
-                                                <i class="bi bi-emoji-frown text-primary" style="font-size: 3rem;"></i>
-                                            </div>
-                                            <h6 class="text-primary">No hay resultados para mostrar.</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </ng-template>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Año del diagnóstico -->
+  @if (anios.length) {
+  <section class="barra-anio" aria-label="Año del diagnóstico">
+    <div class="anio-grupo">
+      <label class="anio-label" for="anio-ver"><i class="bi bi-calendar3"></i> Año</label>
+      <select id="anio-ver" class="form-select select-anio" [ngModel]="anioSeleccionado"
+        (ngModelChange)="seleccionarAnio($event)">
+        @for (a of anios; track a.anio) {
+        <option [ngValue]="a.anio">{{ a.anio }}{{ a.activo ? ' · en curso' : '' }}</option>
+        }
+      </select>
     </div>
+
+    @if (aniosParaComparar.length) {
+    <div class="anio-grupo comparar">
+      <label class="anio-label" for="anio-comparar"><i class="bi bi-arrow-left-right"></i> Comparar con</label>
+      <select id="anio-comparar" class="form-select select-anio" [(ngModel)]="anioComparar" (ngModelChange)="cambiarComparacion()">
+        <option [ngValue]="null">Sin comparar</option>
+        @for (a of aniosParaComparar; track a.anio) {
+        <option [ngValue]="a.anio">{{ a.anio }}</option>
+        }
+      </select>
+      @if (cargandoComparacion) {
+      <span class="spinner-border spinner-border-sm text-primary" role="status"></span>
+      }
+    </div>
+    }
+  </section>
+  }
+
+  <!-- Indicadores -->
+  <section class="kpis" aria-label="Resumen de participación">
+    <div class="kpi kpi-principal">
+      <div class="kpi-icon"><i class="bi bi-people-fill"></i></div>
+      <div>
+        <span class="kpi-label">Personas que contestaron</span>
+        @if (cargandoTotales) {
+        <span class="sk sk-num"></span>
+        } @else {
+        <strong class="kpi-valor">{{ totalPersonas | number }}</strong>
+        @if (comparacion) {
+        <span class="kpi-extra">{{ comparacion.anio }}: {{ totalPersonasComparado | number }}</span>
+        }
+        }
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-icon mujeres"><i class="bi bi-gender-female"></i></div>
+      <div>
+        <span class="kpi-label">Mujeres</span>
+        @if (cargandoTotales) {
+        <span class="sk sk-num"></span>
+        } @else {
+        <strong class="kpi-valor">{{ tMujeres | number }}</strong>
+        <span class="kpi-extra">{{ porcentaje(tMujeres, totalPersonas) }}% del total</span>
+        @if (comparacion) {
+        <span class="kpi-extra">{{ comparacion.anio }}: {{ comparacion.tMujeres | number }} ({{ porcentaje(comparacion.tMujeres, totalPersonasComparado) }}%)</span>
+        }
+        }
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-icon hombres"><i class="bi bi-gender-male"></i></div>
+      <div>
+        <span class="kpi-label">Hombres</span>
+        @if (cargandoTotales) {
+        <span class="sk sk-num"></span>
+        } @else {
+        <strong class="kpi-valor">{{ tHombres | number }}</strong>
+        <span class="kpi-extra">{{ porcentaje(tHombres, totalPersonas) }}% del total</span>
+        @if (comparacion) {
+        <span class="kpi-extra">{{ comparacion.anio }}: {{ comparacion.tHombres | number }} ({{ porcentaje(comparacion.tHombres, totalPersonasComparado) }}%)</span>
+        }
+        }
+      </div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-icon neutro"><i class="bi bi-building"></i></div>
+      <div>
+        <span class="kpi-label">Dependencias con respuestas</span>
+        @if (cargandoTotales) {
+        <span class="sk sk-num"></span>
+        } @else {
+        <strong class="kpi-valor">{{ dependenciasConParticipacion }}<small> de {{ dependencias.length }}</small></strong>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Participación por dependencia -->
+  <section class="panel">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title">Participación por dependencia</h2>
+        <p class="panel-subtitle">Personas que ya contestaron, separadas por género. Ordenado de mayor a menor.</p>
+      </div>
+      <div class="leyenda" aria-hidden="true">
+        <span><i class="punto mujeres"></i> Mujeres</span>
+        <span><i class="punto hombres"></i> Hombres</span>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      @if (cargandoTotales) {
+      @for (i of [1, 2, 3, 4]; track i) {
+      <div class="sk sk-fila"></div>
+      }
+      } @else if (!dependencias.length) {
+      <div class="vacio">
+        <i class="bi bi-inbox"></i>
+        <p>No hay información de dependencias.</p>
+      </div>
+      } @else {
+      <div class="tabla-dep" role="table" aria-label="Participación por dependencia">
+        <div class="fila-dep encabezado" role="row">
+          <span role="columnheader">Dependencia</span>
+          <span role="columnheader" class="num">Mujeres</span>
+          <span role="columnheader" class="num">Hombres</span>
+          <span role="columnheader" class="num">Total</span>
+        </div>
+        @for (dep of dependencias; track dep.dependencia) {
+        <div class="fila-dep" role="row" [class.sin-datos]="!dep.total">
+          <div role="cell" class="dep-nombre">
+            <span>{{ dep.dependencia | nombrePropio }}</span>
+            <div class="barra-apilada" [attr.aria-hidden]="true">
+              @if (dep.total) {
+              <span class="seg mujeres" [style.width.%]="porcentaje(dep.mujeres, maxTotalDependencia)"></span>
+              <span class="seg hombres" [style.width.%]="porcentaje(dep.hombres, maxTotalDependencia)"></span>
+              }
+            </div>
+          </div>
+          <span role="cell" class="num" data-label="Mujeres">{{ dep.mujeres }}</span>
+          <span role="cell" class="num" data-label="Hombres">{{ dep.hombres }}</span>
+          <span role="cell" class="num total" data-label="Total">
+            {{ dep.total }}
+            @if (comparacion) {
+            <small class="valor-anterior">{{ comparacion.anio }}: {{ totalDependenciaComparado(dep) ?? '—' }}</small>
+            }
+          </span>
+        </div>
+        }
+      </div>
+      }
+    </div>
+  </section>
+
+  <!-- Filtros -->
+  <section class="panel filtros">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title"><span class="paso">1</span> Elige qué quieres ver</h2>
+        <p class="panel-subtitle">Selecciona una dependencia, un género o ambos y presiona <strong>Ver resultados</strong>.
+        </p>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="filtros-grid">
+        <div>
+          <label class="form-label" for="filtro-dependencia"><i class="bi bi-building"></i> Dependencia</label>
+          <ng-select labelForId="filtro-dependencia" [items]="dependencia" [searchable]="true"
+            bindLabel="nombre_completo" bindValue="id_Dependencia" [(ngModel)]="selectedDependencia"
+            placeholder="Todas las dependencias" notFoundText="Sin coincidencias">
+          </ng-select>
+        </div>
+
+        <div>
+          <label class="form-label" for="filtro-genero"><i class="bi bi-gender-ambiguous"></i> Género</label>
+          <ng-select labelForId="filtro-genero" [items]="generoSlct" [searchable]="false" bindLabel="name"
+            bindValue="id" [(ngModel)]="selectedGenero" placeholder="Todos los géneros">
+          </ng-select>
+        </div>
+
+        <div class="filtros-acciones">
+          <button type="button" class="btn btn-primary btn-pill" (click)="getResultados()"
+            [disabled]="!hayFiltros || cargandoResultados">
+            <i class="bi bi-search"></i> Ver resultados
+          </button>
+          @if (hayFiltros || hayFiltroAplicado) {
+          <button type="button" class="btn btn-ghost" (click)="limpiarFiltros()" [disabled]="cargandoResultados">
+            <i class="bi bi-x-circle"></i> Limpiar
+          </button>
+          }
+        </div>
+      </div>
+
+      <div class="excel">
+        <div class="excel-info">
+          <div class="excel-icon"><i class="bi bi-file-earmark-excel-fill"></i></div>
+          <div>
+            <strong>Lista de quién ya contestó</strong>
+            <p>Descarga un Excel con el personal de la dependencia seleccionada y si ya respondió o no.</p>
+          </div>
+        </div>
+        <span [ngbTooltip]="!selectedDependencia ? 'Primero elige una dependencia arriba' : ''">
+          <button type="button" class="btn btn-success btn-pill" (click)="getExcelF()"
+            [disabled]="!selectedDependencia || descargando">
+            @if (descargando) {
+            <span class="spinner-border spinner-border-sm"></span> Descargando…
+            } @else {
+            <i class="bi bi-cloud-download"></i> Descargar Excel
+            }
+          </button>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Resultados -->
+  <section class="panel resultados">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title"><span class="paso">2</span> Respuestas por pregunta</h2>
+        <div class="chips-filtro">
+          <span class="chip-label">Mostrando:</span>
+          @if (!hayFiltroAplicado) {
+          <span class="chip"><i class="bi bi-globe2"></i> Todas las respuestas</span>
+          }
+          @if (filtroAplicado.dependencia) {
+          <span class="chip"><i class="bi bi-building"></i> {{ filtroAplicado.dependencia | nombrePropio }}</span>
+          }
+          @if (filtroAplicado.genero) {
+          <span class="chip"><i class="bi bi-gender-ambiguous"></i> {{ filtroAplicado.genero }}</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (cargandoResultados) {
+    <div class="panel-body">
+      <div class="sk sk-tabs"></div>
+      <div class="preguntas-grid">
+        @for (i of [1, 2, 3, 4]; track i) {
+        <div class="sk sk-card"></div>
+        }
+      </div>
+    </div>
+    } @else if (errorResultados) {
+    <div class="vacio">
+      <i class="bi bi-wifi-off"></i>
+      <p>No pudimos cargar los resultados.</p>
+      <button type="button" class="btn btn-primary btn-pill" (click)="showAllData()">
+        <i class="bi bi-arrow-clockwise"></i> Reintentar
+      </button>
+    </div>
+    } @else if (!data.length) {
+    <div class="vacio">
+      <i class="bi bi-emoji-frown"></i>
+      <p>No hay resultados para mostrar.</p>
+      <span>Prueba con otra dependencia o género.</span>
+    </div>
+    } @else {
+    <!-- Pestañas de secciones -->
+    <div class="tabs" role="tablist" aria-label="Secciones del cuestionario">
+      @for (seccion of data; track $index; let i = $index) {
+      <button type="button" role="tab" class="tab" [class.activa]="i === seccionActiva"
+        [attr.aria-selected]="i === seccionActiva" (click)="seleccionarSeccion(i)">
+        <span class="tab-num">{{ i + 1 }}</span>
+        <span class="tab-texto">{{ seccion?.nombreSeccion | nombrePropio }}</span>
+        <span class="tab-badge">{{ seccion?.preguntas?.length || 0 }}</span>
+      </button>
+      }
+    </div>
+
+    @for (seccion of data; track $index; let i = $index) {
+    @if (i === seccionActiva) {
+    <div class="panel-body seccion" role="tabpanel">
+      <div class="seccion-titulo">
+        <h3>{{ seccion?.nombreSeccion | nombrePropio }}</h3>
+        <span>{{ seccion?.preguntas?.length || 0 }} preguntas</span>
+      </div>
+
+      <div class="preguntas-grid">
+        @for (pregunta of seccion.preguntas; track $index; let j = $index) {
+        <article class="pregunta">
+          <header class="pregunta-header">
+            <span class="pregunta-num">
+              @if (numeroPregunta(i, j); as num) {
+              {{ num }}
+              } @else {
+              <i class="bi bi-person-vcard"></i>
+              }
+            </span>
+            <h4 class="pregunta-texto">{{ pregunta?.nombrePregunta }}</h4>
+          </header>
+
+          @if (pregunta?.opciones?.length) {
+          <p class="pregunta-total">
+            <i class="bi bi-chat-square-text"></i>
+            {{ totalPregunta(pregunta) | number }} {{ totalPregunta(pregunta) === 1 ? 'respuesta' : 'respuestas' }}
+            @if (comparacion) {
+            @if (existeEnComparacion(pregunta)) {
+            <span class="vs">· {{ comparacion.anio }}: {{ totalComparado(pregunta) | number }}</span>
+            } @else {
+            <span class="badge-nueva"><i class="bi bi-stars"></i> No estaba en {{ comparacion.anio }}</span>
+            }
+            }
+          </p>
+
+          <ul class="barras">
+            @for (opcion of pregunta.opciones; track $index) {
+            <li class="barra" [class.top]="esMasElegida(pregunta, opcion)">
+              <div class="barra-info">
+                <span class="barra-label">
+                  {{ opcion.nombreOpcion }}
+                  @if (esMasElegida(pregunta, opcion)) {
+                  <span class="badge-top"><i class="bi bi-star-fill"></i> Más elegida</span>
+                  }
+                </span>
+                <span class="barra-valor">
+                  <strong>{{ opcion.totalRespuestas | number }}</strong>
+                  @if (totalPregunta(pregunta)) {
+                  <small>{{ porcentaje(opcion.totalRespuestas, totalPregunta(pregunta)) }}%</small>
+                  }
+                  @if (diferencia(pregunta, opcion); as dif) {
+                  <span class="delta" [class.sube]="dif > 0" [class.baja]="dif < 0"
+                    [title]="'Cambio contra ' + comparacion?.anio + ' en puntos porcentuales'">
+                    {{ dif > 0 ? '▲' : '▼' }} {{ dif > 0 ? dif : -dif }} pts
+                  </span>
+                  }
+                </span>
+              </div>
+              <div class="barra-track">
+                <span class="barra-fill"
+                  [style.width.%]="porcentaje(opcion.totalRespuestas, totalPregunta(pregunta))"></span>
+              </div>
+              @if (comparacion && existeEnComparacion(pregunta)) {
+              @if (porcentajeComparado(pregunta, opcion); as anterior) {
+              <div class="barra-anterior" [title]="comparacion.anio + ': ' + anterior + '%'">
+                <span class="barra-anterior-track"><span [style.width.%]="anterior"></span></span>
+                <small>{{ comparacion.anio }}: {{ anterior }}%</small>
+              </div>
+              } @else {
+              <div class="barra-anterior">
+                <small>{{ porcentajeComparado(pregunta, opcion) === 0 ? comparacion.anio + ': 0%' : 'Opción nueva' }}</small>
+              </div>
+              }
+              }
+            </li>
+            }
+          </ul>
+          @if (comparacion && existeEnComparacion(pregunta)) {
+          @if (textoAnterior(pregunta); as anterior) {
+          <p class="nota-comparacion">
+            <i class="bi bi-pencil-square"></i>
+            <span>En {{ comparacion.anio }} decía: «{{ anterior }}»</span>
+          </p>
+          }
+          @if (opcionesCambiaron(pregunta)) {
+          <p class="nota-comparacion aviso-opciones">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>
+              Las opciones cambiaron respecto a {{ comparacion.anio }}, así que la comparación es solo de referencia.
+              @if (opcionesSoloAnteriores(pregunta).length) {
+              En {{ comparacion.anio }} también estaban:
+              @for (o of opcionesSoloAnteriores(pregunta); track o.nombre; let ultimo = $last) {
+              <strong>{{ o.nombre }}</strong> ({{ o.pct }}%){{ ultimo ? '.' : ',' }}
+              }
+              }
+            </span>
+          </p>
+          }
+          }
+          @if (!totalPregunta(pregunta)) {
+          <p class="sin-respuestas"><i class="bi bi-hourglass-split"></i> Aún no hay respuestas para esta pregunta.</p>
+          }
+          }
+        </article>
+        }
+      </div>
+
+      <div class="seccion-nav">
+        <button type="button" class="btn btn-ghost" [disabled]="i === 0" (click)="seleccionarSeccion(i - 1)">
+          <i class="bi bi-arrow-left"></i> Sección anterior
+        </button>
+        <button type="button" class="btn btn-ghost" [disabled]="i === data.length - 1"
+          (click)="seleccionarSeccion(i + 1)">
+          Siguiente sección <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+    }
+    }
+    }
+  </section>
 </div>

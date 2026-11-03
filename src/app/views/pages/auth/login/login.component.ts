@@ -1,4 +1,3 @@
-import { NgStyle } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -11,7 +10,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
     selector: 'app-login',
     imports: [
-      NgStyle,
       RouterLink,
       FormsModule
     ],
@@ -24,6 +22,9 @@ export class LoginComponent implements OnInit {
   loggedin: boolean = false;
   Urfc: string = '';
   Upassword: string = '';
+  cargando = false;
+  mostrarPassword = false;
+  readonly anio = new Date().getFullYear();
   userRole$: Observable<string | undefined>;
   formLogin: FormGroup;
 
@@ -47,14 +48,19 @@ export class LoginComponent implements OnInit {
 
  
   onLoggedin(form: NgForm) {
-    // console.log('envio login')
+    if (form.invalid || this.cargando) {
+      form.control.markAllAsTouched();
+      return;
+    }
     const user: User = {
-      rfc: form.value.Urfc,
+      rfc: (form.value.Urfc || '').trim().toUpperCase(),
       password: form.value.Upassword
     };
 
+    this.cargando = true;
     this._userService.login(user).subscribe({
       next: (response: any) => {
+        this.cargando = false;
         const userData = response.user;
         const bandera = response.bandera;
         localStorage.setItem('isLoggedin', 'true'); 
@@ -66,6 +72,7 @@ export class LoginComponent implements OnInit {
         }
       },
       error: (e: HttpErrorResponse) => {
+        this.cargando = false;
         if (e.status === 400) {
           Swal.fire({
             position: "center",
@@ -84,6 +91,14 @@ export class LoginComponent implements OnInit {
           });
         } else {
           console.error('Error desconocido:', e);
+          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "No pudimos iniciar sesión.",
+            text: "Revisa tu conexión e inténtalo de nuevo.",
+            showConfirmButton: false,
+            timer: 3000
+          });
         }
       },
     });

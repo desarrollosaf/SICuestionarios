@@ -21,6 +21,15 @@ cuestionarios.init({
         type: sequelize_1.DataTypes.STRING(255),
         allowNull: false
     },
+    anio: {
+        type: sequelize_1.DataTypes.INTEGER,
+        allowNull: true
+    },
+    activo: {
+        type: sequelize_1.DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    },
 }, {
     sequelize: cuestionariosConnection_1.default,
     tableName: 'cuestionarios',

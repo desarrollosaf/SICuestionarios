@@ -16,6 +16,7 @@ exports.cerrarsesion = exports.getCurrentUser = exports.LoginUser = exports.Read
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const users_1 = __importDefault(require("../models/saf/users"));
 const user_1 = __importDefault(require("../models/user"));
+const s_usuario_1 = __importDefault(require("../models/saf/s_usuario"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const ReadUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const listUser = yield users_1.default.findAll();
@@ -26,6 +27,7 @@ const ReadUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.ReadUser = ReadUser;
 const LoginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { rfc, password } = req.body;
     let passwordValid = false;
     let user = null;
@@ -68,16 +70,34 @@ const LoginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function
         maxAge: 2 * 60 * 60 * 1000,
         path: '/',
     });
-    return res.json({ user, bandera });
+    // Sólo se envían datos públicos, nunca el hash de la contraseña
+    const userData = {
+        rfc,
+        nombre: yield buscarNombre(rfc),
+        email: (_a = user.email) !== null && _a !== void 0 ? _a : null,
+    };
+    return res.json({ user: userData, bandera });
 });
 exports.LoginUser = LoginUser;
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     res.json({
         rfc: user.rfc,
+        nombre: yield buscarNombre(user.rfc),
     });
-};
+});
 exports.getCurrentUser = getCurrentUser;
+// El nombre vive en s_usuario del SAF; los administradores usan su RFC sin el prefijo GEN25
+const buscarNombre = (rfc) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    if (!rfc)
+        return null;
+    const usuarioSaf = yield s_usuario_1.default.findOne({
+        where: { N_Usuario: rfc.replace(/^GEN25/, '') },
+        attributes: ['Nombre'],
+    });
+    return (_a = usuarioSaf === null || usuarioSaf === void 0 ? void 0 : usuarioSaf.Nombre) !== null && _a !== void 0 ? _a : null;
+});
 const cerrarsesion = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.clearCookie('accessToken', {
         httpOnly: true,

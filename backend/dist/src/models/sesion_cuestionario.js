@@ -23,7 +23,7 @@ sesion.init({
         allowNull: true
     },
     comentarios: {
-        type: sequelize_1.DataTypes.STRING(255),
+        type: sequelize_1.DataTypes.TEXT,
         allowNull: true
     },
     createdAt: {

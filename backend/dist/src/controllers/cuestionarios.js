@@ -12,17 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getExcel = exports.getExcelFaltantes = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
+exports.getRespuestasUsuario = exports.getExcel = exports.getExcelFaltantes = exports.getcuestionariosus = exports.gettotalesdep = exports.getcuestionariosdep = exports.getcuestionarios = exports.savecuestionario = exports.getpreguntas = void 0;
 const preguntas_1 = __importDefault(require("../models/preguntas"));
 const opciones_1 = __importDefault(require("../models/opciones"));
 const secciones_1 = __importDefault(require("../models/secciones"));
 const sesion_cuestionario_1 = __importDefault(require("../models/sesion_cuestionario"));
 const respuesta_1 = __importDefault(require("../models/respuesta"));
-const connection_1 = __importDefault(require("../database/connection"));
 const t_dependencia_1 = __importDefault(require("../models/saf/t_dependencia"));
 const s_usuario_1 = __importDefault(require("../models/saf/s_usuario"));
 const t_direccion_1 = __importDefault(require("../models/saf/t_direccion"));
 const t_departamento_1 = __importDefault(require("../models/saf/t_departamento"));
+const cuestionariosConnection_1 = __importDefault(require("../database/cuestionariosConnection"));
 const { Sequelize } = require('sequelize');
 const ExcelJS = require('exceljs');
 const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -71,6 +71,8 @@ const getpreguntas = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.getpreguntas = getpreguntas;
+const MAX_COMENTARIOS = 1000;
+const MAX_OTRO = 255;
 const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { body } = req;
@@ -89,31 +91,43 @@ const savecuestionario = (req, res) => __awaiter(void 0, void 0, void 0, functio
             });
         }
         else {
-            const idSesion = yield sesion_cuestionario_1.default.create({
-                "id_usuario": id,
-                "fecha_registro": new Date,
-                "comentarios": body.comentarios
-            });
-            const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.flatMap(obj => {
-                if (Array.isArray(obj.respuesta)) {
-                    return obj.respuesta.map(rsp => ({
-                        id_pregunta: obj.idPregunta,
-                        id_opcion: rsp,
-                        valor_texto: obj.otroValor,
-                        id_sesion: idSesion.id
-                    }));
-                }
-                else {
-                    return [{
+            const comentarios = (body.comentarios || '').trim();
+            if (comentarios.length > MAX_COMENTARIOS) {
+                return res.status(400).json({ msg: `Los comentarios no pueden pasar de ${MAX_COMENTARIOS} caracteres.` });
+            }
+            const otroLargo = arrayPreguntas.flat().some((obj) => ((obj === null || obj === void 0 ? void 0 : obj.otroValor) || '').length > MAX_OTRO);
+            if (otroLargo) {
+                return res.status(400).json({ msg: `El texto de "Otro" no puede pasar de ${MAX_OTRO} caracteres.` });
+            }
+            // Sesión y respuestas se guardan juntas: si algo falla no queda una sesión vacía
+            // que impida a la persona volver a intentarlo
+            yield cuestionariosConnection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
+                const idSesion = yield sesion_cuestionario_1.default.create({
+                    "id_usuario": id,
+                    "fecha_registro": new Date,
+                    "comentarios": comentarios || null
+                }, { transaction: t });
+                const respuestasArr = arrayPreguntas.flatMap((subarray) => subarray.flatMap(obj => {
+                    if (Array.isArray(obj.respuesta)) {
+                        return obj.respuesta.map(rsp => ({
                             id_pregunta: obj.idPregunta,
-                            id_opcion: obj.respuesta,
+                            id_opcion: rsp,
                             valor_texto: obj.otroValor,
                             id_sesion: idSesion.id
-                        }];
-                }
-            }));
-            yield connection_1.default.transaction((t) => __awaiter(void 0, void 0, void 0, function* () {
-                const respuestasSave = yield respuesta_1.default.bulkCreate(respuestasArr);
+                        }));
+                    }
+                    else if (obj.respuesta) {
+                        return [{
+                                id_pregunta: obj.idPregunta,
+                                id_opcion: obj.respuesta,
+                                valor_texto: obj.otroValor,
+                                id_sesion: idSesion.id
+                            }];
+                    }
+                    // Pregunta opcional o condicional sin responder: no se guarda nada
+                    return [];
+                }));
+                yield respuesta_1.default.bulkCreate(respuestasArr, { transaction: t });
             }));
             return res.json({
                 status: 200
@@ -1053,3 +1067,91 @@ const getExcel = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     module.exports = { getExcel: exports.getExcel };
 });
 exports.getExcel = getExcel;
+const getRespuestasUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
+    var _d, _e, _f, _g;
+    try {
+        const { rfc } = req.params;
+        const sesionUsuario = yield sesion_cuestionario_1.default.findOne({
+            where: { id_usuario: rfc }
+        });
+        if (!sesionUsuario) {
+            return res.status(404).json({ msg: 'El usuario no ha contestado el cuestionario' });
+        }
+        const usuario = yield s_usuario_1.default.findOne({
+            where: { N_Usuario: rfc },
+            attributes: ['Nombre', 'N_Usuario'],
+            include: [
+                { model: t_dependencia_1.default, as: "dependencia", attributes: ['nombre_completo'] },
+                { model: t_direccion_1.default, as: "direccion", attributes: ['nombre_completo'] },
+                { model: t_departamento_1.default, as: "departamento", attributes: ['nombre_completo'] },
+            ]
+        });
+        const respuestasUsuario = yield respuesta_1.default.findAll({
+            where: { id_sesion: sesionUsuario.id },
+            attributes: ['id_pregunta', 'id_opcion', 'valor_texto'],
+        });
+        const secciones = yield secciones_1.default.findAll({
+            include: [
+                {
+                    model: preguntas_1.default,
+                    as: "m_preguntas",
+                    include: [{ model: opciones_1.default, as: 'm_opciones' }],
+                },
+            ],
+            order: [
+                ['orden', 'asc'],
+                [{ model: preguntas_1.default, as: "m_preguntas" }, 'orden', 'asc'],
+                [{ model: preguntas_1.default, as: "m_preguntas" },
+                    { model: opciones_1.default, as: "m_opciones" }, 'orden', 'asc'],
+            ]
+        });
+        const resultado = secciones.map(sec => {
+            const s = sec;
+            return {
+                nombreSeccion: sec.titulo,
+                preguntas: (s.m_preguntas || []).map((preg) => {
+                    const delaPregunta = respuestasUsuario.filter(r => r.id_pregunta === preg.id);
+                    const elegidas = (preg.m_opciones || []).filter((opc) => delaPregunta.some(r => r.id_opcion === opc.id));
+                    // Una pregunta condicional no aplica si no se eligió ninguna de las opciones que la activan
+                    let aplica = true;
+                    if (preg.id_pregunta_condicion) {
+                        const activadoras = JSON.parse(preg.opciones_condicion || '[]');
+                        aplica = respuestasUsuario.some(r => r.id_pregunta === preg.id_pregunta_condicion && activadoras.includes(r.id_opcion));
+                    }
+                    return {
+                        nombrePregunta: preg.texto_pregunta,
+                        aplica,
+                        respuestas: elegidas.map((opc) => {
+                            var _a, _b;
+                            // El texto libre sólo aplica a la opción "Otro"/"Otra"
+                            const otro = /^otr[oa]$/i.test(((_a = opc.texto_opcion) === null || _a === void 0 ? void 0 : _a.trim()) || '')
+                                ? (_b = delaPregunta.find(r => r.id_opcion === opc.id)) === null || _b === void 0 ? void 0 : _b.valor_texto
+                                : null;
+                            return otro ? `${opc.texto_opcion}: ${otro}` : opc.texto_opcion;
+                        }),
+                    };
+                })
+            };
+        });
+        return res.json({
+            data: {
+                usuario: {
+                    nombre: (_d = usuario === null || usuario === void 0 ? void 0 : usuario.Nombre) !== null && _d !== void 0 ? _d : null,
+                    rfc,
+                    dependencia: (_e = (_a = usuario === null || usuario === void 0 ? void 0 : usuario.dependencia) === null || _a === void 0 ? void 0 : _a.nombre_completo) !== null && _e !== void 0 ? _e : null,
+                    direccion: (_f = (_b = usuario === null || usuario === void 0 ? void 0 : usuario.direccion) === null || _b === void 0 ? void 0 : _b.nombre_completo) !== null && _f !== void 0 ? _f : null,
+                    departamento: (_g = (_c = usuario === null || usuario === void 0 ? void 0 : usuario.departamento) === null || _c === void 0 ? void 0 : _c.nombre_completo) !== null && _g !== void 0 ? _g : null,
+                },
+                fechaRegistro: sesionUsuario.fecha_registro,
+                comentarios: sesionUsuario.comentarios,
+                secciones: resultado,
+            }
+        });
+    }
+    catch (error) {
+        console.error('Error al consultar respuestas del usuario:', error);
+        return res.status(500).json({ msg: 'Error interno del servidor' });
+    }
+});
+exports.getRespuestasUsuario = getRespuestasUsuario;
