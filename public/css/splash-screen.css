@@ -1,98 +1,75 @@
-/* Splash screen */
+/* Pantalla de carga inicial (se muestra mientras arranca la app) */
 
 .splash-screen {
   --primary: #96134b;
   --bg: #f9fafb;
+  --texto: #6b7280;
 
-  background: var(--bg);
-  width: 100vw;
-  height: 100vh;
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1.75rem;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg);
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
 }
 
 .splash-screen .logo {
-  background-image: url(../images/logo-mini-light.png);
-  width: 30px;
-  height: 30px;
-  background-size: 30px;
-  position: absolute;
-  z-index: 1;
- }
+  display: block;
+  width: min(260px, 70vw);
+  height: auto;
+  animation: aparecer .5s ease-out both;
+}
 
 .splash-screen .spinner {
-  width: 100px;
-  height: 100px;
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(150, 19, 75, .15);
+  border-top-color: var(--primary);
   border-radius: 50%;
-  background: -moz-linear-gradient(left, var(--primary) 10%, rgba(0, 0, 0, 0) 42%);
-  background: -webkit-linear-gradient(left, var(--primary) 10%, rgba(0, 0, 0, 0) 42%);
-  background: -o-linear-gradient(left, var(--primary) 10%, rgba(0, 0, 0, 0) 42%);
-  background: -ms-linear-gradient(left, var(--primary) 10%, rgba(0, 0, 0, 0) 42%);
-  background: linear-gradient(to right, var(--primary) 10%, rgba(0, 0, 0, 0) 42%);
-  -webkit-animation: loading 1.4s infinite linear;
-  animation: loading 1.4s infinite linear;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
+  animation: girar .8s linear infinite;
 }
 
-.splash-screen .spinner:before {
-  width: 50%;
-  height: 50%;
-  background: var(--primary);
-  border-radius: 100% 0 0 0;
-  position: absolute;
-  top: 0;
-  left: 0;
-  content: '';
+.splash-screen .texto {
+  margin-top: -.75rem;
+  font-size: .85rem;
+  letter-spacing: .02em;
+  color: var(--texto);
 }
 
-.splash-screen .spinner:after {
-  background: var(--bg);
-  width: 90%;
-  height: 90%;
-  border-radius: 50%;
-  content: '';
-  margin: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-
-@-webkit-keyframes loading {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
- }
-  100% {
-    -webkit-transform: rotate(360deg);
+@keyframes girar {
+  to {
     transform: rotate(360deg);
- }
-}
-@keyframes loading {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
- }
-  100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
- }
+  }
 }
 
-[data-bs-theme="dark"] .splash-screen,
-[data-bs-theme="dark"] .splash-screen .spinner:after {
-  background: #070d19;
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
-[data-bs-theme="dark"] .splash-screen .logo {
-  background-image: url(../images/logo-mini-dark.png);
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen .logo {
+    animation: none;
+  }
+
+  .splash-screen .spinner {
+    animation-duration: 2s;
+  }
+}
+
+[data-bs-theme="dark"] .splash-screen {
+  --bg: #070d19;
+  --texto: #9ca3af;
 }
