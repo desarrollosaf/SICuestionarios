@@ -212,7 +212,10 @@
   right: 0;
   bottom: 0;
   height: 138px;
-  background: url('/images/patron-genero.png') no-repeat center bottom / cover;
+  // La imagen se define en el HTML con ruta relativa, para que funcione aunque la app no esté en la raíz del dominio
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: cover;
   pointer-events: none;
 }
 
