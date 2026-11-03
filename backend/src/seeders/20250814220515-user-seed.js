@@ -6,6 +6,10 @@ const { v4: uuidv4 } = require('uuid');
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
+    // Si ya hay administradores no se vuelven a insertar (evita duplicarlos con db:seed:all)
+    const [[{ total }]] = await queryInterface.sequelize.query('SELECT COUNT(*) AS total FROM users');
+    if (Number(total) > 0) return;
+
     const hashedPassword = await bcrypt.hash('password', 10);
 
     const users = [
