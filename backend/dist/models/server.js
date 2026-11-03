@@ -42,8 +42,12 @@ class Server {
     }
     midlewares() {
         this.app.use(express_1.default.json());
+        // Orígenes permitidos: producción y desarrollo local (sin "/" al final; el navegador no la envía)
         this.app.use((0, cors_1.default)({
-            origin: 'http://localhost:4200',
+            origin: [
+                'https://administracionyfinanzasplem.gob.mx',
+                'http://localhost:4200',
+            ],
             credentials: true
         }));
         this.app.use((0, cookie_parser_1.default)());

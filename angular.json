@@ -1,3 +1,4 @@
+
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
@@ -52,6 +53,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/enviroments/enviroment.ts",
+                  "with": "src/enviroments/enviroment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -62,12 +69,6 @@
                   "type": "anyComponentStyle",
                   "maximumWarning": "16kB",
                   "maximumError": "24kB"
-                }
-              ],
-              "fileReplacements": [
-                {
-                  "replace": "src/enviroments/enviroment.ts",
-                  "with": "src/enviroments/enviroment.prod.ts"
                 }
               ],
               "outputHashing": "all"
@@ -124,3 +125,4 @@
     "analytics": false
   }
 }
+
