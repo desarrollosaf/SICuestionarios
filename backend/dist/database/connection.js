@@ -1,8 +1,19 @@
 "use strict";
+/* import { Sequelize } from "sequelize"
+
+const sequelize = new Sequelize('adminplem_saf', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql',
+    define: {
+        freezeTableName: true
+    }
+})
+export default sequelize
+  */
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
-const sequelize = new sequelize_1.Sequelize('adminplem_saf', 'root', '', {
-    host: 'localhost',
+const sequelize = new sequelize_1.Sequelize('adminplem_saf', 'usr_genero', 'XenCoItYEywGdD1', {
+    host: '192.168.36.53',
     dialect: 'mysql',
     define: {
         freezeTableName: true
