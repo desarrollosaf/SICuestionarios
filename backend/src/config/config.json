@@ -7,10 +7,10 @@
      "dialect": "mysql"
   },
   "production": {
-    "username": "root",
-    "password": "",
-    "database": "cuestionarios",
-    "host": "localhost",
+    "username": "usr_genero",
+    "password": "XenCoItYEywGdD1.ts",
+    "database": "adminplem_generoCuestionario",
+    "host": "192.168.36.53",
     "dialect": "mysql"
   }
 }
